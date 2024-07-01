@@ -62,8 +62,11 @@ if secondSum != 0:
 FPSDataFrame = pd.DataFrame({'FPS - 약 ' + str(benchmarkBasedTime) + "ms마다 평균치 계산" : FPSData})
 FPSDataFrame.to_csv('FPS-Result.csv')
 
-frameGpuTimeDataFrame = pd.DataFrame({'Frametime' : frameTimeData, 'GPUTime' : gpuTimeData})
-frameGpuTimeDataFrame.to_csv('Frame-GPU-time-Result.csv')
+frametimeDataFrame = pd.DataFrame({'Frametime' : frameTimeData})
+frametimeDataFrame.to_csv('Frametime-Result.csv')
+
+gpuTimeDataFrame = pd.DataFrame({'GPUTime' : gpuTimeData})
+gpuTimeDataFrame.to_csv('GPUTime-Result.csv')
 
 memoryDataFrame = pd.DataFrame({'Memory(MB)' : memoryData})
 memoryDataFrame.to_csv('Memory-Result.csv')
