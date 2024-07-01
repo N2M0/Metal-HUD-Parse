@@ -44,7 +44,7 @@ HUDFile.close()
 # 데이터 분리 끝
 
 # FrameTime > FPS 변환
-# 평균 FPS = 소수점 2번째 자리에서 반올림 처리
+# 평균 FPS = 소수점 3번째 자리에서 반올림 처리 (2자리까지만 표시)
 for i in range(len(frameTimeData)):
     secondSum += float(frameTimeData[i])
     frameCount += 1
