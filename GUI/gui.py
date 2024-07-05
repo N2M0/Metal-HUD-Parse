@@ -1,10 +1,11 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QPushButton, QFileDialog, QGridLayout, QFrame
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QTimer
 from Metal_HUD_parse import *
 from gui_style import *
+from gui_thread import *
 
-class MyWindow(QWidget):
+class MetalHUDParse(QWidget):
     def __init__(self):
         super().__init__()
         self.initUI()
@@ -12,32 +13,36 @@ class MyWindow(QWidget):
     def initUI(self):
         # 윈도우 설정
         self.setWindowTitle('My PyQt5 Window')
-        self.resize(800, 800)
+        self.resize(1400, 800)
         
         # 레이아웃 생성
         Mainvbox = QVBoxLayout()
         
-        # 파일리드
-        FileReadframe = self.FileReadWindow()
-        Mainvbox.addWidget(FileReadframe)
+        # 파일 리드
+        self.FileReadframe = self.FileReadWindow()
+        Mainvbox.addWidget(self.FileReadframe)
         
         # 레이아웃 설정
         self.setLayout(Mainvbox)
+
 
     def FileReadWindow(self):
         FileReadframe = QFrame()
         FileReadframe.setFrameShape(QFrame.Panel | QFrame.Sunken)
         FileReadvbox = QVBoxLayout()
         
-        # 파일 라벨 생성성
-        self.FileLabel = QLabel("파일을 불러옵니다.")
+        # 파일 라벨 생성
+        self.FileLabel = QLabel("Load The File.")
         FileLabelType, FileLabelObjID = "QLabel", "FileLabel"
         self.FileLabel.setObjectName(FileLabelObjID)
         self.FileLabel.setStyleSheet(FileLabelStyle(FileLabelType+"#"+FileLabelObjID))
         self.FileLabel.setAlignment(Qt.AlignCenter)
         
-        # 버튼 생성
-        self.FileReadBtn = QPushButton('파일 열기')
+        # 파일 버튼 생성
+        self.FileReadBtn = QPushButton('File Read')
+        FileButtonType, FileButtonObjID = "QPushButton", "FileReadBtn"
+        self.FileReadBtn.setObjectName(FileButtonObjID)
+        self.FileReadBtn.setStyleSheet(FileReadBtnStyle(FileButtonType+"#"+FileButtonObjID))
         self.FileReadBtn.setFixedSize(200, 80)
         self.FileReadBtn.clicked.connect(self.FileRead)
 
@@ -56,16 +61,24 @@ class MyWindow(QWidget):
     # 파일 불러오기
     def FileRead(self):
         options = QFileDialog.Options()
-        fileName, _ = QFileDialog.getOpenFileName(self, "Open CSV File", "", "CSV Files (*.csv);;All Files (*)", options=options)
-        if fileName:
-            self.FileLabel.setText(f'Selected File: {fileName}')
+        FileName, _ = QFileDialog.getOpenFileName(self, "Open CSV File", "", "CSV Files (*.csv);;All Files (*)", options=options)
+        if FileName:
+            self.FileLabel.setText(f'Selected File: {FileName}')
+            self.StartParsePerformance(FileName)
+    
+    def StartParsePerformance(self, FileName):
+        self.thread = PerformanceParsingThread(FileName)
+        self.thread.UpdateFileLabelSignal.connect(lambda text: self.FileLabel.setText(text))
+        self.thread.ThreadFinishedSignal.connect(lambda: QTimer.singleShot(1000, self.FileReadframe.hide))
+        self.thread.start()
 
-    # 성능 파싱 시작
-    def StartParsePerformance(self):
-        pass
+
+
+
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    window = MyWindow()
+    window = MetalHUDParse()
     window.show()
     sys.exit(app.exec_())
