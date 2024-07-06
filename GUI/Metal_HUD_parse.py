@@ -90,50 +90,57 @@ def PerformanceCsvSave(FileName, title, data):
 #benchmarkBasedTime 값이 너무 크면 프레임이 튀는 순간을 발견하기 어려움
 
 # 성능 계산 조건식
-PerformanceCalculationConditions = {
-    benchmarkBasedTime: 1000,
-    missedFrame: 0,  # 누락된 프레임 갯수
-    frametimeError: 0,  # 소수점 자리가 <...>로 입력된 프레임타임
-    gpuTimeError: 0,  # 소수점 자리가 <...>로 입력된 GPU타임
-    secondSum: 0,
-    frameCount: 0,
-    overlapCheckData: "temp"
-}
+def PerformanceCalculationConditions():
+    return {
+        benchmarkBasedTime: 1000,
+        missedFrame: 0,  # 누락된 프레임 갯수
+        frametimeError: 0,  # 소수점 자리가 <...>로 입력된 프레임타임
+        gpuTimeError: 0,  # 소수점 자리가 <...>로 입력된 GPU타임
+        secondSum: 0,
+        frameCount: 0,
+        overlapCheckData: "temp"
+    }
 
 # 성능 데이터
-PerformanceData = {
-    FPSData: [], # 프레임타임을 FPS로 바꾼 것
-    frameTimeData:[], # 프레임타임 데이터 (ms)
-    gpuTimeData:[], # GPU타임 데이터 (ms)
-    memoryData:[] # 메모리 사용량 저장
-}
+def PerformanceData():
+    return {
+        FPSData: [], # 프레임타임을 FPS로 바꾼 것
+        frameTimeData:[], # 프레임타임 데이터 (ms)
+        gpuTimeData:[], # GPU타임 데이터 (ms)
+        memoryData:[] # 메모리 사용량 저장
+    }
 
 # 성능 오류 데이터
-PerformanceErrorData = {
-    frametimeErrorData:[],
-    gpuTimeErrorData:[]
-}
+def PerformanceErrorData():
+    return {
+        frametimeErrorData:[],
+        gpuTimeErrorData:[]
+    }
 
 if __name__ == "__main__":
+    # 딕셔너리 초기화
+    _PerformanceCalculationConditions = PerformanceCalculationConditions()
+    _PerformanceData = PerformanceCalculationConditions()
+    _PerformanceErrorData = PerformanceCalculationConditions()
+
     # 성능 데이터 분리
-    # DataSplit(DataReader("Metal-HUD.csv"), PerformanceCalculationConditions, PerformanceData, PerformanceErrorData)
-    DataSplit(DataReader("output.csv"), PerformanceCalculationConditions, PerformanceData, PerformanceErrorData)
+    DataSplit(DataReader("output.csv"), _PerformanceCalculationConditions, _PerformanceData, _PerformanceErrorData)
 
     # FrameTime > FPS 변환
-    ConverttoFPS(PerformanceData, PerformanceCalculationConditions, 1000, 2)
+    ConverttoFPS(_PerformanceData, _PerformanceCalculationConditions, 1000, 2)
     # 마지막에 남은 1초 안되는 자투리 데이터로 평균 FPS 계산
-    LastDataAvg(PerformanceData, PerformanceCalculationConditions, 1000, 2)
+    LastDataAvg(_PerformanceData, _PerformanceCalculationConditions, 1000, 2)
 
     # 파일 저장
-    # PerformanceCsvSave("FPS-Result.csv", f"FPS - 약 {PerformanceCalculationConditions[benchmarkBasedTime]} ms마다 평균치 계산", PerformanceData["FPSData"])
-    # PerformanceCsvSave("Frametime-Result.csv", f"Frametime", PerformanceData[frameTimeData])
-    # PerformanceCsvSave("GPUTime-Result.csv", f"GPUTime", PerformanceData[gpuTimeData])
-    # PerformanceCsvSave("Memory-Result.csv", f"Memory(MB)", PerformanceData[memoryData])
-    # PerformanceCsvSave("Frametime-Error.csv", f"Frametime error list", PerformanceErrorData[frametimeErrorData])
-    # PerformanceCsvSave("GPUTime-error.csv", f"GPUTime error list", PerformanceErrorData[gpuTimeErrorData])
+    # PerformanceCsvSave("FPS-Result.csv", f"FPS - 약 {_PerformanceCalculationConditions['benchmarkBasedTime']} ms마다 평균치 계산", PerformanceData["FPSData"])
+    # PerformanceCsvSave("Frametime-Result.csv", f"Frametime", _PerformanceData["frameTimeData"])
+    # PerformanceCsvSave("GPUTime-Result.csv", f"GPUTime", _PerformanceData["gpuTimeData"])
+    # PerformanceCsvSave("Memory-Result.csv", f"Memory(MB)", _PerformanceData["memoryData"])
+    # PerformanceCsvSave("Frametime-Error.csv", f"Frametime error list", _PerformanceErrorData["frametimeErrorData"])
+    # PerformanceCsvSave("GPUTime-error.csv", f"GPUTime error list", _PerformanceErrorData["gpuTimeErrorData"])
 
-    pprint(PerformanceData)
+    pprint(_PerformanceData)
 
-    print("\n\nDone! Missed Frame:", PerformanceCalculationConditions[missedFrame])
-    print("Frametime error:", + PerformanceCalculationConditions[frametimeError])
-    print("GPUTime error:", + PerformanceCalculationConditions[gpuTimeError])
+    print("\n\nDone! Missed Frame:", _PerformanceCalculationConditions["missedFrame"])
+    print("Frametime error:", _PerformanceCalculationConditions["frametimeError"])
+    print("GPUTime error:", _PerformanceCalculationConditions["gpuTimeError"])

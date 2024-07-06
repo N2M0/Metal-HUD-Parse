@@ -1,13 +1,13 @@
 
-def LabelStyle(id):
+def LabelStyle(id, fontsize):
     return """
     %s {
         font-family: arial, helvetica, sans-serif;
-        font-size: 25px;
+        font-size: %spx;
         font-weight: bold;
 
                             }
-                        """ % (id, )
+                        """ % (id, fontsize)
 
 def ButtonStyle(id):
     return """

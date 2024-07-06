@@ -1,11 +1,11 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QPushButton, QFileDialog, QGridLayout, QFrame, QSpacerItem, QSizePolicy, QDoubleSpinBox, QAbstractSpinBox
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QPushButton, QFileDialog, QGridLayout, QFrame, QHBoxLayout, QAbstractSpinBox
 from PyQt5.QtCore import Qt, QTimer
 from Metal_HUD_parse import *
 from gui_style import *
 from gui_thread import *
 from FileRead import *
-from CustomQDoubleSpinBox import *
+from CustomQDSpin import *
 
 class MetalHUDParse(QWidget):
     def __init__(self):
@@ -24,7 +24,6 @@ class MetalHUDParse(QWidget):
         self.FileReadframe = self.FileReadWindow()
         self.Mainvbox.addWidget(self.FileReadframe)
         
-        
         # 레이아웃 설정
         self.setLayout(self.Mainvbox)
 
@@ -38,7 +37,7 @@ class MetalHUDParse(QWidget):
         self.FileLabel = QLabel("Load The File.")
         FileLabelType, FileLabelObjID = "QLabel", "FileLabel"
         self.FileLabel.setObjectName(FileLabelObjID)
-        self.FileLabel.setStyleSheet(LabelStyle(FileLabelType+"#"+FileLabelObjID))
+        self.FileLabel.setStyleSheet(LabelStyle(FileLabelType+"#"+FileLabelObjID, 25))
         self.FileLabel.setAlignment(Qt.AlignCenter)
         
         # 파일 버튼 생성
@@ -65,56 +64,99 @@ class MetalHUDParse(QWidget):
         StartPerformanceframe = QFrame()
         StartPerformanceframe.setFrameShape(QFrame.Panel | QFrame.Sunken)
         StartPerformancevbox = QVBoxLayout()
+        StartPerformancehbox = QHBoxLayout()
+
         
         # 성능 라벨 생성
         self.StartPerformanceLable = QLabel("Metal HiD Parse")
         StartPerformanceLabelType, StartPerformanceLabelObjID = "QLabel", "StartPerformanceLable"
         self.StartPerformanceLable.setObjectName(StartPerformanceLabelObjID)
-        self.StartPerformanceLable.setStyleSheet(LabelStyle(StartPerformanceLabelType+"#"+StartPerformanceLabelObjID))
+        self.StartPerformanceLable.setStyleSheet(LabelStyle(StartPerformanceLabelType+"#"+StartPerformanceLabelObjID, 25))
         self.StartPerformanceLable.setAlignment(Qt.AlignCenter)
         
+        
+        # 벤치마크 베이스 시간
+        self.benchmarkBasedTime, self.benchmarkBasedTimeLabel = self.addQDSpinBox(1000, "BasedTime")
+        
         # 단위 변환
-        self.UnitConversion = CustomQDoubleSpinBox(self).QDSpinBox(
-            setRnage=(0, 10000),
-            setSingleStep=1,
-            setValue=1000,
-            setFixedSize=(100, 50),
-            setStyleSheet=QDoubleSpinBoxStyle(),
-            setDecimals=0,
-            setButtonSymbols=QAbstractSpinBox.NoButtons,
-            setAlignment=Qt.AlignCenter            
-        )
+        self.UnitConversion, self.UnitConversionLabel = self.addQDSpinBox(1000, "UnitConversion")
 
         # 소수점 제한
-        self.DecimalPoint = CustomQDoubleSpinBox(self).QDSpinBox(
-            setRnage=(0, 10000),
-            setSingleStep=1,
-            setValue=2,
-            setFixedSize=(100, 50),
-            setStyleSheet=QDoubleSpinBoxStyle(),
-            setDecimals=0,
-            setButtonSymbols=QAbstractSpinBox.NoButtons,
-            setAlignment=Qt.AlignCenter            
-        )
+        self.DecimalPoint, self.DecimalPointLabel = self.addQDSpinBox(2, "DecimalPoint")
         
         # 성능 버튼 생성
-        self.ParseStartBtn = QPushButton('Parse Start')
-        ParseStartType, ParseStartObjID = "QPushButton", "ParseStartBtn"
-        self.ParseStartBtn.setObjectName(ParseStartObjID)
-        self.ParseStartBtn.setStyleSheet(ButtonStyle(ParseStartType+"#"+ParseStartObjID))
-        self.ParseStartBtn.setFixedSize(200, 80)
-        self.ParseStartBtn.clicked.connect(lambda: self.StartParsePerformance(FileName, DataReader(FileName)))
+        self.ParseStartBtn = self.addBtn("Parse Start", lambda: self.StartParsePerformance(FileName, DataReader(FileName), int(self.benchmarkBasedTime.value()), int(self.UnitConversion.value()), int(self.DecimalPoint.value())))
         
+        # 리스타트 버튼 생성
+        self.ResetBtn = self.addBtn("Re Start", lambda: None)
+        
+        # 수직
         StartPerformancevbox.addWidget(self.StartPerformanceLable, alignment=Qt.AlignTop)
+        
+        # 수직 스핀박스
+        StartPerformancevbox.addStretch(1)
+        StartPerformancevbox.addWidget(self.benchmarkBasedTimeLabel, alignment=Qt.AlignLeft | Qt.AlignHCenter)
+        StartPerformancevbox.addSpacing(5) # 여백
+        StartPerformancevbox.addWidget(self.benchmarkBasedTime, alignment=Qt.AlignLeft | Qt.AlignHCenter)
+        StartPerformancevbox.addSpacing(20) # 여백
+        
+        StartPerformancevbox.addWidget(self.UnitConversionLabel, alignment=Qt.AlignLeft | Qt.AlignHCenter)
+        StartPerformancevbox.addSpacing(5) # 여백
         StartPerformancevbox.addWidget(self.UnitConversion, alignment=Qt.AlignLeft | Qt.AlignHCenter)
+        StartPerformancevbox.addSpacing(20) # 여백
+        
+        StartPerformancevbox.addWidget(self.DecimalPointLabel, alignment=Qt.AlignLeft | Qt.AlignHCenter)
+        StartPerformancevbox.addSpacing(5) # 여백
         StartPerformancevbox.addWidget(self.DecimalPoint, alignment=Qt.AlignLeft | Qt.AlignHCenter)
-        StartPerformancevbox.addWidget(self.ParseStartBtn, alignment=Qt.AlignBottom | Qt.AlignHCenter)
+        StartPerformancevbox.addSpacing(20) # 여백
+        StartPerformancevbox.addStretch(1)
+        
+        # 수평
+        StartPerformancehbox.addStretch(1)
+        StartPerformancehbox.addWidget(self.ParseStartBtn, alignment=Qt.AlignBottom | Qt.AlignHCenter)
+        StartPerformancehbox.addSpacing(20) # 여백
+        StartPerformancehbox.addWidget(self.ResetBtn, alignment=Qt.AlignBottom | Qt.AlignHCenter)
+        StartPerformancehbox.addStretch(1)
+        
+        StartPerformancevbox.addLayout(StartPerformancehbox)
+        
         StartPerformanceframe.setLayout(StartPerformancevbox)
         
         return StartPerformanceframe
 
-    def StartParsePerformance(self, FileName, FileData):
-        self.thread = PerformanceParsingThread(FileName, FileData, 1000, 2)
+    def addBtn(self, BtnName, func):
+        _addbtn = QPushButton(BtnName)
+        _addbtnType, _addbtnObjID = "QPushButton", "AddBtn"
+        _addbtn.setObjectName(_addbtnObjID)
+        _addbtn.setStyleSheet(ButtonStyle(_addbtnType+"#"+_addbtnObjID))
+        _addbtn.setFixedSize(200, 80)
+        _addbtn.clicked.connect(func)
+        
+        return _addbtn
+
+    def addQDSpinBox(self, setValue, LabelText):
+        
+        QDSpinObj = CustomQDoubleSpinBox(self).QDSpinBox(
+            setRange=(0, 1000000),
+            setSingleStep=1,
+            setValue=setValue,
+            setFixedSize=(100, 50),
+            setStyleSheet=QDoubleSpinBoxStyle(),
+            setDecimals=0,
+            setButtonSymbols=QAbstractSpinBox.NoButtons,
+            setAlignment=Qt.AlignCenter            
+        )
+        
+        QDSpinObjLabel = CustomQDSpinBoxLabel(self).QDSpinBoxLabel(
+            LabelText=LabelText,
+            setStyleSheet=LabelStyle
+            
+        )
+        
+        return QDSpinObj, QDSpinObjLabel
+
+    def StartParsePerformance(self, FileName, FileData, benchmarkBasedTime, UnitConversion, DecimalPoint):
+        self.thread = PerformanceParsingThread(FileName, FileData, benchmarkBasedTime, UnitConversion, DecimalPoint)
         self.thread.UpdateFileLabelSignal.connect(lambda text: self.StartPerformanceLable.setText(text))
         self.thread.ThreadFinishedSignal.connect(lambda: QTimer.singleShot(1000, lambda: None))
         self.thread.start()
