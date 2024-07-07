@@ -45,3 +45,27 @@ def QDoubleSpinBoxStyle():
         }
             
             """
+
+def MsgBoxStyle():
+    return """
+            QMessageBox {
+                font-family: arial, helvetica, sans-serif;
+                font-size: 15px;
+                font-weight: bold;
+                border-radius: 15px;
+            }
+            QPushButton {
+                font-family: arial, helvetica, sans-serif;
+                font-size: 15px;
+                font-weight: bold;
+                background-color: rgb(58, 134, 255);
+                border-radius: 15px;
+                color: white;
+                width: 70px;
+                height: 35px;
+            }
+                
+            QLabel{
+                min-width: 400px;
+                }
+        """

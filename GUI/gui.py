@@ -66,11 +66,13 @@ class MetalHUDParse(QWidget):
         StartPerformanceframe.setFrameShape(QFrame.Panel | QFrame.Sunken)
         StartPerformancevbox = QVBoxLayout()
         StartPerformancehbox = QHBoxLayout()
+        
+        # 인스턴스 변수
         self.FileName = FileName
 
         
         # 성능 라벨 생성
-        self.StartPerformanceLable = QLabel("Metal HiD Parse")
+        self.StartPerformanceLable = QLabel("Metal-HUD Parse")
         StartPerformanceLabelType, StartPerformanceLabelObjID = "QLabel", "StartPerformanceLable"
         self.StartPerformanceLable.setObjectName(StartPerformanceLabelObjID)
         self.StartPerformanceLable.setStyleSheet(LabelStyle(StartPerformanceLabelType+"#"+StartPerformanceLabelObjID, 25))
@@ -103,6 +105,17 @@ class MetalHUDParse(QWidget):
         
         # FileChange 버튼 생성
         self.FileChange = self.addBtn("File Change", self.FileChanged)
+        
+        # 결과를 파일로 저장
+        self.ParsedSave = self.addBtn("Parsed Save", lambda: PerformanceParsingResultsSaveThread(self).run())
+        
+        StartPerformanceframe = self.addlayout(StartPerformanceframe, SpinDict, StartPerformancevbox, StartPerformancehbox)
+        
+        
+        return StartPerformanceframe
+    
+    
+    def addlayout(self, StartPerformanceframe, SpinDict, StartPerformancevbox, StartPerformancehbox):
         # 수직
         StartPerformancevbox.addWidget(self.StartPerformanceLable, alignment=Qt.AlignTop)
         
@@ -120,6 +133,9 @@ class MetalHUDParse(QWidget):
         StartPerformancehbox.addWidget(self.ParseStartBtn, alignment=Qt.AlignBottom | Qt.AlignHCenter)
         StartPerformancehbox.addSpacing(20) # 여백
         StartPerformancehbox.addWidget(self.FileChange, alignment=Qt.AlignBottom | Qt.AlignHCenter)
+        StartPerformancehbox.addSpacing(20) # 여백
+        StartPerformancehbox.addWidget(self.ParsedSave, alignment=Qt.AlignBottom | Qt.AlignHCenter)
+        
         StartPerformancehbox.addStretch(1)
         StartPerformancevbox.addLayout(StartPerformancehbox)
         StartPerformanceframe.setLayout(StartPerformancevbox)
@@ -128,7 +144,9 @@ class MetalHUDParse(QWidget):
     
     # 파일 이름 변경 함수
     def FileChanged(self):
-        self.FileName = self.FileReader.FileChanged()
+        f = self.FileReader.FileChanged()
+        if f is not None:
+            self.FileName = f
 
     # 버튼 추가 함수
     def addBtn(self, BtnName, func):
@@ -144,7 +162,7 @@ class MetalHUDParse(QWidget):
     # 스핀박스 추가 함수
     def addQDSpinBox(self, setValue, LabelText):
         QDSpinObj = CustomQDoubleSpinBox(self).QDSpinBox(
-            setRange=(0, 1000000),
+            setRange=(0, 10000000),
             setSingleStep=1,
             setValue=setValue,
             setFixedSize=(100, 50),

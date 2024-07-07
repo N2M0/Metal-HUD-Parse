@@ -15,11 +15,11 @@ class FileReader:
 
     def FileRead(self):
         options = QFileDialog.Options()
-        FileName, _ = QFileDialog.getOpenFileName(self.parent, "Open CSV File", "", "CSV Files (*.csv);;All Files (*)", options=options)
-        if FileName:
-            self.FileLabel.setText(f'Selected File: {FileName}')
+        self.FileName, _ = QFileDialog.getOpenFileName(self.parent, "Open CSV File", "", "CSV Files (*.csv);;All Files (*)", options=options)
+        if self.FileName:
+            self.FileLabel.setText(f'Selected File: {self.FileName}')
             QTimer.singleShot(1000, self.FileReadframe.hide)
-            QTimer.singleShot(1000, lambda: self.Mainvbox.addWidget(self.StartPerformanceWindow(FileName)))
+            QTimer.singleShot(1000, lambda: self.Mainvbox.addWidget(self.StartPerformanceWindow(self.FileName)))
             
         else:
             self.FileLabel.setText(f'Selected File: Failed.')
@@ -30,3 +30,6 @@ class FileReader:
         newFileName, _ = QFileDialog.getOpenFileName(self.parent, "Open CSV File", "", "CSV Files (*.csv);;All Files (*)", options=options)
         if newFileName:
             return newFileName
+        
+        else:
+            return self.FileName
