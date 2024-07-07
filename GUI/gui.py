@@ -14,7 +14,7 @@ class MetalHUDParse(QWidget):
 
     def initUI(self):
         # 윈도우 설정
-        self.setWindowTitle('My PyQt5 Window')
+        self.setWindowTitle('Metal-HUD Parse')
         self.resize(1400, 800)
         
         # 레이아웃 생성
@@ -23,6 +23,7 @@ class MetalHUDParse(QWidget):
         # 파일 리드
         self.FileReadframe = self.FileReadWindow()
         self.Mainvbox.addWidget(self.FileReadframe)
+        self.FileReader = FileReader(self)
         
         # 레이아웃 설정
         self.setLayout(self.Mainvbox)
@@ -46,7 +47,7 @@ class MetalHUDParse(QWidget):
         self.FileReadBtn.setObjectName(FileButtonObjID)
         self.FileReadBtn.setStyleSheet(ButtonStyle(FileButtonType+"#"+FileButtonObjID))
         self.FileReadBtn.setFixedSize(200, 80)
-        self.FileReadBtn.clicked.connect(lambda: FileReader(self).FileRead())
+        self.FileReadBtn.clicked.connect(lambda: self.FileReader.FileRead())
 
         # 라벨과 버튼을 중앙에 배치
         FileReadvbox.addStretch(1)
@@ -65,6 +66,7 @@ class MetalHUDParse(QWidget):
         StartPerformanceframe.setFrameShape(QFrame.Panel | QFrame.Sunken)
         StartPerformancevbox = QVBoxLayout()
         StartPerformancehbox = QHBoxLayout()
+        self.FileName = FileName
 
         
         # 성능 라벨 생성
@@ -74,56 +76,61 @@ class MetalHUDParse(QWidget):
         self.StartPerformanceLable.setStyleSheet(LabelStyle(StartPerformanceLabelType+"#"+StartPerformanceLabelObjID, 25))
         self.StartPerformanceLable.setAlignment(Qt.AlignCenter)
         
-        
         # 벤치마크 베이스 시간
         self.benchmarkBasedTime, self.benchmarkBasedTimeLabel = self.addQDSpinBox(1000, "BasedTime")
-        
         # 단위 변환
         self.UnitConversion, self.UnitConversionLabel = self.addQDSpinBox(1000, "UnitConversion")
-
         # 소수점 제한
         self.DecimalPoint, self.DecimalPointLabel = self.addQDSpinBox(2, "DecimalPoint")
         
+        # spinbox dict
+        SpinDict = {
+            self.benchmarkBasedTime: self.benchmarkBasedTimeLabel,
+            self.UnitConversion: self.UnitConversionLabel,
+            self.DecimalPoint: self.DecimalPointLabel
+        }
+        
         # 성능 버튼 생성
-        self.ParseStartBtn = self.addBtn("Parse Start", lambda: self.StartParsePerformance(FileName, DataReader(FileName), int(self.benchmarkBasedTime.value()), int(self.UnitConversion.value()), int(self.DecimalPoint.value())))
+        self.ParseStartBtn = self.addBtn(
+            "Parse Start", 
+            lambda: self.StartParsePerformance(
+            self.FileName, 
+            DataReader(self.FileName), 
+            int(self.benchmarkBasedTime.value()), 
+            int(self.UnitConversion.value()), 
+            int(self.DecimalPoint.value()))
+            )
         
-        # 리스타트 버튼 생성
-        self.ResetBtn = self.addBtn("Re Start", lambda: None)
-        
+        # FileChange 버튼 생성
+        self.FileChange = self.addBtn("File Change", self.FileChanged)
         # 수직
         StartPerformancevbox.addWidget(self.StartPerformanceLable, alignment=Qt.AlignTop)
         
         # 수직 스핀박스
         StartPerformancevbox.addStretch(1)
-        StartPerformancevbox.addWidget(self.benchmarkBasedTimeLabel, alignment=Qt.AlignLeft | Qt.AlignHCenter)
-        StartPerformancevbox.addSpacing(5) # 여백
-        StartPerformancevbox.addWidget(self.benchmarkBasedTime, alignment=Qt.AlignLeft | Qt.AlignHCenter)
-        StartPerformancevbox.addSpacing(20) # 여백
-        
-        StartPerformancevbox.addWidget(self.UnitConversionLabel, alignment=Qt.AlignLeft | Qt.AlignHCenter)
-        StartPerformancevbox.addSpacing(5) # 여백
-        StartPerformancevbox.addWidget(self.UnitConversion, alignment=Qt.AlignLeft | Qt.AlignHCenter)
-        StartPerformancevbox.addSpacing(20) # 여백
-        
-        StartPerformancevbox.addWidget(self.DecimalPointLabel, alignment=Qt.AlignLeft | Qt.AlignHCenter)
-        StartPerformancevbox.addSpacing(5) # 여백
-        StartPerformancevbox.addWidget(self.DecimalPoint, alignment=Qt.AlignLeft | Qt.AlignHCenter)
-        StartPerformancevbox.addSpacing(20) # 여백
+        for object, label in SpinDict.items():
+            StartPerformancevbox.addWidget(label, alignment=Qt.AlignLeft | Qt.AlignHCenter)
+            StartPerformancevbox.addSpacing(5) # 여백
+            StartPerformancevbox.addWidget(object, alignment=Qt.AlignLeft | Qt.AlignHCenter)
+            StartPerformancevbox.addSpacing(20) # 여백
         StartPerformancevbox.addStretch(1)
         
         # 수평
         StartPerformancehbox.addStretch(1)
         StartPerformancehbox.addWidget(self.ParseStartBtn, alignment=Qt.AlignBottom | Qt.AlignHCenter)
         StartPerformancehbox.addSpacing(20) # 여백
-        StartPerformancehbox.addWidget(self.ResetBtn, alignment=Qt.AlignBottom | Qt.AlignHCenter)
+        StartPerformancehbox.addWidget(self.FileChange, alignment=Qt.AlignBottom | Qt.AlignHCenter)
         StartPerformancehbox.addStretch(1)
-        
         StartPerformancevbox.addLayout(StartPerformancehbox)
-        
         StartPerformanceframe.setLayout(StartPerformancevbox)
         
         return StartPerformanceframe
+    
+    # 파일 이름 변경 함수
+    def FileChanged(self):
+        self.FileName = self.FileReader.FileChanged()
 
+    # 버튼 추가 함수
     def addBtn(self, BtnName, func):
         _addbtn = QPushButton(BtnName)
         _addbtnType, _addbtnObjID = "QPushButton", "AddBtn"
@@ -133,9 +140,9 @@ class MetalHUDParse(QWidget):
         _addbtn.clicked.connect(func)
         
         return _addbtn
-
+    
+    # 스핀박스 추가 함수
     def addQDSpinBox(self, setValue, LabelText):
-        
         QDSpinObj = CustomQDoubleSpinBox(self).QDSpinBox(
             setRange=(0, 1000000),
             setSingleStep=1,
@@ -155,6 +162,7 @@ class MetalHUDParse(QWidget):
         
         return QDSpinObj, QDSpinObjLabel
 
+    # 스레도 함수
     def StartParsePerformance(self, FileName, FileData, benchmarkBasedTime, UnitConversion, DecimalPoint):
         self.thread = PerformanceParsingThread(FileName, FileData, benchmarkBasedTime, UnitConversion, DecimalPoint)
         self.thread.UpdateFileLabelSignal.connect(lambda text: self.StartPerformanceLable.setText(text))

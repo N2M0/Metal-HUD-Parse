@@ -1,5 +1,6 @@
 from PyQt5.QtCore import QThread, pyqtSignal
 from Metal_HUD_parse import *
+import numpy as np
 
 # 스레드
 class PerformanceParsingThread(QThread):
@@ -22,7 +23,6 @@ class PerformanceParsingThread(QThread):
         _PerformanceErrorData = PerformanceErrorData()
         
         _PerformanceCalculationConditions[benchmarkBasedTime] = self.benchmarkBasedTimeValue
-        pprint(_PerformanceCalculationConditions)
         
         
         self.UpdateFileLabelSignal.emit(f'Selected File: {self.FileName} Start...')
@@ -31,6 +31,9 @@ class PerformanceParsingThread(QThread):
         ConverttoFPS(_PerformanceData, _PerformanceCalculationConditions, self.UnitConversion, self.DecimalPoint)
         LastDataAvg(_PerformanceData, _PerformanceCalculationConditions, self.UnitConversion, self.DecimalPoint)
         self.UpdateFileLabelSignal.emit(f'Selected File: {self.FileName} Done!')
+        
+        # pprint(_PerformanceData)
+        pprint(np.mean(_PerformanceData[FPSData]))
         
         # 스레드 종료
         self.ThreadFinishedSignal.emit()

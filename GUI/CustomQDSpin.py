@@ -1,6 +1,5 @@
-import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QPushButton, QFileDialog, QGridLayout, QFrame, QSpacerItem, QSizePolicy, QDoubleSpinBox, QAbstractSpinBox, QHBoxLayout
-from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtWidgets import QLabel, QDoubleSpinBox
+from PyQt5.QtCore import Qt
 from Metal_HUD_parse import *
 from gui_style import *
 from gui_thread import *
