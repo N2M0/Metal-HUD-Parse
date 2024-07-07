@@ -1,9 +1,9 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QPushButton, QFileDialog, QGridLayout, QFrame, QHBoxLayout, QAbstractSpinBox
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QPushButton, QFrame, QHBoxLayout, QAbstractSpinBox, QTableWidget, QAbstractItemView, QHeaderView, QTableWidgetItem, QProgressBar
 from PyQt5.QtCore import Qt, QTimer
 from Metal_HUD_parse import *
-from gui_style import *
-from gui_thread import *
+from GUIStyle import *
+from GUIThread import *
 from FileRead import *
 from CustomQDSpin import *
 
@@ -62,15 +62,9 @@ class MetalHUDParse(QWidget):
     
     
     def StartPerformanceWindow(self, FileName):
-        StartPerformanceframe = QFrame()
-        StartPerformanceframe.setFrameShape(QFrame.Panel | QFrame.Sunken)
-        StartPerformancevbox = QVBoxLayout()
-        StartPerformancehbox = QHBoxLayout()
-        
         # 인스턴스 변수
         self.FileName = FileName
 
-        
         # 성능 라벨 생성
         self.StartPerformanceLable = QLabel("Metal-HUD Parse")
         StartPerformanceLabelType, StartPerformanceLabelObjID = "QLabel", "StartPerformanceLable"
@@ -92,6 +86,12 @@ class MetalHUDParse(QWidget):
             self.DecimalPoint: self.DecimalPointLabel
         }
         
+        # table
+        self.ParsedResultsTable = self.InitParsedTable()
+        
+        # pr
+        self.ParsedPbar = self.InitQProgressBar()
+        
         # 성능 버튼 생성
         self.ParseStartBtn = self.addBtn(
             "Parse Start", 
@@ -100,7 +100,7 @@ class MetalHUDParse(QWidget):
             DataReader(self.FileName), 
             int(self.benchmarkBasedTime.value()), 
             int(self.UnitConversion.value()), 
-            int(self.DecimalPoint.value()))
+            int(self.DecimalPoint.value())),
             )
         
         # FileChange 버튼 생성
@@ -109,15 +109,24 @@ class MetalHUDParse(QWidget):
         # 결과를 파일로 저장
         self.ParsedSave = self.addBtn("Parsed Save", lambda: PerformanceParsingResultsSaveThread(self).run())
         
-        StartPerformanceframe = self.addlayout(StartPerformanceframe, SpinDict, StartPerformancevbox, StartPerformancehbox)
-        
+        StartPerformanceframe = self.addlayout(SpinDict)
         
         return StartPerformanceframe
     
     
-    def addlayout(self, StartPerformanceframe, SpinDict, StartPerformancevbox, StartPerformancehbox):
+    
+    def addlayout(self, SpinDict):
+        StartPerformanceframe = QFrame()
+        StartPerformanceframe.setFrameShape(QFrame.Panel | QFrame.Sunken)
+        StartPerformancevbox = QVBoxLayout()
+        StartPerformancehbox = QHBoxLayout()
+        
         # 수직
         StartPerformancevbox.addWidget(self.StartPerformanceLable, alignment=Qt.AlignTop)
+        StartPerformancevbox.addSpacing(10) # 여백
+        StartPerformancevbox.addWidget(self.ParsedResultsTable, alignment=Qt.AlignLeft | Qt.AlignCenter)
+        StartPerformancevbox.addSpacing(10) # 여백
+        StartPerformancevbox.addWidget(self.ParsedPbar, alignment = Qt.AlignHCenter)
         
         # 수직 스핀박스
         StartPerformancevbox.addStretch(1)
@@ -128,12 +137,13 @@ class MetalHUDParse(QWidget):
             StartPerformancevbox.addSpacing(20) # 여백
         StartPerformancevbox.addStretch(1)
         
+        
         # 수평
         StartPerformancehbox.addStretch(1)
         StartPerformancehbox.addWidget(self.ParseStartBtn, alignment=Qt.AlignBottom | Qt.AlignHCenter)
-        StartPerformancehbox.addSpacing(20) # 여백
+        StartPerformancehbox.addSpacing(10) # 여백
         StartPerformancehbox.addWidget(self.FileChange, alignment=Qt.AlignBottom | Qt.AlignHCenter)
-        StartPerformancehbox.addSpacing(20) # 여백
+        StartPerformancehbox.addSpacing(10) # 여백
         StartPerformancehbox.addWidget(self.ParsedSave, alignment=Qt.AlignBottom | Qt.AlignHCenter)
         
         StartPerformancehbox.addStretch(1)
@@ -141,7 +151,7 @@ class MetalHUDParse(QWidget):
         StartPerformanceframe.setLayout(StartPerformancevbox)
         
         return StartPerformanceframe
-    
+
     # 파일 이름 변경 함수
     def FileChanged(self):
         f = self.FileReader.FileChanged()
@@ -182,10 +192,55 @@ class MetalHUDParse(QWidget):
 
     # 스레도 함수
     def StartParsePerformance(self, FileName, FileData, benchmarkBasedTime, UnitConversion, DecimalPoint):
-        self.thread = PerformanceParsingThread(FileName, FileData, benchmarkBasedTime, UnitConversion, DecimalPoint)
+        self.thread = PerformanceParsingThread(FileName, FileData, benchmarkBasedTime, UnitConversion, DecimalPoint, self)
         self.thread.UpdateFileLabelSignal.connect(lambda text: self.StartPerformanceLable.setText(text))
         self.thread.ThreadFinishedSignal.connect(lambda: QTimer.singleShot(1000, lambda: None))
+        self.thread.EmitParsedSignal.connect(self.UpdateTable)
         self.thread.start()
+
+
+    def InitParsedTable(self):
+        self.ParsedTable = QTableWidget(self)
+        self.ParsedTable.setFixedSize((1400 // 2) - 200 , 300)
+        
+        return self.ParsedTable
+
+    def UpdateTable(self, LabelList, sum_pbar, sum_count, col_count, row_count, col, row, value):
+        if int(sum_pbar) == 1:
+            self.ParsedResultsTable.setColumnCount(0)    
+            self.ParsedResultsTable.setRowCount(0)
+            self.ParsedResultsTable.setColumnCount(col_count)
+            self.ParsedResultsTable.setRowCount(row_count)
+            
+            # table 작업 중..
+            # self.ParsedResultsTable.setEditTriggers(QAbstractItemView.NoEditTriggers)
+            self.ParsedResultsTable.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+            self.ParsedResultsTable.setHorizontalHeaderLabels(LabelList)
+
+        # 테이블에 데이터를 추가
+        item = QTableWidgetItem(value)
+        item.setTextAlignment(Qt.AlignCenter)  # 텍스트 정렬 (옵션)
+        self.ParsedResultsTable.setItem(row, col, item)
+        
+        # pbar
+        self.UpdateProgressBar(sum_pbar, sum_count)
+
+    def InitQProgressBar(self):
+        pbar = QProgressBar(self)
+        pbar.setFixedSize(int(1400 // 1.5) - 200, 30)
+        # 숫자값의 위치
+        pbar.setAlignment(Qt.AlignCenter)
+        pbar.resetFormat()
+
+        return pbar
+
+    def UpdateProgressBar(self, sum_pbar, sum_count):
+        progress = (sum_pbar / sum_count) * 100  # 진행률 계산
+        self.ParsedPbar.setValue(int(progress))  # 진행률 업데이트
+        
+        if progress >= sum_count:
+            self.ParsedPbar.setValue(0)  # 모든 작업이 완료되면 막대를 초기화
+            
 
 
 

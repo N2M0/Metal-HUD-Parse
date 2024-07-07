@@ -2,8 +2,8 @@ import sys
 from PyQt5.QtWidgets import  QFileDialog
 from PyQt5.QtCore import QTimer
 from Metal_HUD_parse import *
-from gui_style import *
-from gui_thread import *
+from GUIStyle import *
+from GUIThread import *
 
 class FileReader:
     def __init__(self, parent):

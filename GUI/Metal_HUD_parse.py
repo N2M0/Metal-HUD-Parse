@@ -1,7 +1,6 @@
 import csv
 import pandas as pd
 from pprint import pprint
-import numpy as np
 from constant import *
 
 # Metal-HUD.csv 파일 열기
@@ -23,7 +22,7 @@ def DataSplit(hudRawData, PerformanceCalculationConditions, PerformanceData, Per
                 PerformanceCalculationConditions[missedFrame] += int(line[1])
                 
                 # 메모리 데이터
-                PerformanceData[memoryData].append(np.float64(line[2]))
+                PerformanceData[memoryData].append(float(line[2]))
 
                 for i in range(3, len(line)):
                     # 일부 데이터의 소수점 자리가 <...>로 들어올 때가 있어서 제거 처리
@@ -31,11 +30,11 @@ def DataSplit(hudRawData, PerformanceCalculationConditions, PerformanceData, Per
                         if (line[i] != ""):
                             if i % 2 == 1:
                                 # 성능 시간 데이터
-                                PerformanceData[frameTimeData].append(np.float64(line[i]))
+                                PerformanceData[frameTimeData].append(float(line[i]))
                                 
                             else:
                                 # GPU 시간 데이터
-                                PerformanceData[gpuTimeData].append(np.float64(line[i]))
+                                PerformanceData[gpuTimeData].append(float(line[i]))
                     else:
                         if i % 2 == 1:
                             PerformanceCalculationConditions[frametimeError] += 1
@@ -49,7 +48,7 @@ def DataSplit(hudRawData, PerformanceCalculationConditions, PerformanceData, Per
 
 # FPS 계산식
 def FPSCalculation(PerformanceCalculationConditions, UnitConversion = 1000, DecimalPoint = 2):
-    return np.round(
+    return round(
         (PerformanceCalculationConditions[frameCount] * 
         PerformanceCalculationConditions[benchmarkBasedTime] / 
         PerformanceCalculationConditions[secondSum]) * 
@@ -62,7 +61,7 @@ def FPSCalculation(PerformanceCalculationConditions, UnitConversion = 1000, Deci
 # 평균 FPS = 소수점 3번째 자리에서 반올림 처리 (2자리까지만 표시)
 def ConverttoFPS(PerformanceData, PerformanceCalculationConditions, UnitConversion = 1000, DecimalPoint = 2):
     for i in range(len(PerformanceData[frameTimeData])):
-        PerformanceCalculationConditions[secondSum] += np.float64(PerformanceData[frameTimeData][i])
+        PerformanceCalculationConditions[secondSum] += float(PerformanceData[frameTimeData][i])
         PerformanceCalculationConditions[frameCount] += 1
         
         if PerformanceCalculationConditions[secondSum] >= PerformanceCalculationConditions[benchmarkBasedTime]:
@@ -120,8 +119,8 @@ def PerformanceErrorData():
 if __name__ == "__main__":
     # 딕셔너리 초기화
     _PerformanceCalculationConditions = PerformanceCalculationConditions()
-    _PerformanceData = PerformanceCalculationConditions()
-    _PerformanceErrorData = PerformanceCalculationConditions()
+    _PerformanceData = PerformanceData()
+    _PerformanceErrorData = PerformanceErrorData()
 
     # 성능 데이터 분리
     DataSplit(DataReader("output.csv"), _PerformanceCalculationConditions, _PerformanceData, _PerformanceErrorData)
@@ -139,8 +138,12 @@ if __name__ == "__main__":
     # PerformanceCsvSave("Frametime-Error.csv", f"Frametime error list", _PerformanceErrorData["frametimeErrorData"])
     # PerformanceCsvSave("GPUTime-error.csv", f"GPUTime error list", _PerformanceErrorData["gpuTimeErrorData"])
 
-    pprint(_PerformanceData)
+    # pprint(_PerformanceData)
 
-    print("\n\nDone! Missed Frame:", _PerformanceCalculationConditions["missedFrame"])
-    print("Frametime error:", _PerformanceCalculationConditions["frametimeError"])
-    print("GPUTime error:", _PerformanceCalculationConditions["gpuTimeError"])
+    # print("\n\nDone! Missed Frame:", _PerformanceCalculationConditions["missedFrame"])
+    # print("Frametime error:", _PerformanceCalculationConditions["frametimeError"])
+    # print("GPUTime error:", _PerformanceCalculationConditions["gpuTimeError"])
+    
+    for key, value in _PerformanceData.items():
+        for value in value:
+            print(value)

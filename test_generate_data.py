@@ -9,11 +9,11 @@ def GeneratorData(count):
             row.append(round(random.uniform(40, 140), 2))
         data.append(row)
     
-    with open('output2.csv', 'w', newline='') as f:
+    with open('output3.csv', 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerows(data)
 
     # print(data)
 
-GeneratorData(10000)
+GeneratorData(100)
 print("완료!")

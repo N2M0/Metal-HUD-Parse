@@ -1,17 +1,17 @@
 from PyQt5.QtCore import QThread, pyqtSignal
-from PyQt5.QtWidgets import QMessageBox, QApplication
+from PyQt5.QtWidgets import QMessageBox, QAbstractItemView, QHeaderView, QTableWidgetItem
 from Metal_HUD_parse import *
 import numpy as np
-from gui_style import *
+from GUIStyle import *
 
 _PerformanceCalculationConditions = None
 _PerformanceData = None
 _PerformanceErrorData  = None
-# app = QApplication(sys.argv)
 
 # 스레드
 class PerformanceParsingThread(QThread):
     UpdateFileLabelSignal = pyqtSignal(str)
+    EmitParsedSignal = pyqtSignal(list, int, int, int, int, int, int, str)  # 추가된 신호
     ThreadFinishedSignal = pyqtSignal()
 
     def __init__(self, FileName, FileData, benchmarkBasedTimeValue, UnitConversion, DecimalPoint, parent=None):
@@ -21,6 +21,9 @@ class PerformanceParsingThread(QThread):
         self.FileData = FileData
         self.UnitConversion = UnitConversion
         self.DecimalPoint = DecimalPoint
+        
+        self.parent = parent
+        self.ParsedResultsTable = self.parent.ParsedResultsTable
         
     # 성능 파싱 시작
     def run(self):
@@ -38,13 +41,26 @@ class PerformanceParsingThread(QThread):
         self.UpdateFileLabelSignal.emit(f'Selected File: {self.FileName} Loding...')
         ConverttoFPS(_PerformanceData, _PerformanceCalculationConditions, self.UnitConversion, self.DecimalPoint)
         LastDataAvg(_PerformanceData, _PerformanceCalculationConditions, self.UnitConversion, self.DecimalPoint)
+        self.emitParsedSignal()
         self.UpdateFileLabelSignal.emit(f'Selected File: {self.FileName} Done!')
         
-        # pprint(_PerformanceData)
-        pprint(np.mean(_PerformanceData[FPSData]))
         
         # 스레드 종료
         self.ThreadFinishedSignal.emit()
+    
+    
+    def emitParsedSignal(self):
+        # 데이터에 맞게 테이블 크기 설정
+        row_count = max(len(v) for v in _PerformanceData.values())
+        sum_count = sum(len(v) for v in _PerformanceData.values())
+        col_count = len(_PerformanceData)
+        LabelList = list(_PerformanceData.keys())
+        
+        sum_pbar = 1 
+        for col, key in enumerate(_PerformanceData):
+            for row, value in enumerate(_PerformanceData[key]):
+                self.EmitParsedSignal.emit(LabelList, sum_pbar, sum_count, col_count, row_count, col, row, str(value))
+                sum_pbar += 1
 
 
 class PerformanceParsingResultsSaveThread(QThread):
