@@ -20,9 +20,17 @@ def ButtonStyle(id):
             border-radius: 15px;
 
                             }
+        
+        %s:hover {
+                background-color: #e0e0e0;
+            }
 
-                            """ % (id, )
-                            
+        %s:pressed {
+                background-color: #d0d0d0;
+            }
+
+                            """ % (id, id, id)
+
 
 
 def QDoubleSpinBoxStyle():
@@ -68,4 +76,53 @@ def MsgBoxStyle():
             QLabel{
                 min-width: 400px;
                 }
+        """
+
+
+
+def ToolbarStyle():
+    return """
+            QToolBar {
+                background-color: #f0f0f0;
+                border: none;
+                margin: 0px;
+            }
+
+            QToolButton {
+                font-family: Arial, Helvetica, sans-serif;
+                background-color: transparent;
+                border: none;
+                padding: 8px;
+                border-radius: 8px;  /* Inherit toolbar's rounded corners */
+                color: white;
+                background-color: rgb(58, 134, 255);
+                font-weight: bold;
+            }
+
+            QToolButton:hover {
+                background-color: #e0e0e0;
+            }
+
+            QToolButton:pressed {
+                background-color: #d0d0d0;
+            }
+        """
+
+
+
+def PbarStyle():
+    return """
+            QProgressBar {
+                font-family: arial, helvetica, sans-serif;
+                border: 2px solid grey;
+                border-radius: 8px;
+                background-color: #FFFFFF;
+                font-weight: bold;
+    
+            }
+
+            QProgressBar::chunk {
+                background-color: rgb(58, 134, 255);
+                border-radius: 5px; /* 둥근 효과 */
+            }
         """

@@ -1,7 +1,8 @@
 from PyQt5.QtCore import QThread, pyqtSignal
-from PyQt5.QtWidgets import QMessageBox, QAbstractItemView, QHeaderView, QTableWidgetItem
+from PyQt5.QtWidgets import QMessageBox
 from Metal_HUD_parse import *
 import numpy as np
+import time
 from GUIStyle import *
 
 _PerformanceCalculationConditions = None
@@ -11,7 +12,8 @@ _PerformanceErrorData  = None
 # 스레드
 class PerformanceParsingThread(QThread):
     UpdateFileLabelSignal = pyqtSignal(str)
-    EmitParsedSignal = pyqtSignal(list, int, int, int, int, int, int, str)  # 추가된 신호
+    EmitParsedSignal = pyqtSignal(list, bool, int, int, int, int, str)  # 추가된 신호
+    EmitParsedPbarSignal = pyqtSignal(int, int)
     ThreadFinishedSignal = pyqtSignal()
 
     def __init__(self, FileName, FileData, benchmarkBasedTimeValue, UnitConversion, DecimalPoint, parent=None):
@@ -50,19 +52,36 @@ class PerformanceParsingThread(QThread):
     
     
     def emitParsedSignal(self):
-        # 데이터에 맞게 테이블 크기 설정
-        row_count = max(len(v) for v in _PerformanceData.values())
-        sum_count = sum(len(v) for v in _PerformanceData.values())
-        col_count = len(_PerformanceData)
-        LabelList = list(_PerformanceData.keys())
-        
-        sum_pbar = 1 
-        for col, key in enumerate(_PerformanceData):
-            for row, value in enumerate(_PerformanceData[key]):
-                self.EmitParsedSignal.emit(LabelList, sum_pbar, sum_count, col_count, row_count, col, row, str(value))
+        combined_dict = {**_PerformanceData, **_PerformanceErrorData, **_PerformanceCalculationConditions}
+
+        data = [len(v) for v in combined_dict.values() if isinstance(v, list)]
+        row_count = max(data)
+        sum_count = sum(data) + len(_PerformanceCalculationConditions.values())
+        col_count = len(combined_dict)
+        LabelList = list(combined_dict.keys())
+
+        # 메인 스레드에서 스레드 관련 문제 발생시 time.sleep 를 쓰니깐 해결된거 같다.. 뭐지
+        sum_pbar = 1
+        for col, value in enumerate(combined_dict.values()):
+            if isinstance(value, (list, tuple)):
+                for row, item in enumerate(value):
+                    self.EmitParsedSignal.emit(LabelList, sum_pbar == 1, col_count, row_count, col, row, str(item))
+                    self.emitParsedPbarSignal(sum_pbar, sum_count)
+                    
+                    # 메인 스레드 업데이트 시간
+                    if sum_pbar % 3000 == 0:
+                        time.sleep(0.05)
+                    sum_pbar += 1
+
+            else:
+                self.EmitParsedSignal.emit(LabelList, sum_pbar == 1, col_count, row_count, col, 0, str(value))
+                self.emitParsedPbarSignal(sum_pbar, sum_count)
                 sum_pbar += 1
 
 
+    def emitParsedPbarSignal(self, sum_pbar, sum_count):
+        self.EmitParsedPbarSignal.emit(sum_pbar, sum_count)
+    
 class PerformanceParsingResultsSaveThread(QThread):
     def __init__(self, parent=None):
         super().__init__(parent)
