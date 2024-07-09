@@ -1,8 +1,9 @@
-from PyQt5.QtCore import QThread, pyqtSignal
+from PyQt5.QtCore import QThread, pyqtSignal, QTimer
 from PyQt5.QtWidgets import QMessageBox
 from Metal_HUD_parse import *
 import numpy as np
 import time
+import asyncio
 from GUIStyle import *
 
 _PerformanceCalculationConditions = None
@@ -43,7 +44,10 @@ class PerformanceParsingThread(QThread):
         self.UpdateFileLabelSignal.emit(f'Selected File: {self.FileName} Loding...')
         ConverttoFPS(_PerformanceData, _PerformanceCalculationConditions, self.UnitConversion, self.DecimalPoint)
         LastDataAvg(_PerformanceData, _PerformanceCalculationConditions, self.UnitConversion, self.DecimalPoint)
-        self.emitParsedSignal()
+        self.UpdateFileLabelSignal.emit(f'Selected File: {self.FileName} Loding(Saveable.)...')
+
+        # 비동기 함수 호출
+        asyncio.run(self.emitParsedSignal())
         self.UpdateFileLabelSignal.emit(f'Selected File: {self.FileName} Done!')
         
         
@@ -51,7 +55,7 @@ class PerformanceParsingThread(QThread):
         self.ThreadFinishedSignal.emit()
     
     
-    def emitParsedSignal(self):
+    async def emitParsedSignal(self):
         combined_dict = {**_PerformanceData, **_PerformanceErrorData, **_PerformanceCalculationConditions}
 
         data = [len(v) for v in combined_dict.values() if isinstance(v, list)]
@@ -60,28 +64,27 @@ class PerformanceParsingThread(QThread):
         col_count = len(combined_dict)
         LabelList = list(combined_dict.keys())
 
-        # 메인 스레드에서 스레드 관련 문제 발생시 time.sleep 를 쓰니깐 해결된거 같다.. 뭐지
+        # 메인 스레드에서 스레드 관련 문제 발생시 time.sleep 또는 asyncio.sleep 를 쓰니깐 해결된거 같다.. 뭐지
         sum_pbar = 1
         for col, value in enumerate(combined_dict.values()):
             if isinstance(value, (list, tuple)):
                 for row, item in enumerate(value):
                     self.EmitParsedSignal.emit(LabelList, sum_pbar == 1, col_count, row_count, col, row, str(item))
-                    self.emitParsedPbarSignal(sum_pbar, sum_count)
-                    
+                    await self.emitParsedPbarSignal(sum_pbar, sum_count)
                     # 메인 스레드 업데이트 시간
-                    if sum_pbar % 3000 == 0:
-                        time.sleep(0.05)
+                    if sum_pbar % 4000 == 0:
+                        await asyncio.sleep(0.06)
                     sum_pbar += 1
 
             else:
                 self.EmitParsedSignal.emit(LabelList, sum_pbar == 1, col_count, row_count, col, 0, str(value))
-                self.emitParsedPbarSignal(sum_pbar, sum_count)
+                await self.emitParsedPbarSignal(sum_pbar, sum_count)
                 sum_pbar += 1
 
-
-    def emitParsedPbarSignal(self, sum_pbar, sum_count):
+    async def emitParsedPbarSignal(self, sum_pbar, sum_count):
         self.EmitParsedPbarSignal.emit(sum_pbar, sum_count)
-    
+
+# 파일로 저장
 class PerformanceParsingResultsSaveThread(QThread):
     def __init__(self, parent=None):
         super().__init__(parent)
