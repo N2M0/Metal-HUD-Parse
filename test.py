@@ -1,8 +1,9 @@
 import csv
 import pandas as pd
+from pprint import pprint
 
 # Metal-HUD.csv 파일 열기
-HUDFile = open('Metal-HUD.csv','r')
+HUDFile = open('output.csv','r')
 
 #여기에 몇 ms마다 FPS 평균을 낼 것인지 입력
 #값이 너무 작으면 실제보다 과하게 프레임이 튀어 보일 수 있음
@@ -73,23 +74,26 @@ if secondSum != 0:
 
 # 파일로 저장
 FPSDataFrame = pd.DataFrame({'FPS - 약 ' + str(benchmarkBasedTime) + "ms마다 평균치 계산" : FPSData})
-FPSDataFrame.to_csv('FPS-Result.csv')
+FPSDataFrame.to_csv('FPS-Result1.csv')
 
-frametimeDataFrame = pd.DataFrame({'Frametime' : frameTimeData})
-frametimeDataFrame.to_csv('Frametime-Result.csv')
+# frametimeDataFrame = pd.DataFrame({'Frametime' : frameTimeData})
+# frametimeDataFrame.to_csv('Frametime-Result.csv')
 
-gpuTimeDataFrame = pd.DataFrame({'GPUTime' : gpuTimeData})
-gpuTimeDataFrame.to_csv('GPUTime-Result.csv')
+# gpuTimeDataFrame = pd.DataFrame({'GPUTime' : gpuTimeData})
+# gpuTimeDataFrame.to_csv('GPUTime-Result.csv')
 
-memoryDataFrame = pd.DataFrame({'Memory(MB)' : memoryData})
-memoryDataFrame.to_csv('Memory-Result.csv')
+# memoryDataFrame = pd.DataFrame({'Memory(MB)' : memoryData})
+# memoryDataFrame.to_csv('Memory-Result.csv')
 
-frametimeErrorDataFrame = pd.DataFrame({'Frametime error list' : frametimeErrorData})
-frametimeErrorDataFrame.to_csv('Frametime-Error.csv')
+# frametimeErrorDataFrame = pd.DataFrame({'Frametime error list' : frametimeErrorData})
+# frametimeErrorDataFrame.to_csv('Frametime-Error.csv')
 
-gpuTimeErrorDataFrame = pd.DataFrame({'GPUTime error list' : gpuTimeErrorData})
-gpuTimeErrorDataFrame.to_csv('GPUTime-error.csv')
+# gpuTimeErrorDataFrame = pd.DataFrame({'GPUTime error list' : gpuTimeErrorData})
+# gpuTimeErrorDataFrame.to_csv('GPUTime-error.csv')
 
+# pprint(FPSData)
+# pprint(memoryData)
+# pprint(gpuTimeData)
 print("\n\nDone! Missed Frame:", missedFrame)
 print("Frametime error:", + frametimeError)
 print("GPUTime error:", + gpuTimeError)
