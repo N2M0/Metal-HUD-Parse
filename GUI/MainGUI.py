@@ -32,7 +32,7 @@ class MetalHUDParse(QWidget):
         # 레이아웃 설정
         self.setLayout(self.Mainvbox)
 
-
+    # 처음 실행시 최초화면
     def FileReadWindow(self):
         FileReadframe = QFrame()
         FileReadframe.setFrameShape(QFrame.Panel | QFrame.Sunken)
@@ -68,7 +68,7 @@ class MetalHUDParse(QWidget):
         
         return FileReadframe
     
-    
+    # 처음화면에서 파일 선택시 이동화면
     def StartPerformanceWindow(self, FileName):
         # 인스턴스 변수
         self.FileName = FileName
@@ -84,26 +84,19 @@ class MetalHUDParse(QWidget):
         self.StartPerformanceLable.setAlignment(Qt.AlignCenter)
         
         # 벤치마크 베이스 시간
-        self.benchmarkBasedTime, self.benchmarkBasedTimeLabel = self.addQDSpinBox(1000, "BasedTime")
+        self.benchmarkBasedTime, self.benchmarkBasedTimeLabel = self.addQDSpinBox(1000, "값의 평균 MS 기준치")
         # 단위 변환
-        self.UnitConversion, self.UnitConversionLabel = self.addQDSpinBox(1000, "UnitConversion")
+        self.UnitConversion, self.UnitConversionLabel = self.addQDSpinBox(1000, "값의 단위 변환")
         # 소수점 제한
-        self.DecimalPoint, self.DecimalPointLabel = self.addQDSpinBox(2, "DecimalPoint")
+        self.DecimalPoint, self.DecimalPointLabel = self.addQDSpinBox(2, "값의 소수점 제한")
         
-        # spinbox dict
-        SpinDict = {
-            self.benchmarkBasedTime: self.benchmarkBasedTimeLabel,
-            self.UnitConversion: self.UnitConversionLabel,
-            self.DecimalPoint: self.DecimalPointLabel
-        }
-        
-        # table
+        # 테이블 초기화
         self.ParsedResultsTable = self.InitParsedTable()
         
-        # pr
+        # 프로그래스바 초기화
         self.ParsedPbar = self.InitQProgressBar()
         
-        # 성능 버튼 생성
+        # 데이터 파싱 버튼 초기화
         self.ParseStartBtn = self.addBtn(
             "Parse Start", 
             lambda: self.StartParsePerformance(
@@ -114,18 +107,20 @@ class MetalHUDParse(QWidget):
             int(self.DecimalPoint.value())),
             )
         
-        # FileChange 버튼 생성
+        # 파일 변경 버튼 초기화
         self.FileChange = self.addBtn("File Change", self.FileChanged)
         
-        # 결과를 파일로 저장
+        # 결과를 파일로 저장 버튼 초기화
         self.ParsedSave = self.addBtn("Parsed Save", lambda: PerformanceParsingResultsSaveThread(self).run())
-        StartPerformanceframe = self.addlayout(SpinDict)
+        
+        # 위 객체들을 레이아웃에 추가하는 함수 초기화
+        StartPerformanceframe = self.addlayout()
         
         return StartPerformanceframe
     
     
-    
-    def addlayout(self, SpinDict):
+    # StartPerformanceWindow 의 객체를 레이아웃에 추가해주는 함수
+    def addlayout(self):
         StartPerformanceframe = QFrame()
         StartPerformanceframe.setFrameShape(QFrame.Panel | QFrame.Sunken)
         StartPerformancevbox = QVBoxLayout()
@@ -140,6 +135,12 @@ class MetalHUDParse(QWidget):
         StartPerformancevbox.addWidget(self.StartPerformanceLable, alignment=Qt.AlignCenter)
         
         # 수직 스핀박스
+        # 키-값 정의
+        SpinDict = {
+            self.benchmarkBasedTime: self.benchmarkBasedTimeLabel,
+            self.UnitConversion: self.UnitConversionLabel,
+            self.DecimalPoint: self.DecimalPointLabel
+        }
         StartPerformancevbox.addStretch(1)
         for object, label in SpinDict.items():
             StartPerformancevbox.addWidget(label, alignment=Qt.AlignLeft | Qt.AlignHCenter)
@@ -221,42 +222,56 @@ class MetalHUDParse(QWidget):
 
         return pbar
 
-
     # 스레도 함수
     def StartParsePerformance(self, FileName, FileData, benchmarkBasedTime, UnitConversion, DecimalPoint):
-        self.thread = PerformanceParsingThread(FileName, FileData, benchmarkBasedTime, UnitConversion, DecimalPoint, self)
+        self.LayWorker = LayUpdateWorker(self, FileName, FileData, benchmarkBasedTime, UnitConversion, DecimalPoint)
+        self.LayWorker.start()
+
+
+# 메인 레이아웃을 업데이트 하기 위한 클래스, 코드의 가독성을 위해 클래스로 분리함.
+class LayUpdateWorker(QWidget):
+    def __init__(self, parent, FileName, FileData, benchmarkBasedTime, UnitConversion, DecimalPoint):
+        super(LayUpdateWorker, self).__init__(parent)
+        self.parent = parent
+        self.StartPerformanceLable = self.parent.StartPerformanceLable
+        self.ParsedResultsTable = self.parent.ParsedResultsTable
+        self.ParsedPbar = self.parent.ParsedPbar
+        
+        self.FileName = FileName
+        self.FileData = FileData
+        self.benchmarkBasedTime = benchmarkBasedTime
+        self.UnitConversion = UnitConversion
+        self.DecimalPoint = DecimalPoint
+        
+    def start(self):
+        self.thread = PerformanceParsingThread(self.parent, self.FileName, self.FileData, self.benchmarkBasedTime, self.UnitConversion, self.DecimalPoint)
         self.thread.UpdateFileLabelSignal.connect(lambda text: self.StartPerformanceLable.setText(text))
         self.thread.EmitParsedSignal.connect(self.UpdateTable)
         self.thread.EmitParsedPbarSignal.connect(self.UpdateProgressBar)
         self.thread.ThreadFinishedSignal.connect(lambda: QTimer.singleShot(1000, lambda: None))
         self.thread.start()
-
-    # 업데이트 함수
+        
+    # 테이블 업데이트 함수
     def UpdateTable(self, LabelList, InitState, col_count, row_count, col, row, value):
         if InitState:
             self.ParsedResultsTable.setColumnCount(0)    
             self.ParsedResultsTable.setRowCount(0)
             self.ParsedResultsTable.setColumnCount(col_count)
             self.ParsedResultsTable.setRowCount(row_count)
-
-            # table 작업 중..
-            # self.ParsedResultsTable.setEditTriggers(QAbstractItemView.NoEditTriggers)
-            # self.ParsedResultsTable.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
             self.ParsedResultsTable.setHorizontalHeaderLabels(LabelList)
 
         # 테이블에 데이터를 추가
         item = QTableWidgetItem(value)
         item.setTextAlignment(Qt.AlignCenter)  # 텍스트 정렬 (옵션)
         self.ParsedResultsTable.setItem(row, col, item)
-        
+    
+    # 프로그래스바 업데이트 함수
     def UpdateProgressBar(self, sum_pbar, sum_count):
-        progress = (sum_pbar / sum_count) * 100  # 진행률 계산
-        self.ParsedPbar.setValue(int(progress))  # 진행률 업데이트
+        progress = (sum_pbar / sum_count) * 100  # 프로그래스바 계산
+        self.ParsedPbar.setValue(int(progress))  # 프로그래스바 업데이트
         
         if progress >= sum_count:
-            self.ParsedPbar.setValue(0)  # 모든 작업이 완료되면 막대를 초기화
-            
-
+            self.ParsedPbar.setValue(0)  # 파싱을 재실행하면 프로그래스바 진행상황을 초기화
 
 
 if __name__ == '__main__':

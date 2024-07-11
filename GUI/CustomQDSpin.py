@@ -2,8 +2,8 @@ from PyQt5.QtWidgets import QLabel, QDoubleSpinBox
 from PyQt5.QtCore import Qt
 from Metal_HUD_parse import *
 from GUIStyle import *
-from GUIThread import *
 
+# 스핀박스 정의 클래스
 class CustomQDoubleSpinBox:
     def __init__(self, parent):
         self.parent = parent
@@ -32,6 +32,7 @@ class CustomQDoubleSpinBox:
         
         return _QDSpinBox
 
+# 스핀박스 레이블 정의 클래스
 class CustomQDSpinBoxLabel:
     def __init__(self, parent):
         self.parent = parent

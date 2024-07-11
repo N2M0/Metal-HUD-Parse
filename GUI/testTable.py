@@ -1,5 +1,5 @@
 from Metal_HUD_parse import  *
-import numpy as np
+# import numpy as np
 
 # 성능 데이터
 # def PerformanceData():
