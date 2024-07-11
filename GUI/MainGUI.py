@@ -83,6 +83,9 @@ class MetalHUDParse(QWidget):
         self.StartPerformanceLable.setStyleSheet(LabelStyle(StartPerformanceLabelType+"#"+StartPerformanceLabelObjID, 25))
         self.StartPerformanceLable.setAlignment(Qt.AlignCenter)
         
+        
+        # 스핀박스 이름 변경필요. 
+        
         # 벤치마크 베이스 시간
         self.benchmarkBasedTime, self.benchmarkBasedTimeLabel = self.addQDSpinBox(1000, "값의 평균 MS 기준치")
         # 단위 변환
