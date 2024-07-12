@@ -33,6 +33,11 @@ def ButtonStyle(id):
 
 
 
+# 저작권 표시
+# 1. up-button 
+# 1. <a href="https://www.flaticon.com/free-icons/up-arrow" title="up arrow icons">Up arrow icons created by Roundicons - Flaticon</a>
+# 2. down-button
+# 2. <a href="https://www.flaticon.com/free-icons/down-arrow" title="down arrow icons">Down arrow icons created by Roundicons - Flaticon</a>
 def QDoubleSpinBoxStyle():
     return """
         QDoubleSpinBox {
@@ -46,10 +51,24 @@ def QDoubleSpinBoxStyle():
             padding: 2px;
         }
 
-        QDoubleSpinBox::up-button, QDoubleSpinBox::down-button {
-            width: 0px; 
-            height: 0px; 
-            border: none; /* 버튼의 경계선 제거 */
+        QDoubleSpinBox::up-button {
+            image: url(GUI/icons/up-arrow(DoubleSpinBox).png);
+            width: 20px;
+            height: 20px;;
+            subcontrol-origin: padding;
+            subcontrol-position: top right;
+            margin-right: 5px;
+            margin-top: 5px;
+        }
+
+        QDoubleSpinBox::down-button {
+            image: url(GUI/icons/down-arrow(DoubleSpinBox).png);
+            width: 20px;;
+            height: 20px;;
+            subcontrol-origin: padding;
+            subcontrol-position: bottom right;
+            margin-right: 5px;
+            margin-bottom: 5px;
         }
             
             """
@@ -114,10 +133,10 @@ def PbarStyle():
     return """
             QProgressBar {
                 font-family: arial, helvetica, sans-serif;
+                font-weight: bold;
                 border: 2px solid grey;
                 border-radius: 8px;
                 background-color: #FFFFFF;
-                font-weight: bold;
     
             }
 
@@ -126,3 +145,47 @@ def PbarStyle():
                 border-radius: 5px; /* 둥근 효과 */
             }
         """
+
+
+# 저작권 표시
+# 1. QComboBox::down-arrow
+# 1. <a href="https://www.flaticon.com/free-icons/down-arrow" title="down arrow icons">Down arrow icons created by Roundicons - Flaticon</a>
+def ComboBoxStyle():
+    return """
+        QComboBox {
+            font-family: arial, helvetica, sans-serif;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 4px;
+            border: 2px solid rgb(58, 134, 255);;
+            padding: 3px;
+            background-color: white;
+            margin: 1px;
+
+        }
+
+        QComboBox:focus, QComboBox:on {
+            border-radius: 4px;
+            border: 4px solid rgb(58, 134, 255);
+            margin:0px;
+        }
+
+        QComboBox::drop-down {
+            border:none;
+        }
+        
+        QComboBox::down-arrow {
+            image: url(GUI/icons/down-arrow(ComboBox).png);
+            width: 15px;
+            height: 15px;
+            margin-right: 10px;
+        }
+        
+        QComboBox QAbstractItemView {
+            border: 1px solid rgb(175, 175, 175);
+            font-family: arial, helvetica, sans-serif;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+    """

@@ -16,7 +16,6 @@ class CustomQDoubleSpinBox:
         setFixedSize,
         setStyleSheet,
         setDecimals,
-        setButtonSymbols,
         setAlignment,
                 ):
         
@@ -27,7 +26,6 @@ class CustomQDoubleSpinBox:
         _QDSpinBox.setFixedSize(*setFixedSize)
         _QDSpinBox.setStyleSheet(setStyleSheet)
         _QDSpinBox.setDecimals(setDecimals)
-        _QDSpinBox.setButtonSymbols(setButtonSymbols)
         _QDSpinBox.setAlignment(setAlignment)  # 중앙 정렬
         
         return _QDSpinBox

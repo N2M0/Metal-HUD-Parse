@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QPushButton, QFrame, QHBoxLayout, QAbstractSpinBox, QTableWidget, QAbstractItemView, QHeaderView, QTableWidgetItem, QProgressBar
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QPushButton, QFrame, QHBoxLayout, QTableWidget, QTableWidgetItem, QProgressBar
 from PyQt5.QtCore import Qt, QTimer
 from Metal_HUD_parse import *
 from GUIStyle import *
@@ -87,11 +87,11 @@ class MetalHUDParse(QWidget):
         # 스핀박스 이름 변경필요. 
         
         # 벤치마크 베이스 시간
-        self.benchmarkBasedTime, self.benchmarkBasedTimeLabel = self.addQDSpinBox(1000, "값의 평균 MS 기준치")
+        self.benchmarkBasedTime, self.benchmarkBasedTimeLabel = self.addQDSpinBox(1000, "Average milliseconds")
         # 단위 변환
-        self.UnitConversion, self.UnitConversionLabel = self.addQDSpinBox(1000, "값의 단위 변환")
+        self.UnitConversion, self.UnitConversionLabel = self.addQDSpinBox(1000, "Unit conversion")
         # 소수점 제한
-        self.DecimalPoint, self.DecimalPointLabel = self.addQDSpinBox(2, "값의 소수점 제한")
+        self.DecimalPoint, self.DecimalPointLabel = self.addQDSpinBox(2, "decimal point")
         
         # 테이블 초기화
         self.ParsedResultsTable = self.InitParsedTable()
@@ -192,10 +192,9 @@ class MetalHUDParse(QWidget):
             setRange=(0, 10000000),
             setSingleStep=1,
             setValue=setValue,
-            setFixedSize=(100, 50),
+            setFixedSize=(120, 60),
             setStyleSheet=QDoubleSpinBoxStyle(),
             setDecimals=0,
-            setButtonSymbols=QAbstractSpinBox.NoButtons,
             setAlignment=Qt.AlignCenter            
         )
         
@@ -214,7 +213,7 @@ class MetalHUDParse(QWidget):
         
         return self.ParsedTable
 
-    # 프로그래스바
+    # 프로그래스바 표시
     def InitQProgressBar(self):
         pbar = QProgressBar(self)
         pbar.setFixedSize(int(1400 // 1.5) - 200, 30)
@@ -240,6 +239,7 @@ class LayUpdateWorker(QWidget):
         self.ParsedResultsTable = self.parent.ParsedResultsTable
         self.ParsedPbar = self.parent.ParsedPbar
         
+        # 인스턴스 변수
         self.FileName = FileName
         self.FileData = FileData
         self.benchmarkBasedTime = benchmarkBasedTime

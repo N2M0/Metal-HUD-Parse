@@ -23,7 +23,8 @@ class FileReader:
             
             # StartPerformanceWindow 레이아웃 초기화
             QTimer.singleShot(1000, lambda: self.Mainvbox.addWidget(self.StartPerformanceWindow(self.FileName)))
-            
+        
+        # 실패했을때
         else:
             self.FileLabel.setText(f'Selected File: Failed.')
 

@@ -74,6 +74,7 @@ class PerformanceParsingThread(QThread):
                     self.overhead(sum_pbar)
                     sum_pbar += 1
 
+            # 데이터 배열이 아닐때
             else:
                 self.EmitParsedSignal.emit(LabelList, sum_pbar == 1, col_count, row_count, col, 0, str(value))
                 self.emitParsedPbarSignal(sum_pbar, sum_count)
@@ -87,7 +88,7 @@ class PerformanceParsingThread(QThread):
     # 메인 스레드가 업데이트를 하기위해 서브 스레드를 잠시 멈추는 함수
     def overhead(self, sum_pbar):
         if sum_pbar % 3000 == 0:
-            self.msleep(20)
+            self.msleep(30)
     
 # 파일로 저장
 class PerformanceParsingResultsSaveThread(QThread):
