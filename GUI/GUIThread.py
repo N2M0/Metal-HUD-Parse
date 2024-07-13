@@ -2,7 +2,7 @@ from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5.QtWidgets import QMessageBox
 from Metal_HUD_parse import *
 from GUIStyle import *
-from collections import ChainMap, OrderedDict
+from collections import OrderedDict
 
 # 초기화
 _PerformanceCalculationConditions = None
@@ -31,31 +31,40 @@ class PerformanceParsingThread(QThread):
         
     # 성능 파싱 시작
     def run(self):
-        # 파싱 데이터를 저장할 변수 전역변수 설정
-        global _PerformanceCalculationConditions, _PerformanceData, _PerformanceErrorData
-        
-        # 파싱 데이터를 저장할 변수
-        _PerformanceCalculationConditions = PerformanceCalculationConditions()
-        _PerformanceData = PerformanceData()
-        _PerformanceErrorData = PerformanceErrorData()
+        try:
+            # 파싱 데이터를 저장할 변수 전역변수 설정
+            global _PerformanceCalculationConditions, _PerformanceData, _PerformanceErrorData
+            
+            # 파싱 데이터를 저장할 변수
+            _PerformanceCalculationConditions = PerformanceCalculationConditions()
+            _PerformanceData = PerformanceData()
+            _PerformanceErrorData = PerformanceErrorData()
 
-        _PerformanceCalculationConditions[benchmarkBasedTime] = self.benchmarkBasedTimeValue
+            _PerformanceCalculationConditions[benchmarkBasedTime] = self.benchmarkBasedTimeValue
+            self.DataParsed()
+
+            # 함수 호출
+            self.emitInitializeTableSignal()
+            self.emitParsedSignal()
+            self.UpdateFileLabelSignal.emit(f'Selected File: {self.FileName} Done!')
+            
+            # 스레드 종료
+            self.ThreadFinishedSignal.emit()
         
+        except Exception as e:
+            pass
+        
+        finally:
+            self.deleteLater()
+    
+    # 성능 데이터 파싱 함수
+    def DataParsed(self):
         self.UpdateFileLabelSignal.emit(f'Selected File: {self.FileName} Start...')
         DataSplit(self.FileData, _PerformanceCalculationConditions, _PerformanceData, _PerformanceErrorData)
         self.UpdateFileLabelSignal.emit(f'Selected File: {self.FileName} Loding...')
         ConverttoFPS(_PerformanceData, _PerformanceCalculationConditions, self.UnitConversion, self.DecimalPoint)
         LastDataAvg(_PerformanceData, _PerformanceCalculationConditions, self.UnitConversion, self.DecimalPoint)
         self.UpdateFileLabelSignal.emit(f'Selected File: {self.FileName} Loding(Saveable.)...')
-
-        # 함수 호출
-        self.emitInitializeTableSignal()
-        self.emitParsedSignal()
-        self.UpdateFileLabelSignal.emit(f'Selected File: {self.FileName} Done!')
-        
-        # 스레드 종료
-        self.ThreadFinishedSignal.emit()
-        self.deleteLater()
     
     # 여러개의 딕셔너리를 하나의 딕셔너리로 만듦
     def CombinedDict(self):
@@ -113,7 +122,7 @@ class PerformanceParsingThread(QThread):
     # 메인 스레드가 업데이트를 하기위해 서브 스레드를 잠시 멈추는 함수
     def overhead(self, sum_pbar):
         if sum_pbar % 3000 == 0:
-            self.msleep(30)
+            self.msleep(100)
     
 # 파일로 저장
 class PerformanceParsingResultsSaveThread(QThread):

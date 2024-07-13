@@ -58,7 +58,7 @@ def QDoubleSpinBoxStyle():
             subcontrol-origin: padding;
             subcontrol-position: top right;
             margin-right: 5px;
-            margin-top: 5px;
+            margin-top: 4px;
         }
 
         QDoubleSpinBox::down-button {
@@ -68,7 +68,7 @@ def QDoubleSpinBoxStyle():
             subcontrol-origin: padding;
             subcontrol-position: bottom right;
             margin-right: 5px;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
         }
             
             """
@@ -93,7 +93,7 @@ def MsgBoxStyle():
             }
                 
             QLabel{
-                min-width: 400px;
+                min-width: 300px;
                 }
         """
 

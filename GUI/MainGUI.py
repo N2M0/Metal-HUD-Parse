@@ -1,10 +1,10 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QPushButton, QFrame, QHBoxLayout, QTableWidget, QTableWidgetItem, QProgressBar
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QPushButton, QFrame, QHBoxLayout, QTableWidget, QTableWidgetItem, QProgressBar, QDesktopWidget
 from PyQt5.QtCore import Qt, QTimer
 from Metal_HUD_parse import *
 from GUIStyle import *
 from GUIThread import *
-from FileRead import *
+from FileUIManager import *
 from CustomQDSpin import *
 from ToolBar import *
 
@@ -16,7 +16,7 @@ class MetalHUDParse(QWidget):
     def initUI(self):
         # 윈도우 설정
         self.setWindowTitle('Metal-HUD Parse')
-        self.resize(1400, 800)
+        self.setFixedSize(1200, 800) # 창 크기 고정
         
         # 레이아웃 생성
         self.Mainvbox = QVBoxLayout()
@@ -24,7 +24,7 @@ class MetalHUDParse(QWidget):
         # 파일 리드
         self.FileReadframe = self.FileReadWindow()
         self.Mainvbox.addWidget(self.FileReadframe)
-        self.FileReader = FileReader(self)
+        self.FileUIManager = FileUIManager(self)
 
         # 포커스 정책 설정
         self.setFocusPolicy(Qt.StrongFocus)
@@ -54,7 +54,7 @@ class MetalHUDParse(QWidget):
         self.FileReadBtn.setObjectName(FileButtonObjID)
         self.FileReadBtn.setStyleSheet(ButtonStyle(FileButtonType+"#"+FileButtonObjID))
         self.FileReadBtn.setFixedSize(200, 80)
-        self.FileReadBtn.clicked.connect(lambda: self.FileReader.FileRead())
+        self.FileReadBtn.clicked.connect(lambda: self.FileUIManager.FileRead())
 
         # 라벨과 버튼을 중앙에 배치
         FileReadvbox.addWidget(self.settings_toolbar, alignment=Qt.AlignTop)
@@ -171,7 +171,7 @@ class MetalHUDParse(QWidget):
 
     # 파일 이름 변경 함수
     def FileChanged(self):
-        f = self.FileReader.FileChanged()
+        f = self.FileUIManager.FileChanged()
         if f is not None:
             self.FileName = f
 
@@ -181,7 +181,7 @@ class MetalHUDParse(QWidget):
         _addbtnType, _addbtnObjID = "QPushButton", "AddBtn"
         _addbtn.setObjectName(_addbtnObjID)
         _addbtn.setStyleSheet(ButtonStyle(_addbtnType+"#"+_addbtnObjID))
-        _addbtn.setFixedSize(200, 80)
+        _addbtn.setFixedSize(190, 70)
         _addbtn.clicked.connect(func)
         
         return _addbtn
@@ -192,7 +192,7 @@ class MetalHUDParse(QWidget):
             setRange=(0, 10000000),
             setSingleStep=1,
             setValue=setValue,
-            setFixedSize=(120, 60),
+            setFixedSize=(120, 55),
             setStyleSheet=QDoubleSpinBoxStyle(),
             setDecimals=0,
             setAlignment=Qt.AlignCenter            
@@ -208,15 +208,15 @@ class MetalHUDParse(QWidget):
 
     # 데이터 미리보기 표시
     def InitParsedTable(self):
-        self.ParsedTable = QTableWidget(self)
-        self.ParsedTable.setFixedSize(1400, 300)
+        ParsedTable = QTableWidget(self)
+        ParsedTable.setFixedSize(1200 - 80, 300)
         
-        return self.ParsedTable
+        return ParsedTable
 
     # 프로그래스바 표시
     def InitQProgressBar(self):
         pbar = QProgressBar(self)
-        pbar.setFixedSize(int(1400 // 1.5) - 200, 30)
+        pbar.setFixedSize(int(1200 // 1.5) - 100, 30)
         pbar.setStyleSheet(PbarStyle())
         # 숫자값의 위치
         pbar.setAlignment(Qt.AlignCenter)
@@ -273,8 +273,8 @@ class LayUpdateWorker(QWidget):
     def UpdateTableResizeContents(self):
         # 테이블 전체 크기 조정
         self.ParsedResultsTable.resizeColumnsToContents() # 행
-        self.ParsedResultsTable.resizeRowsToContents() # 열
-    
+        self.ParsedResultsTable.resizeRowsToContents() # 열 
+
     # 프로그래스바 업데이트 함수
     def UpdateProgressBar(self, sum_pbar, sum_count):
         progress = (sum_pbar / sum_count) * 100  # 프로그래스바 계산

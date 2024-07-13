@@ -1,10 +1,10 @@
-from PyQt5.QtWidgets import  QFileDialog
+from PyQt5.QtWidgets import  QFileDialog, QDesktopWidget
 from PyQt5.QtCore import QTimer
 from Metal_HUD_parse import *
 from GUIStyle import *
 from GUIThread import *
 
-class FileReader:
+class FileUIManager:
     def __init__(self, parent):
         self.parent = parent
         self.FileLabel = parent.FileLabel
@@ -28,6 +28,18 @@ class FileReader:
         else:
             self.FileLabel.setText(f'Selected File: Failed.')
 
+        # 창 위치를 중앙에 배치하는 함수를 호출
+        self.center()
+
+    # 창 위치를 중앙에 배치
+    def center(self):
+        self.parent.setFixedSize(1200, 950) # 창 크기 고정
+        qr = self.parent.frameGeometry()
+        cp = QDesktopWidget().availableGeometry().center()
+        qr.moveCenter(cp)
+        self.parent.move(qr.topLeft())
+    
+    
     # 파싱할 파일을 변경하는 함수
     def FileChanged(self):
         options = QFileDialog.Options()
