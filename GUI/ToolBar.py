@@ -1,9 +1,21 @@
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QMainWindow, QAction, QMenu, QToolBar, QLabel, QStyledItemDelegate, QPushButton, QGridLayout, QComboBox
-from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import (
+    QApplication, 
+    QWidget,
+    QVBoxLayout, 
+    QMainWindow, 
+    QAction, 
+    QToolBar, 
+    QLabel, 
+    QStyledItemDelegate, 
+    QPushButton, 
+    QGridLayout, 
+    QComboBox
+    )
+
 from PyQt5.QtCore import Qt, QSize
 from GUIStyle import *
 
-# 콤보박스의 아이템간의 간격을 조절하는 클래스.
+# 콤보박스 아이템간의 간격을 조절하는 클래스.
 class CustomDelegate(QStyledItemDelegate):
     def sizeHint(self, option, index):
         return QSize(option.rect.width(), 40)
@@ -24,7 +36,7 @@ class SettingsWindow(QMainWindow):
         central_widget.setLayout(grid)
 
 
-        # 파라미터 정의
+        # 파라미터 정의 - 개발시 *.json 등으로 관리
         setSttings = {
             "Preview data": ("테이블 미리보기 여부", ["Test1", "test2"]),
             "Startup mode": ("시작시 모드 여부", ["Test1", "Test3", "Test4"]),
@@ -34,7 +46,7 @@ class SettingsWindow(QMainWindow):
             
         }
 
-        setButton = {
+        setButtons = {
             "Save": (lambda: None, "설정을 저장합니다."),
             "Next": (lambda: None, "Next합니다."),
             "END": (lambda: None, "END합니다."),
@@ -51,7 +63,7 @@ class SettingsWindow(QMainWindow):
             if index + 1 == len(setSttings):
                 BtnColindex = index + 1
                 BtnRowindex = 0
-                for index, (label, items) in enumerate(setButton.items()):
+                for label, items in setButtons.items():
                     if BtnRowindex % 2 == 0 and BtnRowindex != 0:
                         BtnColindex += 1
                         BtnRowindex = 0
