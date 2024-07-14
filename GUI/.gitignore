@@ -1,2 +1,2 @@
-# Compiled Python files
-**/__pycache__/
+*.pyc
+__pycache__/
