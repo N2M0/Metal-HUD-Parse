@@ -1,5 +1,15 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QPushButton, QFrame, QHBoxLayout, QTableWidget, QTableWidgetItem, QProgressBar, QDesktopWidget
+from PyQt5.QtWidgets import (QApplication,
+                            QWidget, 
+                            QVBoxLayout,
+                            QLabel,
+                            QPushButton,
+                            QFrame,
+                            QHBoxLayout,
+                            QTableWidget,
+                            QProgressBar
+                            )
+
 from PyQt5.QtCore import Qt
 from Metal_HUD_parse import *
 from GUIStyle import *
