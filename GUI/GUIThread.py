@@ -1,5 +1,4 @@
 from PyQt5.QtCore import QThread, pyqtSignal
-from PyQt5.QtWidgets import QMessageBox
 from Metal_HUD_parse import *
 from GUIStyle import *
 from collections import OrderedDict
@@ -123,22 +122,15 @@ class PerformanceParsingThread(QThread):
     def overhead(self, sum_pbar):
         if sum_pbar % 3000 == 0:
             self.msleep(100)
-    
+
+
 # 파일로 저장
 class PerformanceParsingResultsSaveThread(QThread):
+    MsgBoxNotifications = pyqtSignal(str)
+    
     def __init__(self, parent=None):
         super().__init__(parent)
         self.parent = parent
-    
-    # 메시지박스
-    def ShowMessagebox(self, setText):
-        msgBox = QMessageBox()
-        msgBox.setWindowTitle('Parsed Save')
-        msgBox.setText(setText)
-        
-        # 스타일 시트 설정
-        msgBox.setStyleSheet(MsgBoxStyle())
-        msgBox.exec_()
     
     def run(self):
         try:
@@ -149,11 +141,13 @@ class PerformanceParsingResultsSaveThread(QThread):
                 PerformanceCsvSave("Memory-Result.csv", f"Memory(MB)", _PerformanceData[memoryData])
                 PerformanceCsvSave("Frametime-Error.csv", f"Frametime error list", _PerformanceErrorData[frametimeErrorData])
                 PerformanceCsvSave("GPUTime-error.csv", f"GPUTime error list", _PerformanceErrorData[gpuTimeErrorData])
-                self.ShowMessagebox("Success!")
+                self.MsgBoxNotifications.emit("Success!")
                 
             else:
-                self.ShowMessagebox("Failed!")
+                self.MsgBoxNotifications.emit("Failed!")
+                
         except Exception as e:
-            self.ShowMessagebox(f"Error: {str(e)}")
+            self.MsgBoxNotifications.emit(f"Error: {str(e)}")
+            
         finally:
             self.deleteLater()

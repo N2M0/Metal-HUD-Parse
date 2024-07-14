@@ -19,7 +19,7 @@ class FileUIManager:
         if self.FileName:
             self.FileLabel.setText(f'Selected File: {self.FileName}')
             # Parent 로 받은 객체를 비동기적으로 1000ms (1초) 멈춤
-            QTimer.singleShot(1000, self.FileReadframe.hide)
+            QTimer.singleShot(1000, self.FileReadframe.deleteLater)
             
             # StartPerformanceWindow 레이아웃 초기화
             QTimer.singleShot(1000, lambda: self.Mainvbox.addWidget(self.StartPerformanceWindow(self.FileName)))
