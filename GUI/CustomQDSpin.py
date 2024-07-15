@@ -13,7 +13,7 @@ class CustomQDoubleSpinBox:
         setRange, 
         setSingleStep,
         setValue,
-        setFixedSize,
+        setMinimumSize,
         setStyleSheet,
         setDecimals,
         setAlignment,
@@ -23,7 +23,7 @@ class CustomQDoubleSpinBox:
         _QDSpinBox.setRange(*setRange)  # 범위 설정
         _QDSpinBox.setSingleStep(setSingleStep)    # 증가/감소 값 설정
         _QDSpinBox.setValue(setValue)      # 기본값 설정
-        _QDSpinBox.setFixedSize(*setFixedSize)
+        _QDSpinBox.setMinimumSize(*setMinimumSize)
         _QDSpinBox.setStyleSheet(setStyleSheet)
         _QDSpinBox.setDecimals(setDecimals)
         _QDSpinBox.setAlignment(setAlignment)  # 중앙 정렬

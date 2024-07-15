@@ -2,7 +2,6 @@ from PyQt5.QtWidgets import  QFileDialog, QDesktopWidget
 from PyQt5.QtCore import QTimer
 from Metal_HUD_parse import *
 from GUIStyle import *
-from GUIThread import *
 
 class FileUIManager:
     def __init__(self, parent):
@@ -17,7 +16,7 @@ class FileUIManager:
         options = QFileDialog.Options()
         self.FileName, _ = QFileDialog.getOpenFileName(self.parent, "Open CSV File", "", "CSV Files (*.csv);;All Files (*)", options=options)
         if self.FileName:
-            self.FileLabel.setText(f'Selected File: {self.FileName}')
+            self.FileLabel.setText(f'Selected File: "{self.FileName}"')
             # Parent 로 받은 객체를 비동기적으로 1000ms (1초) 멈춤
             QTimer.singleShot(1000, self.FileReadframe.deleteLater)
             
@@ -33,7 +32,7 @@ class FileUIManager:
 
     # 창 위치를 중앙에 배치
     def center(self):
-        self.parent.setFixedSize(1200, 950) # 창 크기 고정
+        self.parent.setMinimumSize(1200, 950) # 창 크기 고정
         qr = self.parent.frameGeometry()
         cp = QDesktopWidget().availableGeometry().center()
         qr.moveCenter(cp)

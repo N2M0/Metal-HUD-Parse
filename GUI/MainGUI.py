@@ -29,7 +29,7 @@ class MetalHUDParse(QWidget):
     def initUI(self):
         # 윈도우 설정
         self.setWindowTitle('Metal-HUD Parse')
-        self.setFixedSize(1200, 800) # 창 크기 고정
+        self.setMinimumSize(1200, 800) # 창 크기 고정
         
         # 레이아웃 생성
         self.Mainvbox = QVBoxLayout()
@@ -66,7 +66,7 @@ class MetalHUDParse(QWidget):
         FileButtonType, FileButtonObjID = "QPushButton", "FileReadBtn"
         self.FileReadBtn.setObjectName(FileButtonObjID)
         self.FileReadBtn.setStyleSheet(ButtonStyle(FileButtonType+"#"+FileButtonObjID))
-        self.FileReadBtn.setFixedSize(200, 80)
+        self.FileReadBtn.setMinimumSize(200, 80)
         self.FileReadBtn.clicked.connect(lambda: self.FileUIManager.FileRead())
 
         # 라벨과 버튼을 중앙에 배치
@@ -194,7 +194,7 @@ class MetalHUDParse(QWidget):
         _addbtnType, _addbtnObjID = "QPushButton", "AddBtn"
         _addbtn.setObjectName(_addbtnObjID)
         _addbtn.setStyleSheet(ButtonStyle(_addbtnType+"#"+_addbtnObjID))
-        _addbtn.setFixedSize(190, 70)
+        _addbtn.setMinimumSize(190, 70)
         _addbtn.clicked.connect(func)
         
         return _addbtn
@@ -205,7 +205,7 @@ class MetalHUDParse(QWidget):
             setRange=(0, 10000000),
             setSingleStep=1,
             setValue=setValue,
-            setFixedSize=(120, 55),
+            setMinimumSize=(120, 55),
             setStyleSheet=QDoubleSpinBoxStyle(),
             setDecimals=0,
             setAlignment=Qt.AlignCenter            
@@ -222,14 +222,14 @@ class MetalHUDParse(QWidget):
     # 데이터 미리보기 표시
     def InitParsedTable(self):
         ParsedTable = QTableWidget(self)
-        ParsedTable.setFixedSize(1200 - 80, 300)
+        ParsedTable.setMinimumSize(1200 - 80, 300)
         
         return ParsedTable
 
     # 프로그래스바 표시
     def InitQProgressBar(self):
         pbar = QProgressBar(self)
-        pbar.setFixedSize(int(1200 // 1.5) - 100, 30)
+        pbar.setMinimumSize(int(1200 // 1.5) - 100, 30)
         pbar.setStyleSheet(PbarStyle())
         # 숫자값의 위치
         pbar.setAlignment(Qt.AlignCenter)

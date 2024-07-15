@@ -53,5 +53,3 @@ class LayUpdateWorker(QWidget):
         progress = (sum_pbar / sum_count) * 100  # 프로그래스바 계산
         self.ParsedPbar.setValue(int(progress))  # 프로그래스바 업데이트
         
-        if progress >= sum_count:
-            self.ParsedPbar.setValue(0)  # 파싱을 재실행하면 프로그래스바 진행상황을 초기화

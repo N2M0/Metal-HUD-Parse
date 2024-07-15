@@ -45,7 +45,7 @@ class PerformanceParsingThread(QThread):
             # 함수 호출
             self.emitInitializeTableSignal()
             self.emitParsedSignal()
-            self.UpdateFileLabelSignal.emit(f'Selected File: {self.FileName} Done!')
+            self.UpdateFileLabelSignal.emit(f'Selected File: "{self.FileName}" Done!')
             
             # 스레드 종료
             self.ThreadFinishedSignal.emit()
@@ -54,16 +54,16 @@ class PerformanceParsingThread(QThread):
             pass
         
         finally:
-            self.deleteLater()
+            self.quit()
     
     # 성능 데이터 파싱 함수
     def DataParsed(self):
-        self.UpdateFileLabelSignal.emit(f'Selected File: {self.FileName} Start...')
+        self.UpdateFileLabelSignal.emit(f'Selected File: "{self.FileName}" Start...')
         DataSplit(self.FileData, _PerformanceCalculationConditions, _PerformanceData, _PerformanceErrorData)
-        self.UpdateFileLabelSignal.emit(f'Selected File: {self.FileName} Loding...')
+        self.UpdateFileLabelSignal.emit(f'Selected File: "{self.FileName}" Loding...')
         ConverttoFPS(_PerformanceData, _PerformanceCalculationConditions, self.UnitConversion, self.DecimalPoint)
         LastDataAvg(_PerformanceData, _PerformanceCalculationConditions, self.UnitConversion, self.DecimalPoint)
-        self.UpdateFileLabelSignal.emit(f'Selected File: {self.FileName} Loding(Saveable.)...')
+        self.UpdateFileLabelSignal.emit(f'Selected File: "{self.FileName}" Loding(Saveable.)...')
     
     # 여러개의 딕셔너리를 하나의 딕셔너리로 만듦
     def CombinedDict(self):
@@ -150,4 +150,4 @@ class PerformanceParsingResultsSaveThread(QThread):
             self.MsgBoxNotifications.emit(f"Error: {str(e)}")
             
         finally:
-            self.deleteLater()
+            self.quit()
