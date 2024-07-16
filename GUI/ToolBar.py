@@ -25,10 +25,16 @@ class CustomDelegate(QStyledItemDelegate):
 
 # 설정 화면을 구성하는 클래스
 class SettingsWindow(QMainWindow):
-    # cb data
-    CBDict = {}
-
     def __init__(self, parent=None):
+        # cb data
+        self.CBDict = {}
+        
+        # 중복 생성 방지
+        self.AvoidDuplicateCreation = {
+            "CBValueSave-Func": True,
+            "CBValueSave-FileSaved": None
+        }
+        
         super().__init__(parent)
         self.InitUI()
 
@@ -121,20 +127,21 @@ class SettingsWindow(QMainWindow):
     # 이것은 메인 GUI에 기능을 비활성화거나 화성화할때 사용되는 값.
     def CBValueSave(self):
         # 콤보박스의 아이템을 변경하는 경우 설정을 저장하는 기능.
-        CBClickSave = False # 여기서 버튼을 눌러서 설정을 저장함.
+        CBClickSave = False # 여기서 버튼을 눌러서 설정을 저장함. / Basic setting value: False
 
-        # debug
-        print("Save button clicked - %s" % len(self.CBDict.values()))
-        for combobox in self.CBDict.values():
-            if CBClickSave:
-                combobox.currentTextChanged.connect(lambda text: print(text))
-            else:
-                print(combobox.currentIndex(), combobox.currentText())
-
-        if CBClickSave:
-            # 초기화
-            # 값이 중복되어 나와서 초기화 필요.
-            self.CBDict.clear()
+        if (self.AvoidDuplicateCreation["CBValueSave-Func"] == True) or (CBClickSave == False):
+            print("Save button clicked - %s" % len(self.CBDict.values()))
+            for combobox in self.CBDict.values():
+                if CBClickSave:
+                    combobox.currentTextChanged.connect(lambda text: print(text))
+                else:
+                    print(combobox.currentIndex(), combobox.currentText())
+            
+            # 중복 생성 방지를 위해 비활성
+            self.AvoidDuplicateCreation["CBValueSave-Func"] = False
+        
+        else:
+            print("False value")
 
 
 
