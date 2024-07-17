@@ -28,6 +28,7 @@ class MetalHUDParse(QWidget):
 
     def initUI(self):
         # 윈도우 설정
+        # 창 크기 값을 변수로 관리 권장.
         self.setWindowTitle('Metal-HUD Parse')
         self.setMinimumSize(1200, 800) # 창 크기 고정
         
@@ -245,7 +246,6 @@ class MetalHUDParse(QWidget):
     def SaveParsing(self):
         self.SavedParsedData = ParsedDataSavedWorker(self)
         self.SavedParsedData.SavedStart()
-
 
 
 

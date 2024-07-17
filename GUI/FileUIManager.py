@@ -3,6 +3,7 @@ from PyQt5.QtCore import QTimer
 from Metal_HUD_parse import *
 from GUIStyle import *
 
+# 메인 GUI 에서 파일 관련을 관리 및 구성하는 클래스 
 class FileUIManager:
     def __init__(self, parent):
         self.parent = parent

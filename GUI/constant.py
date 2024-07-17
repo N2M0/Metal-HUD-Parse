@@ -1,6 +1,6 @@
 
 """
-상수
+상수, 메인 GUI 파싱 데이터에 접근할때 사용되는 keys
 """
 
 # PerformanceCalculationConditions

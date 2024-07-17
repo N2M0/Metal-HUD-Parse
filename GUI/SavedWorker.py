@@ -6,16 +6,18 @@ class ParsedDataSavedWorker(QWidget):
     def __init__(self, parent):
         super(ParsedDataSavedWorker, self).__init__(parent)
         self.parent = parent
+    
         
+    # parent 연결 주의
     def SavedStart(self):
-        self.SaveThread = PerformanceParsingResultsSaveThread(self)
+        self.SaveThread = PerformanceParsingResultsSaveThread(parent=self.parent)
         self.SaveThread.MsgBoxNotifications.connect(self.ShowMessagebox)
         self.SaveThread.start()
         self.SaveThread.wait()
         
     # 메시지박스
     def ShowMessagebox(self, setText):
-        msgBox = QMessageBox(self.parent)
+        msgBox = QMessageBox(parent=self.parent)
         msgBox.setWindowTitle('Parsed Notifications')
         msgBox.setText(setText)
         

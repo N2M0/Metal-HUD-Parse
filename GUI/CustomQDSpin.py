@@ -3,7 +3,7 @@ from PyQt5.QtCore import Qt
 from Metal_HUD_parse import *
 from GUIStyle import *
 
-# 스핀박스 정의 클래스
+# 스핀박스를 구성하는 클래스
 class CustomQDoubleSpinBox:
     def __init__(self, parent):
         self.parent = parent
@@ -30,7 +30,7 @@ class CustomQDoubleSpinBox:
         
         return _QDSpinBox
 
-# 스핀박스 레이블 정의 클래스
+# 스핀박스 레이블을 구성하는 클래스
 class CustomQDSpinBoxLabel:
     def __init__(self, parent):
         self.parent = parent

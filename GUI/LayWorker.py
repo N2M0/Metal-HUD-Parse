@@ -18,7 +18,8 @@ class LayUpdateWorker(QWidget):
         self.benchmarkBasedTime = benchmarkBasedTime
         self.UnitConversion = UnitConversion
         self.DecimalPoint = DecimalPoint
-        
+    
+    # 스레드 객체 생성
     def start(self):
         self.thread = PerformanceParsingThread(self.parent, self.FileName, self.FileData, self.benchmarkBasedTime, self.UnitConversion, self.DecimalPoint)
         self.thread.UpdateFileLabelSignal.connect(lambda text: self.StartPerformanceLable.setText(text))

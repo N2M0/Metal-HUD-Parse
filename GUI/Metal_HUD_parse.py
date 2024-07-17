@@ -131,6 +131,7 @@ if __name__ == "__main__":
     LastDataAvg(_PerformanceData, _PerformanceCalculationConditions, 1000, 2)
 
     # 파일 저장
+    # 딕셔너리 key를 정의된 key 변수로 교체 권장
     # PerformanceCsvSave("FPS-Result.csv", f"FPS - 약 {_PerformanceCalculationConditions['benchmarkBasedTime']} ms마다 평균치 계산", PerformanceData["FPSData"])
     # PerformanceCsvSave("Frametime-Result.csv", f"Frametime", _PerformanceData["frameTimeData"])
     # PerformanceCsvSave("GPUTime-Result.csv", f"GPUTime", _PerformanceData["gpuTimeData"])

@@ -111,6 +111,7 @@ class PerformanceParsingThread(QThread):
                 sum_pbar += 1
     
     
+    # 테이블 아이템 신호 업데이트
     def emitParsedSignalItem(self, col, row, item):
         self.EmitParsedSignal.emit(col, row, item)
     
