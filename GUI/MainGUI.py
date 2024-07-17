@@ -85,15 +85,12 @@ class MetalHUDParse(QWidget):
         
         # 벤치마크 베이스 시간
         self.benchmarkBasedTime, self.benchmarkBasedTimeLabel = self.addQDSpinBox(1000, "BasedTime")
-        # 단위 변환
-        self.UnitConversion, self.UnitConversionLabel = self.addQDSpinBox(1000, "UnitConversion")
         # 소수점 제한
         self.DecimalPoint, self.DecimalPointLabel = self.addQDSpinBox(2, "DecimalPoint")
         
         # spinbox dict
         SpinDict = {
             self.benchmarkBasedTime: self.benchmarkBasedTimeLabel,
-            self.UnitConversion: self.UnitConversionLabel,
             self.DecimalPoint: self.DecimalPointLabel
         }
         
@@ -110,7 +107,6 @@ class MetalHUDParse(QWidget):
             self.FileName, 
             DataReader(self.FileName), 
             int(self.benchmarkBasedTime.value()), 
-            int(self.UnitConversion.value()), 
             int(self.DecimalPoint.value())),
             )
         
@@ -223,8 +219,8 @@ class MetalHUDParse(QWidget):
 
 
     # 스레도 함수
-    def StartParsePerformance(self, FileName, FileData, benchmarkBasedTime, UnitConversion, DecimalPoint):
-        self.thread = PerformanceParsingThread(FileName, FileData, benchmarkBasedTime, UnitConversion, DecimalPoint, self)
+    def StartParsePerformance(self, FileName, FileData, benchmarkBasedTime, DecimalPoint):
+        self.thread = PerformanceParsingThread(FileName, FileData, benchmarkBasedTime, DecimalPoint, self)
         self.thread.UpdateFileLabelSignal.connect(lambda text: self.StartPerformanceLable.setText(text))
         self.thread.EmitParsedSignal.connect(self.UpdateTable)
         self.thread.EmitParsedPbarSignal.connect(self.UpdateProgressBar)

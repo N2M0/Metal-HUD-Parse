@@ -16,12 +16,11 @@ class PerformanceParsingThread(QThread):
     EmitParsedPbarSignal = pyqtSignal(int, int)
     ThreadFinishedSignal = pyqtSignal()
 
-    def __init__(self, FileName, FileData, benchmarkBasedTimeValue, UnitConversion, DecimalPoint, parent=None):
+    def __init__(self, FileName, FileData, benchmarkBasedTimeValue, DecimalPoint, parent=None):
         super().__init__(parent)
         self.FileName = FileName
         self.benchmarkBasedTimeValue = benchmarkBasedTimeValue
         self.FileData = FileData
-        self.UnitConversion = UnitConversion
         self.DecimalPoint = DecimalPoint
         
         self.parent = parent
@@ -41,8 +40,8 @@ class PerformanceParsingThread(QThread):
         self.UpdateFileLabelSignal.emit(f'Selected File: {self.FileName} Start...')
         DataSplit(self.FileData, _PerformanceCalculationConditions, _PerformanceData, _PerformanceErrorData)
         self.UpdateFileLabelSignal.emit(f'Selected File: {self.FileName} Loding...')
-        ConverttoFPS(_PerformanceData, _PerformanceCalculationConditions, self.UnitConversion, self.DecimalPoint)
-        LastDataAvg(_PerformanceData, _PerformanceCalculationConditions, self.UnitConversion, self.DecimalPoint)
+        ConverttoFPS(_PerformanceData, _PerformanceCalculationConditions, self.DecimalPoint)
+        LastDataAvg(_PerformanceData, _PerformanceCalculationConditions, self.DecimalPoint)
         self.emitParsedSignal()
         self.UpdateFileLabelSignal.emit(f'Selected File: {self.FileName} Done!')
         
