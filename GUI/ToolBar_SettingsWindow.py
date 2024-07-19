@@ -65,7 +65,7 @@ class SettingsWindow(QMainWindow):
 
         except (FileNotFoundError, json.JSONDecodeError):
             # 기본 설정값 초기화
-            reset = SetSaved()
+            SetSaved()
 
             setSttings = OpenJson(SettingFilePath)
             setButtons = OpenJson(ButtonFilePath)

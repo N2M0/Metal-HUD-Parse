@@ -58,8 +58,13 @@ class Load_Save_Settings(QWidget):
             # 그 외
             else:
                 # 설정 불러오기 배열값 저장
-                SaveJSON(r"GUI\Settings\Settings.json", CBSetValueDict)
-                print("설정값이 저장됨.")
+                try:
+                    SaveJSON(r"GUI\Settings\Settings.json", CBSetValueDict)
+                    print("설정값이 저장됨.")
+                
+                except Exception as e:
+                    print("CBValueSave Error:", e)
+                    print("설정값 저장을 실패함.")
 
 
         # 여기 else 에 저장 로직 작성 필요
