@@ -32,7 +32,7 @@ class CustomQDoubleSpinBox:
             return _QDSpinBox
         
         except Exception as e:
-            print("QDSpinBox Error: ", e)
+            print("CustomQDoubleSpinBox - QDSpinBox Error: ", e)
             return None
         
 # 스핀박스 레이블을 구성하는 클래스
@@ -51,6 +51,6 @@ class CustomQDSpinBoxLabel:
             return _QDSBLabel
         
         except Exception as e:
-            print("CustomQDSpinBoxLabel Error: ", e)
+            print("CustomQDSpinBoxLabel - QDSpinBoxLabel Error: ", e)
             return None   
 

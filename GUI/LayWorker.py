@@ -21,36 +21,45 @@ class LayUpdateWorker(QWidget):
     
     # 스레드 객체 생성
     def start(self):
-        self.thread = PerformanceParsingThread(self.parent, self.FileName, self.FileData, self.benchmarkBasedTime, self.UnitConversion, self.DecimalPoint)
-        self.thread.UpdateFileLabelSignal.connect(lambda text: self.StartPerformanceLable.setText(text))
-        self.thread.EmitInitializeTableSignal.connect(self.InitializeTable)
-        self.thread.EmitParsedSignal.connect(self.UpdateTable)
-        self.thread.EmitParsedPbarSignal.connect(self.UpdateProgressBar)
-        self.thread.ThreadFinishedSignal.connect(lambda: QTimer.singleShot(1000, self.UpdateTableResizeContents))
-        self.thread.start()
+        try:
+            self.ParsingThread = PerformanceParsingThread(self.parent, self.FileName, self.FileData, self.benchmarkBasedTime, self.UnitConversion, self.DecimalPoint)
+            self.ParsingThread.UpdateFileLabelSignal.connect(lambda text: self.StartPerformanceLable.setText(text))
+            self.ParsingThread.EmitInitializeTableSignal.connect(self.InitializeTable)
+            self.ParsingThread.EmitParsedSignal.connect(self.UpdateTable)
+            self.ParsingThread.EmitParsedPbarSignal.connect(self.UpdateProgressBar)
+            self.ParsingThread.ThreadFinishedSignal.connect(self.ParsedResultsTable.resizeColumnsToContents)
+            self.ParsingThread.start()
+            
+        except Exception as e:
+            print("LayUpdateWorker - start Error:", e)
 
     # 테이블 초기화
     def InitializeTable(self, label_list, col_count, row_count):
-        self.ParsedResultsTable.setColumnCount(0)    
-        self.ParsedResultsTable.setRowCount(0)
-        self.ParsedResultsTable.setColumnCount(col_count)
-        self.ParsedResultsTable.setRowCount(row_count)
-        self.ParsedResultsTable.setHorizontalHeaderLabels(label_list)
-        
+        try:
+            self.ParsedResultsTable.setColumnCount(0)    
+            self.ParsedResultsTable.setRowCount(0)
+            self.ParsedResultsTable.setColumnCount(col_count)
+            self.ParsedResultsTable.setRowCount(row_count)
+            self.ParsedResultsTable.setHorizontalHeaderLabels(label_list)
+        except Exception as e:
+            print("LayUpdateWorker - InitializeTable Error:", e)
+            
     # 테이블 업데이트 함수
     def UpdateTable(self, col, row, value):
-        # 테이블에 데이터를 추가
-        item = QTableWidgetItem(value)
-        item.setTextAlignment(Qt.AlignCenter)  # 텍스트 정렬 (옵션)
-        self.ParsedResultsTable.setItem(row, col, item)
-    
-    def UpdateTableResizeContents(self):
-        # 테이블 전체 크기 조정
-        self.ParsedResultsTable.resizeColumnsToContents() # 행
-        self.ParsedResultsTable.resizeRowsToContents() # 열 
+        try:
+            # 테이블에 데이터를 추가
+            item = QTableWidgetItem(value)
+            item.setTextAlignment(Qt.AlignCenter)  # 텍스트 정렬 (옵션)
+            self.ParsedResultsTable.setItem(row, col, item)
+
+        except Exception as e:
+            print("LayUpdateWorker - UpdateTable Error:", e)
 
     # 프로그래스바 업데이트 함수
     def UpdateProgressBar(self, sum_pbar, sum_count):
-        progress = (sum_pbar / sum_count) * 100  # 프로그래스바 계산
-        self.ParsedPbar.setValue(int(progress))  # 프로그래스바 업데이트
-        
+        try:
+            progress = (sum_pbar / sum_count) * 100  # 프로그래스바 계산
+            self.ParsedPbar.setValue(int(progress))  # 프로그래스바 업데이트
+
+        except Exception as e:
+            print("LayUpdateWorker - UpdateProgressBar Error:", e)

@@ -25,8 +25,8 @@ class PerformanceParsingThread(QThread):
         self.UnitConversion = UnitConversion
         self.DecimalPoint = DecimalPoint
         
-        self.parent = parent
-        self.ParsedResultsTable = self.parent.ParsedResultsTable
+        # self.parent = parent
+        # self.ParsedResultsTable = self.parent.ParsedResultsTable
         
     # 성능 파싱 시작
     def run(self):
@@ -51,78 +51,107 @@ class PerformanceParsingThread(QThread):
             self.ThreadFinishedSignal.emit()
         
         except Exception as e:
-            pass
+            print("PerformanceParsingThread - run Error:", e)
         
         finally:
             self.quit()
     
     # 성능 데이터 파싱 함수
     def DataParsed(self):
-        self.UpdateFileLabelSignal.emit(f'Selected File: "{self.FileName}" Start...')
-        DataSplit(self.FileData, _PerformanceCalculationConditions, _PerformanceData, _PerformanceErrorData)
-        self.UpdateFileLabelSignal.emit(f'Selected File: "{self.FileName}" Loding...')
-        ConverttoFPS(_PerformanceData, _PerformanceCalculationConditions, self.UnitConversion, self.DecimalPoint)
-        LastDataAvg(_PerformanceData, _PerformanceCalculationConditions, self.UnitConversion, self.DecimalPoint)
-        self.UpdateFileLabelSignal.emit(f'Selected File: "{self.FileName}" Loding(Saveable.)...')
-    
+        try:
+            self.UpdateFileLabelSignal.emit(f'Selected File: "{self.FileName}" Start...')
+            DataSplit(self.FileData, _PerformanceCalculationConditions, _PerformanceData, _PerformanceErrorData)
+            self.UpdateFileLabelSignal.emit(f'Selected File: "{self.FileName}" Loding...')
+            ConverttoFPS(_PerformanceData, _PerformanceCalculationConditions, self.UnitConversion, self.DecimalPoint)
+            LastDataAvg(_PerformanceData, _PerformanceCalculationConditions, self.UnitConversion, self.DecimalPoint)
+            self.UpdateFileLabelSignal.emit(f'Selected File: "{self.FileName}" Loding(Saveable.)...')
+        except Exception as e:
+            print("PerformanceParsingThread - DataParsed Error:", e)
+        
     # 여러개의 딕셔너리를 하나의 딕셔너리로 만듦
     def CombinedDict(self):
-        combined_dict = OrderedDict()
-        combined_dict.update(_PerformanceData)
-        combined_dict.update(_PerformanceErrorData)
-        combined_dict.update(_PerformanceCalculationConditions)
-        return combined_dict
+        try:
+            combined_dict = OrderedDict()
+            combined_dict.update(_PerformanceData)
+            combined_dict.update(_PerformanceErrorData)
+            combined_dict.update(_PerformanceCalculationConditions)
+            return combined_dict
+        
+        except Exception as e:
+            print("PerformanceParsingThread - CombinedDict Error:", e)
+            return None
     
     # 컴빈드 데이터 계산
     def CombinedDictData(self, combined_dict):
-        return [len(v) for v in combined_dict.values() if isinstance(v, list)]
-    
+        try:
+            return [len(v) for v in combined_dict.values() if isinstance(v, list)]
+        except Exception as e:
+            print("PerformanceParsingThread - CombinedDictData Error:", e)
+            return None
+        
     # 테이블에 row, col 초기 설정 데이터를 전달하는 함수
     def emitInitializeTableSignal(self):
-        combined_dict = self.CombinedDict()
-        data = self.CombinedDictData(combined_dict)
-        label_list = list(combined_dict.keys())
-        col_count = len(combined_dict)
-        row_count = max(data) # Key 값 중에 가장 많은 Value 하나 찾음.
-        self.EmitInitializeTableSignal.emit(label_list, col_count, row_count)
+        try:
+            combined_dict = self.CombinedDict()
+            data = self.CombinedDictData(combined_dict)
+            label_list = list(combined_dict.keys())
+            col_count = len(combined_dict)
+            row_count = max(data) # Key 값 중에 가장 많은 Value 하나 찾음.
+            self.EmitInitializeTableSignal.emit(label_list, col_count, row_count)
         
+        except Exception as e:
+            print("PerformanceParsingThread - emitInitializeTableSignal Error:", e)
     
     # 파싱 데이터를 테이블에 데이터를 전달하는 함수
     def emitParsedSignal(self):
-        combined_dict = self.CombinedDict()
-        data = self.CombinedDictData(combined_dict)
-        sum_count = sum(data) + len(_PerformanceCalculationConditions.values()) # 프로그래스바 100% 기준 해당하는 값
+        try:
+            combined_dict = self.CombinedDict()
+            data = self.CombinedDictData(combined_dict)
+            sum_count = sum(data) + len(_PerformanceCalculationConditions.values()) # 프로그래스바 100% 기준 해당하는 값
 
-        sum_pbar = 1
-        for col, value in enumerate(combined_dict.values()):
-            # 타입 검사
-            if isinstance(value, (list, tuple)):
-                for row, item in enumerate(value):
-                    self.emitParsedSignalItem(col, row, str(item))
+            sum_pbar = 1
+            for col, value in enumerate(combined_dict.values()):
+                # 타입 검사
+                if isinstance(value, (list, tuple)):
+                    for row, item in enumerate(value):
+                        self.emitParsedSignalItem(col, row, str(item))
+                        self.emitParsedPbarValue(sum_pbar, sum_count)
+                        # self.overhead(sum_pbar)
+                        sum_pbar += 1
+
+                # 데이터 배열이 아닐때
+                else:
+                    self.emitParsedSignalItem(col, 0, str(value))
                     self.emitParsedPbarValue(sum_pbar, sum_count)
-                    self.overhead(sum_pbar)
+                    # self.overhead(sum_pbar)
                     sum_pbar += 1
-
-            # 데이터 배열이 아닐때
-            else:
-                self.emitParsedSignalItem(col, 0, str(value))
-                self.emitParsedPbarValue(sum_pbar, sum_count)
-                self.overhead(sum_pbar)
-                sum_pbar += 1
-    
+                    
+        except Exception as e:
+            print("PerformanceParsingThread - emitParsedSignal Error:", e)
     
     # 테이블 아이템 신호 업데이트
     def emitParsedSignalItem(self, col, row, item):
-        self.EmitParsedSignal.emit(col, row, item)
+        try:
+            self.EmitParsedSignal.emit(col, row, item)
+        except Exception as e:
+            print("PerformanceParsingThread - emitParsedSignalItem Error:", e)
     
     # 진행상황 프로그래스바 신호 업데이트
     def emitParsedPbarValue(self, sum_pbar, sum_count):
-        self.EmitParsedPbarSignal.emit(sum_pbar, sum_count)
-
+        try:
+            self.EmitParsedPbarSignal.emit(sum_pbar, sum_count)
+        except Exception as e:
+            print("PerformanceParsingThread - emitParsedPbarValue Error:", e)
+            
     # 메인 스레드가 업데이트를 하기위해 서브 스레드를 잠시 멈추는 함수
+    # 성능 제한 모드, 성능 우선 모드 두가지 모드로 제공할 것.
     def overhead(self, sum_pbar):
-        if sum_pbar % 3000 == 0:
-            self.msleep(100)
+        try:
+            if sum_pbar % 3000 == 0:
+                self.msleep(100)
+        except Exception as e:
+            print("PerformanceParsingThread - overhead Error:", e)
+
 
 
 # 파일로 저장
@@ -148,6 +177,7 @@ class PerformanceParsingResultsSaveThread(QThread):
                 self.MsgBoxNotifications.emit("Failed!")
                 
         except Exception as e:
+            print("PerformanceParsingResultsSaveThread - run Error:", e)
             self.MsgBoxNotifications.emit(f"Error: {str(e)}")
             
         finally:

@@ -14,24 +14,35 @@ from ToolBar_SettingsWindow import *
 class SettingsToolbar(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-
-        self.layout = QVBoxLayout()
-        self.toolbar = QToolBar()
-        self.toolbar.setStyleSheet(ToolbarStyle())
-
-        # Settings button creation
-        self.settings_action = QAction("Settings", self)
-        self.settings_action.triggered.connect(self.show_settings)
-        self.toolbar.addAction(self.settings_action)
         
-        # Toolbar to layout
-        self.layout.addWidget(self.toolbar)
-        self.setLayout(self.layout)
+        self.InitUI()
 
+    def InitUI(self):
+        try:
+            self.layout = QVBoxLayout()
+            self.toolbar = QToolBar()
+            self.toolbar.setStyleSheet(ToolbarStyle())
+
+            # Settings button creation
+            self.settings_action = QAction("Settings", self)
+            self.settings_action.triggered.connect(self.show_settings)
+            self.toolbar.addAction(self.settings_action)
+            
+            # Toolbar to layout
+            self.layout.addWidget(self.toolbar)
+            self.setLayout(self.layout)
+            
+        except Exception as e:
+            print("SettingsToolbar - InitUI Error:", e)
+            
     def show_settings(self):
-        self.settings_window = SettingsWindow(self)
-        self.settings_window.show()
-
+        try:
+            self.settings_window = SettingsWindow(self)
+            self.settings_window.show()
+            
+        except Exception as e:
+            print("SettingsToolbar - show_settings Error:", e)
+            
 if __name__ == "__main__":
     app = QApplication([])
     toolbar = SettingsToolbar()

@@ -50,7 +50,6 @@ def DataSplit(hudRawData, PerformanceCalculationConditions, PerformanceData, Per
             
     except Exception as e:
         print("DataSplit Error:", e)
-        return None
 
 # FPS 계산식
 def FPSCalculation(PerformanceCalculationConditions, UnitConversion = 1000, DecimalPoint = 2):
@@ -85,7 +84,6 @@ def ConverttoFPS(PerformanceData, PerformanceCalculationConditions, UnitConversi
                 
     except Exception as e:
         print("ConverttoFPS Error:", e)
-        return None
 
 # 마지막에 남은 1초 안되는 자투리 데이터로 평균 FPS 계산
 def LastDataAvg(PerformanceData, PerformanceCalculationConditions, UnitConversion = 1000, DecimalPoint = 2):
@@ -95,7 +93,6 @@ def LastDataAvg(PerformanceData, PerformanceCalculationConditions, UnitConversio
             PerformanceData[FPSData].append(FPSCalculation(PerformanceCalculationConditions, UnitConversion, DecimalPoint))
     except Exception as e:
         print("LastDataAvg Error:", e)
-        return None
 
 # 파일 저장 함수
 def PerformanceCsvSave(FileName, title, data):
@@ -105,7 +102,6 @@ def PerformanceCsvSave(FileName, title, data):
         
     except Exception as e:
         print("PerformanceCsvSave Error:", e)
-        return None
 
 #benchmarkBasedTime 여기에 몇 ms마다 FPS 평균을 낼 것인지 입력
 #benchmarkBasedTime 값이 너무 작으면 실제보다 과하게 프레임이 튀어 보일 수 있음

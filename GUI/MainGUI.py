@@ -49,7 +49,7 @@ class MetalHUDParse(QWidget):
     # 처음 실행시 최초화면
     def FileReadWindow(self):
         FileReadframe = QFrame()
-        FileReadframe.setFrameShape(QFrame.Panel | QFrame.Sunken)
+        # FileReadframe.setFrameShape(QFrame.Panel | QFrame.Sunken)
         FileReadvbox = QVBoxLayout()
         
         # 설정툴바
@@ -125,7 +125,7 @@ class MetalHUDParse(QWidget):
         self.FileChange = self.addBtn("File Change", self.FileChanged)
         
         # 결과를 파일로 저장 버튼 초기화
-        self.ParsedSave = self.addBtn("Parsed Save", self.SaveParsing)
+        self.ParsedSave = self.addBtn("Parsed Save", self.StartParsePerformanceSave)
         
         # 위 객체들을 레이아웃에 추가하는 함수 초기화
         StartPerformanceframe = self.addlayout()
@@ -136,7 +136,7 @@ class MetalHUDParse(QWidget):
     # StartPerformanceWindow 의 객체를 레이아웃에 추가해주는 함수
     def addlayout(self):
         StartPerformanceframe = QFrame()
-        StartPerformanceframe.setFrameShape(QFrame.Panel | QFrame.Sunken)
+        # StartPerformanceframe.setFrameShape(QFrame.Panel | QFrame.Sunken)
         StartPerformancevbox = QVBoxLayout()
         StartPerformancehbox = QHBoxLayout()
 
@@ -237,12 +237,12 @@ class MetalHUDParse(QWidget):
 
     # 스레도 함수
     def StartParsePerformance(self, FileName, FileData, benchmarkBasedTime, UnitConversion, DecimalPoint):
-        self.LayWorker = LayUpdateWorker(self, FileName, FileData, benchmarkBasedTime, UnitConversion, DecimalPoint)
-        self.LayWorker.start()
+        LayWorker = LayUpdateWorker(self, FileName, FileData, benchmarkBasedTime, UnitConversion, DecimalPoint)
+        LayWorker.start()
     
-    def SaveParsing(self):
-        self.SavedParsedData = ParsedDataSavedWorker(self)
-        self.SavedParsedData.SavedStart()
+    def StartParsePerformanceSave(self):
+        SaveWorked = ParsedDataSavedWorker(self)
+        SaveWorked.start()
 
 
 

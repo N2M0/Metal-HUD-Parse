@@ -2,7 +2,6 @@ from PyQt5.QtWidgets import (
     QWidget,
     )
 
-# from PyQt5.QtCore import Qt, QSize
 from GUIStyle import *
 from OpenJson import *
 from SaveJSON import *
@@ -63,7 +62,7 @@ class Load_Save_Settings(QWidget):
                     print("설정값이 저장됨.")
                 
                 except Exception as e:
-                    print("CBValueSave Error:", e)
+                    print("Load_Save_Settings - CBValueSave Error:", e)
                     print("설정값 저장을 실패함.")
 
 
