@@ -6,6 +6,8 @@ from GUIStyle import *
 # 메인 GUI 에서 파일 관련을 관리 및 구성하는 클래스 
 class FileUIManager:
     def __init__(self, parent):
+        self._name = __class__.__name__
+        
         self.parent = parent
         self.FileLabel = parent.FileLabel
         self.FileReadframe = parent.FileReadframe
@@ -30,7 +32,7 @@ class FileUIManager:
                 self.FileLabel.setText(f'Selected File: Failed.')
                 
         except Exception as e:
-            print("FileUIManager - FileRead Error:", e)
+            print(f"{self._name} - FileRead Error:", e)
 
         # 창 위치를 중앙에 배치하는 함수를 호출
         self.center()
@@ -45,7 +47,7 @@ class FileUIManager:
             self.parent.move(qr.topLeft())
             
         except Exception as e:
-            print("FileUIManager - Center Error:", e)
+            print(f"{self._name} - Center Error:", e)
     
     # 파싱할 파일을 변경하는 함수
     def FileChanged(self):
@@ -60,5 +62,5 @@ class FileUIManager:
                 return self.FileName
 
         except Exception as e:
-            print("FileUIManager - FileChanged Error:", e)
+            print(f"{self._name} - FileChanged Error:", e)
             return None

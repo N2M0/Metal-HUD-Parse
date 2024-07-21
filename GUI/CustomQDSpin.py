@@ -6,6 +6,8 @@ from GUIStyle import *
 # 스핀박스를 구성하는 클래스
 class CustomQDoubleSpinBox:
     def __init__(self, parent):
+        self._name = __class__.__name__
+        
         self.parent = parent
 
     def QDSpinBox(
@@ -32,12 +34,14 @@ class CustomQDoubleSpinBox:
             return _QDSpinBox
         
         except Exception as e:
-            print("CustomQDoubleSpinBox - QDSpinBox Error: ", e)
+            print(f"{self._name} - QDSpinBox Error: ", e)
             return None
         
 # 스핀박스 레이블을 구성하는 클래스
 class CustomQDSpinBoxLabel:
     def __init__(self, parent):
+        self._name = __class__.__name__
+        
         self.parent = parent
     
     def QDSpinBoxLabel(self, LabelText, setStyleSheet):
@@ -51,6 +55,6 @@ class CustomQDSpinBoxLabel:
             return _QDSBLabel
         
         except Exception as e:
-            print("CustomQDSpinBoxLabel - QDSpinBoxLabel Error: ", e)
+            print(f"{self._name} - QDSpinBoxLabel Error: ", e)
             return None   
 

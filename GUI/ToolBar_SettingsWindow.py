@@ -13,7 +13,8 @@ from GUIStyle import *
 from OpenJson import *
 from SaveJSON import *
 from Settings_JSON_Write import *
-from ToolBar_Load_Save_Settings import *
+from ToolBar_OptionsHandler import *
+from constant import *
 
 
 # 콤보박스 아이템간의 간격을 조절하는 클래스.
@@ -25,6 +26,8 @@ class CustomDelegate(QStyledItemDelegate):
 # 설정 화면을 구성하는 클래스
 class SettingsWindow(QMainWindow):
     def __init__(self, parent=None):
+        self._name = __class__.__name__
+        
         # cb data
         self.CBDict = {}
         
@@ -35,7 +38,7 @@ class SettingsWindow(QMainWindow):
         }
         
         super().__init__(parent)
-        self.SettingsManager = Load_Save_Settings(self)
+        self.SettingsManager = OptionsHandler(self)
         self.InitUI()
         self.SettingsManager.CBSetValueRead()
 
@@ -56,9 +59,7 @@ class SettingsWindow(QMainWindow):
         # 파라미터 정의 - 개발시 *.json 등으로 관리
         # 설정값이 불러와지지 않을 경우 경로 재설정 필요, 후에 OS 모듈등으로 자동으로 경로를 찾아주는 코드를 추가할 생각
 
-        # FileName
-        SettingFilePath = r"GUI\Settings\Settings_LBL_CB.json"
-        ButtonFilePath = r"GUI\Settings\Settings_BTN.json"
+
         try:
             setSttings = OpenJson(SettingFilePath)
             setButtons = OpenJson(ButtonFilePath)
@@ -82,7 +83,7 @@ class SettingsWindow(QMainWindow):
                     self.AddGrid_Btn(ExistingIndex, grid, BtnFuns, setButtons)
                     
         except Exception as e:
-            print("SettingsWindow - InitUI - 1 Error:", e)
+            print(f"{self._name} - InitUI - 1 Error:", e)
             
     # 설정, 라벨 - 콤보박스
     def AddGrid_Lbl_Cb(self, lable, items, grid, index):
@@ -95,7 +96,7 @@ class SettingsWindow(QMainWindow):
                 grid.addWidget(obj, index, obj_index)
                 
         except Exception as e:
-            print("SettingsWindow - AddGrid_Lbl_Cb Error:", e)
+            print(f"{self._name} - AddGrid_Lbl_Cb Error:", e)
             
     # 설정, 버튼
     def AddGrid_Btn(self, index, grid, BtnFuns, setButtons):
@@ -112,7 +113,7 @@ class SettingsWindow(QMainWindow):
                 BtnRowindex += 1
                 
         except Exception as e:
-            print("SettingsWindow - AddGrid_Btn Error:", e)
+            print(f"{self._name} - AddGrid_Btn Error:", e)
 
     # 정의된 라벨과 콤보박스를 추가하는 함수
     def addLableComboBox(self, lableName, tooltip_name, items):
@@ -137,7 +138,7 @@ class SettingsWindow(QMainWindow):
             return label, cb
 
         except Exception as e:
-            print("SettingsWindow - addLableComboBox Error:", e)
+            print(f"{self._name} - addLableComboBox Error:", e)
             return None, None
     
     # 정의된 버튼을 추가하는 함수
@@ -156,5 +157,5 @@ class SettingsWindow(QMainWindow):
             return button
 
         except Exception as e:
-            print("SettingsWindow - addBtn Error:", e)
-            return None, None
+            print(f"{self._name} - addBtn Error:", e)
+            return None

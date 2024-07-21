@@ -6,12 +6,14 @@ from GUIStyle import *
 from OpenJson import *
 from SaveJSON import *
 from Settings_JSON_Write import *
+from constant import *
 
 # 설정 불러오기/저장하기를 구성하는 클래스
-class Load_Save_Settings(QWidget):
+class OptionsHandler(QWidget):
     def __init__(self, parent: QWidget):
         super().__init__(parent)
-
+        self._name = __class__.__name__
+        
         # 부모 객체 매개변수 정의
         self.parent = parent
         self.CBDict = self.parent.CBDict
@@ -19,7 +21,7 @@ class Load_Save_Settings(QWidget):
         
     def CBSetValueRead(self):
         try:
-            SetData = OpenJson(r"GUI\Settings\Settings.json")
+            SetData = OpenJson(SetDataFilePath)
             for (Lable, comboboxObj), (setLable, SetComboboxIndex) in zip(self.CBDict.items(), SetData.items()):
                 if Lable == setLable:
                     comboboxObj.setCurrentIndex(SetComboboxIndex)
@@ -29,9 +31,9 @@ class Load_Save_Settings(QWidget):
                     print(f"설정 불러오기 실패: {Lable} - {setLable} - {SetComboboxIndex}")
 
         # 파일이 없을때 예외처리, 파일은 존재하지만 내용이 없을때 예외처리
-        except (FileNotFoundError, json.JSONDecodeError):
-            return None
-    
+        except (FileNotFoundError, json.JSONDecodeError) as e:
+            print("파일이 찾을 수 없거나 파일에 내용이 없음.")
+            print(f"{self._name} - CBSetValueRead Error:", e)    
 
     # 콤보박스의 선택된 값을 *.json 으로 저장함.
     # 이것은 메인 GUI에 기능을 비활성화거나 화성화할때 사용되는 값.
@@ -58,11 +60,11 @@ class Load_Save_Settings(QWidget):
             else:
                 # 설정 불러오기 배열값 저장
                 try:
-                    SaveJSON(r"GUI\Settings\Settings.json", CBSetValueDict)
+                    SaveJSON(SetDataFilePath, CBSetValueDict)
                     print("설정값이 저장됨.")
                 
                 except Exception as e:
-                    print("Load_Save_Settings - CBValueSave Error:", e)
+                    print(f"{self._name} - CBValueSave Error:", e)
                     print("설정값 저장을 실패함.")
 
 

@@ -50,6 +50,7 @@ def DataSplit(hudRawData, PerformanceCalculationConditions, PerformanceData, Per
             
     except Exception as e:
         print("DataSplit Error:", e)
+        return None
 
 # FPS 계산식
 def FPSCalculation(PerformanceCalculationConditions, UnitConversion = 1000, DecimalPoint = 2):
@@ -84,6 +85,7 @@ def ConverttoFPS(PerformanceData, PerformanceCalculationConditions, UnitConversi
                 
     except Exception as e:
         print("ConverttoFPS Error:", e)
+        return None
 
 # 마지막에 남은 1초 안되는 자투리 데이터로 평균 FPS 계산
 def LastDataAvg(PerformanceData, PerformanceCalculationConditions, UnitConversion = 1000, DecimalPoint = 2):

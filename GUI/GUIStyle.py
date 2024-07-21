@@ -1,3 +1,5 @@
+from constant import *
+
 
 def LabelStyle(id, fontsize):
     return """
@@ -52,7 +54,7 @@ def QDoubleSpinBoxStyle():
         }
 
         QDoubleSpinBox::up-button {
-            image: url(GUI/icons/up-arrow(DoubleSpinBox).png);
+            image: url(%s);
             width: 20px;
             height: 20px;;
             subcontrol-origin: padding;
@@ -62,7 +64,7 @@ def QDoubleSpinBoxStyle():
         }
 
         QDoubleSpinBox::down-button {
-            image: url(GUI/icons/down-arrow(DoubleSpinBox).png);
+            image: url(%s);
             width: 20px;;
             height: 20px;;
             subcontrol-origin: padding;
@@ -71,7 +73,10 @@ def QDoubleSpinBoxStyle():
             margin-bottom: 4px;
         }
             
-            """
+            """ % (
+                DouSBUpIConFilePath,
+                DouSBDownIConFilePath,
+            )
 
 def MsgBoxStyle():
     return """
@@ -175,7 +180,7 @@ def ComboBoxStyle():
         }
         
         QComboBox::down-arrow {
-            image: url(GUI/icons/down-arrow(ComboBox).png);
+            image: url(%s);
             width: 15px;
             height: 15px;
             margin-right: 10px;
@@ -188,7 +193,7 @@ def ComboBoxStyle():
             font-weight: bold;
         }
 
-    """
+    """ % CBDownIconFilePath
 
 
 # 아이콘이 표시되지 않을시 아이콘 URL 경로 수정 필요.

@@ -21,3 +21,21 @@ memoryData = "memoryData"
 # PerformanceErrorData
 frametimeErrorData = "frametimeErrorData"
 gpuTimeErrorData = "gpuTimeErrorData"
+
+
+""" 
+상수, URL 경로 관리
+"""
+
+# Toolbar FilePath
+SettingFilePath = r"GUI\Settings\Settings_LBL_CB.json"
+ButtonFilePath = r"GUI\Settings\Settings_BTN.json"
+SetDataFilePath = r"GUI\Settings\Settings.json"
+
+# Icon FilePath
+DouSBUpIConFilePath = "GUI/icons/up-arrow(DoubleSpinBox).png"
+DouSBDownIConFilePath = "GUI/icons/down-arrow(DoubleSpinBox).png"
+CBDownIconFilePath = "GUI/icons/down-arrow(ComboBox).png"
+
+# dict
+# 

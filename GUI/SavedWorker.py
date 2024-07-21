@@ -5,6 +5,8 @@ from GUIThread import *
 class ParsedDataSavedWorker(QWidget):
     def __init__(self, parent):
         super(ParsedDataSavedWorker, self).__init__(parent)
+        self._name = __class__.__name__
+        
         self.parent = parent
     
     # parent 연결 주의
@@ -15,7 +17,7 @@ class ParsedDataSavedWorker(QWidget):
             self.SaveThread.start()
             
         except Exception as e:
-            print("ParsedDataSavedWorker - start Error:", e)
+            print(f"{self._name} - start Error:", e)
             
     # 메시지박스
     def ShowMessagebox(self, setText):
@@ -29,5 +31,5 @@ class ParsedDataSavedWorker(QWidget):
             msgBox.exec_()
         
         except Exception as e:
-            print("ParsedDataSavedWorker - ShowMessagebox Error:", e)
+            print(f"{self._name} - ShowMessagebox Error:", e)
             
