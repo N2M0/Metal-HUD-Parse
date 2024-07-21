@@ -2,10 +2,11 @@ from PyQt5.QtWidgets import QWidget, QTableWidgetItem
 from PyQt5.QtCore import Qt
 from GUIStyle import *
 from GUIThread import *
+import sys
 
-# 메인 레이아웃을 업데이트 하기 위한 클래스, 코드의 가독성을 위해 클래스로 분리함.
+# 메인 레이아웃을 업데이트 하기 위한 클래스
 class LayUpdateWorker(QWidget):
-    def __init__(self, parent, FileName, FileData, benchmarkBasedTime, UnitConversion, DecimalPoint):
+    def __init__(self, parent, FileName, benchmarkBasedTime, UnitConversion, DecimalPoint):
         super(LayUpdateWorker, self).__init__(parent)
         self._name = __class__.__name__
         
@@ -16,7 +17,6 @@ class LayUpdateWorker(QWidget):
         
         # 인스턴스 변수
         self.FileName = FileName
-        self.FileData = FileData
         self.benchmarkBasedTime = benchmarkBasedTime
         self.UnitConversion = UnitConversion
         self.DecimalPoint = DecimalPoint
@@ -24,7 +24,8 @@ class LayUpdateWorker(QWidget):
     # 스레드 객체 생성
     def start(self):
         try:
-            self.ParsingThread = PerformanceParsingThread(self.parent, self.FileName, self.FileData, self.benchmarkBasedTime, self.UnitConversion, self.DecimalPoint)
+            # 0 index parameter parent
+            self.ParsingThread = PerformanceParsingThread(self.parent, self.FileName, self.benchmarkBasedTime, self.UnitConversion, self.DecimalPoint)
             self.ParsingThread.UpdateFileLabelSignal.connect(lambda text: self.StartPerformanceLable.setText(text))
             self.ParsingThread.EmitInitializeTableSignal.connect(self.InitializeTable)
             self.ParsingThread.EmitParsedSignal.connect(self.UpdateTable)
@@ -43,8 +44,10 @@ class LayUpdateWorker(QWidget):
             self.ParsedResultsTable.setColumnCount(col_count)
             self.ParsedResultsTable.setRowCount(row_count)
             self.ParsedResultsTable.setHorizontalHeaderLabels(label_list)
+            
         except Exception as e:
             print(f"{self._name} - InitializeTable Error:", e)
+            
             
     # 테이블 업데이트 함수
     def UpdateTable(self, col, row, value):
@@ -56,6 +59,7 @@ class LayUpdateWorker(QWidget):
 
         except Exception as e:
             print(f"{self._name} - UpdateTable Error:", e)
+            sys.exit(1)
 
     # 프로그래스바 업데이트 함수
     def UpdateProgressBar(self, sum_pbar, sum_count):
@@ -65,3 +69,4 @@ class LayUpdateWorker(QWidget):
 
         except Exception as e:
             print(f"{self._name} - UpdateProgressBar Error:", e)
+            sys.exit(1)

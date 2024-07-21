@@ -37,5 +37,10 @@ DouSBUpIConFilePath = "GUI/icons/up-arrow(DoubleSpinBox).png"
 DouSBDownIConFilePath = "GUI/icons/down-arrow(DoubleSpinBox).png"
 CBDownIconFilePath = "GUI/icons/down-arrow(ComboBox).png"
 
-# dict
-# 
+""" 
+상수, 툴바 함수 관리 키
+"""
+
+# AvoidDuplicateCreation - CBValueSave
+CBValueSave_Func = "CBValueSave-Func"
+CBValueSave_FileSaved = "CBValueSave-FileSaved"

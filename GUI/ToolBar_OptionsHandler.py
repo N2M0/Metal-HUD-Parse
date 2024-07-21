@@ -32,7 +32,7 @@ class OptionsHandler(QWidget):
 
         # 파일이 없을때 예외처리, 파일은 존재하지만 내용이 없을때 예외처리
         except (FileNotFoundError, json.JSONDecodeError) as e:
-            print("파일이 찾을 수 없거나 파일에 내용이 없음.")
+            print("파일을 찾을 수 없거나 파일에 내용이 없음.")
             print(f"{self._name} - CBSetValueRead Error:", e)    
 
     # 콤보박스의 선택된 값을 *.json 으로 저장함.
@@ -41,26 +41,27 @@ class OptionsHandler(QWidget):
         # 콤보박스의 아이템을 변경하는 경우 설정을 저장하는 기능.
         CBClickSave = False # 여기서 버튼을 눌러서 설정을 저장함. / Basic setting value: False
         # False 저장 로직 작성안됨, 작성 필요
-        CBSetValueDict = {} # 임시 설정 저장
+        
+        CBSetValueTemp = {} # 임시 설정 저장
 
-        if (self.AvoidDuplicateCreation["CBValueSave-Func"] == True) or (CBClickSave == False):
+        if (self.AvoidDuplicateCreation[CBValueSave_Func] == True) or (CBClickSave == False):
             print("Save button clicked - %s" % len(self.CBDict.values()))
             for Lable, combobox in self.CBDict.items():
                 if CBClickSave:
                     combobox.currentTextChanged.connect(lambda text: print(text))
                 else:
-                    CBSetValueDict[Lable] = combobox.currentIndex()
+                    CBSetValueTemp[Lable] = combobox.currentIndex()
             
             # 실시간 콤보박스 변경시 값
             if CBClickSave == True:
                 # 중복 생성 방지를 위해 비활성
-                self.AvoidDuplicateCreation["CBValueSave-Func"] = False
+                self.AvoidDuplicateCreation[CBValueSave_Func] = False
             
             # 그 외
             else:
                 # 설정 불러오기 배열값 저장
                 try:
-                    SaveJSON(SetDataFilePath, CBSetValueDict)
+                    SaveJSON(SetDataFilePath, CBSetValueTemp)
                     print("설정값이 저장됨.")
                 
                 except Exception as e:

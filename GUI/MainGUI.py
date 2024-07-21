@@ -12,7 +12,6 @@ from PyQt5.QtWidgets import (
     )
 
 from PyQt5.QtCore import Qt
-from Metal_HUD_parse import *
 from GUIStyle import *
 from GUIThread import *
 from FileUIManager import *
@@ -125,8 +124,7 @@ class MetalHUDParse(QWidget):
             self.ParseStartBtn = self.addBtn(
                 "Parse Start", 
                 lambda: self.StartParsePerformance(
-                self.FileName, 
-                DataReader(self.FileName), 
+                self.FileName,
                 int(self.benchmarkBasedTime.value()), 
                 int(self.UnitConversion.value()), 
                 int(self.DecimalPoint.value())),
@@ -268,17 +266,17 @@ class MetalHUDParse(QWidget):
             pbar.setStyleSheet(PbarStyle())
             # 숫자값의 위치
             pbar.setAlignment(Qt.AlignCenter)
-            pbar.resetFormat()
 
             return pbar
         
         except Exception as e:
             print(f"{self._name} - InitQProgressBar Error:", e)
             return None
-    # 스레도 함수
-    def StartParsePerformance(self, FileName, FileData, benchmarkBasedTime, UnitConversion, DecimalPoint):
+        
+    # 스레드 함수
+    def StartParsePerformance(self, FileName, benchmarkBasedTime, UnitConversion, DecimalPoint):
         try:
-            LayWorker = LayUpdateWorker(self, FileName, FileData, benchmarkBasedTime, UnitConversion, DecimalPoint)
+            LayWorker = LayUpdateWorker(self, FileName, benchmarkBasedTime, UnitConversion, DecimalPoint)
             LayWorker.start()
             
         except Exception as e:

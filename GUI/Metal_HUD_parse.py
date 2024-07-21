@@ -6,10 +6,15 @@ from constant import *
 # Metal-HUD.csv 파일 열기
 def DataReader(FileName):
     try:
-        with open(FileName, 'r', newline='') as f:
-            reader = csv.reader(f)
-            data = list(reader)
-        return data
+        if FileName.endswith(".csv"):
+            with open(FileName, 'r', newline='') as f:
+                reader = csv.reader(f)
+                data = list(reader)
+            return data
+        
+        else:
+            print("DataReader File Extension Selection Error:", "Not a *.csv file.")
+            return None
     
     except Exception as e:
         print("DataReader Error:", e)

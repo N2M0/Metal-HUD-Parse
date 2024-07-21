@@ -2,6 +2,7 @@ from PyQt5.QtCore import QThread, pyqtSignal
 from Metal_HUD_parse import *
 from GUIStyle import *
 from collections import OrderedDict
+import sys
 
 # 초기화
 _PerformanceCalculationConditions = None
@@ -17,18 +18,15 @@ class PerformanceParsingThread(QThread):
     EmitParsedPbarSignal = pyqtSignal(int, int)
     ThreadFinishedSignal = pyqtSignal()
     
-    def __init__(self, parent, FileName, FileData, benchmarkBasedTimeValue, UnitConversion, DecimalPoint):
+    def __init__(self, parent, FileName, benchmarkBasedTimeValue, UnitConversion, DecimalPoint):
         super().__init__(parent)
         self._name = __class__.__name__
         
         self.FileName = FileName
         self.benchmarkBasedTimeValue = benchmarkBasedTimeValue
-        self.FileData = FileData
         self.UnitConversion = UnitConversion
         self.DecimalPoint = DecimalPoint
-        
-        # self.parent = parent
-        # self.ParsedResultsTable = self.parent.ParsedResultsTable
+
         
     # 성능 파싱 시작
     def run(self):
@@ -54,7 +52,9 @@ class PerformanceParsingThread(QThread):
         
         except Exception as e:
             print(f"{self._name} - run Error:", e)
-            return None
+            
+            # 오류 발생시 바로 종료.
+            sys.exit(1)
         
         finally:
             self.quit()
@@ -62,12 +62,14 @@ class PerformanceParsingThread(QThread):
     # 성능 데이터 파싱 함수
     def DataParsed(self):
         try:
+            self.FileData = DataReader(self.FileName)
             self.UpdateFileLabelSignal.emit(f'Selected File: "{self.FileName}" Start...')
             DataSplit(self.FileData, _PerformanceCalculationConditions, _PerformanceData, _PerformanceErrorData)
             self.UpdateFileLabelSignal.emit(f'Selected File: "{self.FileName}" Loding...')
             ConverttoFPS(_PerformanceData, _PerformanceCalculationConditions, self.UnitConversion, self.DecimalPoint)
             LastDataAvg(_PerformanceData, _PerformanceCalculationConditions, self.UnitConversion, self.DecimalPoint)
             self.UpdateFileLabelSignal.emit(f'Selected File: "{self.FileName}" Loding(Saveable.)...')
+            
         except Exception as e:
             print(f"{self._name} - DataParsed Error:", e)
             return None
@@ -139,6 +141,7 @@ class PerformanceParsingThread(QThread):
     def emitParsedSignalItem(self, col, row, item):
         try:
             self.EmitParsedSignal.emit(col, row, item)
+
         except Exception as e:
             print(f"{self._name} - emitParsedSignalItem Error:", e)
             return None
@@ -147,6 +150,7 @@ class PerformanceParsingThread(QThread):
     def emitParsedPbarValue(self, sum_pbar, sum_count):
         try:
             self.EmitParsedPbarSignal.emit(sum_pbar, sum_count)
+
         except Exception as e:
             print(f"{self._name} - emitParsedPbarValue Error:", e)
             return None
@@ -157,6 +161,7 @@ class PerformanceParsingThread(QThread):
         try:
             if sum_pbar % 3000 == 0:
                 self.msleep(100)
+
         except Exception as e:
             print(f"{self._name} - overhead Error:", e)
             return None
@@ -170,8 +175,6 @@ class PerformanceParsingResultsSaveThread(QThread):
     def __init__(self, parent=None):
         super().__init__(parent)
         self._name = __class__.__name__
-        
-        self.parent = parent
     
     def run(self):
         try:
@@ -190,7 +193,8 @@ class PerformanceParsingResultsSaveThread(QThread):
         except Exception as e:
             print(f"{self._name} - run Error:", e)
             self.MsgBoxNotifications.emit(f"Error: {str(e)}")
-            return None
+            self.sleep(5)
+            sys.exit(1)
         
         finally:
             self.quit()

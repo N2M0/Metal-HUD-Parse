@@ -33,8 +33,8 @@ class SettingsWindow(QMainWindow):
         
         # 중복 생성 방지
         self.AvoidDuplicateCreation = {
-            "CBValueSave-Func": True,
-            "CBValueSave-FileSaved": True
+            CBValueSave_Func: True,
+            CBValueSave_FileSaved: True
         }
         
         super().__init__(parent)
