@@ -58,13 +58,13 @@ def DataSplit(hudRawData, PerformanceCalculationConditions, PerformanceData, Per
         return None
 
 # FPS 계산식
-def FPSCalculation(PerformanceCalculationConditions, UnitConversion = 1000, DecimalPoint = 2):
+def FPSCalculation(PerformanceCalculationConditions, DecimalPoint = 2):
     try:
         return round(
         (PerformanceCalculationConditions[frameCount] * 
         PerformanceCalculationConditions[benchmarkBasedTime] / 
         PerformanceCalculationConditions[secondSum]) * 
-        UnitConversion / 
+        1000 / 
         PerformanceCalculationConditions[benchmarkBasedTime],
         DecimalPoint
         )
@@ -75,14 +75,14 @@ def FPSCalculation(PerformanceCalculationConditions, UnitConversion = 1000, Deci
         
 # FrameTime > FPS 변환
 # 평균 FPS = 소수점 3번째 자리에서 반올림 처리 (2자리까지만 표시)
-def ConverttoFPS(PerformanceData, PerformanceCalculationConditions, UnitConversion = 1000, DecimalPoint = 2):
+def ConverttoFPS(PerformanceData, PerformanceCalculationConditions, DecimalPoint = 2):
     try:
         for i in range(len(PerformanceData[frameTimeData])):
             PerformanceCalculationConditions[secondSum] += float(PerformanceData[frameTimeData][i])
             PerformanceCalculationConditions[frameCount] += 1
             
             if PerformanceCalculationConditions[secondSum] >= PerformanceCalculationConditions[benchmarkBasedTime]:
-                PerformanceData[FPSData].append(FPSCalculation(PerformanceCalculationConditions, UnitConversion, DecimalPoint))
+                PerformanceData[FPSData].append(FPSCalculation(PerformanceCalculationConditions, DecimalPoint))
                 
                 # 반복 할때마다 초기화
                 PerformanceCalculationConditions[frameCount] = 0
@@ -93,11 +93,11 @@ def ConverttoFPS(PerformanceData, PerformanceCalculationConditions, UnitConversi
         return None
 
 # 마지막에 남은 1초 안되는 자투리 데이터로 평균 FPS 계산
-def LastDataAvg(PerformanceData, PerformanceCalculationConditions, UnitConversion = 1000, DecimalPoint = 2):
+def LastDataAvg(PerformanceData, PerformanceCalculationConditions, DecimalPoint = 2):
     try:
         # 분모가 0일때 예외처리
         if PerformanceCalculationConditions[secondSum] != 0:
-            PerformanceData[FPSData].append(FPSCalculation(PerformanceCalculationConditions, UnitConversion, DecimalPoint))
+            PerformanceData[FPSData].append(FPSCalculation(PerformanceCalculationConditions, DecimalPoint))
     except Exception as e:
         print("LastDataAvg Error:", e)
 
@@ -152,9 +152,9 @@ if __name__ == "__main__":
     DataSplit(DataReader("output.csv"), _PerformanceCalculationConditions, _PerformanceData, _PerformanceErrorData)
 
     # FrameTime > FPS 변환
-    ConverttoFPS(_PerformanceData, _PerformanceCalculationConditions, 1000, 2)
+    ConverttoFPS(_PerformanceData, _PerformanceCalculationConditions, 2)
     # 마지막에 남은 1초 안되는 자투리 데이터로 평균 FPS 계산
-    LastDataAvg(_PerformanceData, _PerformanceCalculationConditions, 1000, 2)
+    LastDataAvg(_PerformanceData, _PerformanceCalculationConditions, 2)
 
     # 파일 저장
     # 딕셔너리 key를 정의된 key 변수로 교체 권장

@@ -40,7 +40,7 @@ class FileUIManager:
     # 창 위치를 중앙에 배치
     def center(self):
         try:
-            self.parent.setMinimumSize(1200, 950) # 창 크기 고정
+            self.parent.setMinimumSize(1200, 900) # 창 크기 고정
             qr = self.parent.frameGeometry()
             cp = QDesktopWidget().availableGeometry().center()
             qr.moveCenter(cp)

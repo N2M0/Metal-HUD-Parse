@@ -6,7 +6,7 @@ import sys
 
 # 메인 레이아웃을 업데이트 하기 위한 클래스
 class LayUpdateWorker(QWidget):
-    def __init__(self, parent, FileName, benchmarkBasedTime, UnitConversion, DecimalPoint):
+    def __init__(self, parent, FileName, benchmarkBasedTime, DecimalPoint):
         super(LayUpdateWorker, self).__init__(parent)
         self._name = __class__.__name__
         
@@ -18,14 +18,13 @@ class LayUpdateWorker(QWidget):
         # 인스턴스 변수
         self.FileName = FileName
         self.benchmarkBasedTime = benchmarkBasedTime
-        self.UnitConversion = UnitConversion
         self.DecimalPoint = DecimalPoint
     
     # 스레드 객체 생성
     def start(self):
         try:
             # 0 index parameter parent
-            self.ParsingThread = PerformanceParsingThread(self.parent, self.FileName, self.benchmarkBasedTime, self.UnitConversion, self.DecimalPoint)
+            self.ParsingThread = PerformanceParsingThread(self.parent, self.FileName, self.benchmarkBasedTime, self.DecimalPoint)
             self.ParsingThread.UpdateFileLabelSignal.connect(lambda text: self.StartPerformanceLable.setText(text))
             self.ParsingThread.EmitInitializeTableSignal.connect(self.InitializeTable)
             self.ParsingThread.EmitParsedSignal.connect(self.UpdateTable)

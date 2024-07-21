@@ -109,8 +109,7 @@ class MetalHUDParse(QWidget):
             
             # 벤치마크 베이스 시간
             self.benchmarkBasedTime, self.benchmarkBasedTimeLabel = self.addQDSpinBox(1000, "Average Milliseconds")
-            # 단위 변환
-            self.UnitConversion, self.UnitConversionLabel = self.addQDSpinBox(1000, "Unit Conversion")
+
             # 소수점 제한
             self.DecimalPoint, self.DecimalPointLabel = self.addQDSpinBox(2, "Decimal Point")
             
@@ -125,8 +124,7 @@ class MetalHUDParse(QWidget):
                 "Parse Start", 
                 lambda: self.StartParsePerformance(
                 self.FileName,
-                int(self.benchmarkBasedTime.value()), 
-                int(self.UnitConversion.value()), 
+                int(self.benchmarkBasedTime.value()),
                 int(self.DecimalPoint.value())),
                 )
             
@@ -164,7 +162,6 @@ class MetalHUDParse(QWidget):
             # 키-값 정의
             SpinDict = {
                 self.benchmarkBasedTime: self.benchmarkBasedTimeLabel,
-                self.UnitConversion: self.UnitConversionLabel,
                 self.DecimalPoint: self.DecimalPointLabel
             }
             StartPerformancevbox.addStretch(1)
@@ -274,9 +271,9 @@ class MetalHUDParse(QWidget):
             return None
         
     # 스레드 함수
-    def StartParsePerformance(self, FileName, benchmarkBasedTime, UnitConversion, DecimalPoint):
+    def StartParsePerformance(self, FileName, benchmarkBasedTime, DecimalPoint):
         try:
-            LayWorker = LayUpdateWorker(self, FileName, benchmarkBasedTime, UnitConversion, DecimalPoint)
+            LayWorker = LayUpdateWorker(self, FileName, benchmarkBasedTime, DecimalPoint)
             LayWorker.start()
             
         except Exception as e:
