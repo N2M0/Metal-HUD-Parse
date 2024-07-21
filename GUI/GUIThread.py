@@ -63,7 +63,7 @@ class PerformanceParsingThread(QThread):
         try:
             self.FileData = DataReader(self.FileName)
             self.UpdateFileLabelSignal.emit(f'Selected File: "{self.FileName}" Start...')
-            DataSplit(self.FileData, _PerformanceCalculationConditions, _PerformanceData, _PerformanceErrorData)
+            DataSplit(self.FileData, _PerformanceCalculationConditions, _PerformanceData, _PerformanceErrorData, self.DecimalPoint)
             self.UpdateFileLabelSignal.emit(f'Selected File: "{self.FileName}" Loding...')
             ConverttoFPS(_PerformanceData, _PerformanceCalculationConditions, self.DecimalPoint)
             LastDataAvg(_PerformanceData, _PerformanceCalculationConditions, self.DecimalPoint)

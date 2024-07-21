@@ -21,8 +21,14 @@ def DataReader(FileName):
         return None
 
 # 데이터 분리
-def DataSplit(hudRawData, PerformanceCalculationConditions, PerformanceData, PerformanceErrorData):
+def DataSplit(hudRawData, PerformanceCalculationConditions, PerformanceData, PerformanceErrorData, DecimalPoint = 2):
     try:
+        
+        # 소수점 값 처리 조건문
+        # a. 2 보다 값이 크면 2 를 반환
+        # b. 2 보다 값이 작으면 임의 값을 반환
+        DecimalPointValue = DecimalPoint if DecimalPoint <= 2 else 2
+        
         for line in hudRawData:
             # 콘솔로 들어온 데이터 중 중복된 값이 있어서 제거 처리
             if PerformanceCalculationConditions[overlapCheckData] != line[0]:
@@ -30,7 +36,7 @@ def DataSplit(hudRawData, PerformanceCalculationConditions, PerformanceData, Per
                     PerformanceCalculationConditions[missedFrame] += int(line[1])
                     
                     # 메모리 데이터
-                    PerformanceData[memoryData].append(float(line[2]))
+                    PerformanceData[memoryData].append(round(float(line[2]), DecimalPointValue))
 
                     for i in range(3, len(line)):
                         # 일부 데이터의 소수점 자리가 <...>로 들어올 때가 있어서 제거 처리
@@ -38,11 +44,11 @@ def DataSplit(hudRawData, PerformanceCalculationConditions, PerformanceData, Per
                             if (line[i] != ""):
                                 if i % 2 == 1:
                                     # 성능 시간 데이터
-                                    PerformanceData[frameTimeData].append(float(line[i]))
+                                    PerformanceData[frameTimeData].append(round(float(line[i]), DecimalPointValue))
                                     
                                 else:
                                     # GPU 시간 데이터
-                                    PerformanceData[gpuTimeData].append(float(line[i]))
+                                    PerformanceData[gpuTimeData].append(round(float(line[i]), DecimalPointValue))
                         else:
                             if i % 2 == 1:
                                 PerformanceCalculationConditions[frametimeError] += 1
@@ -148,29 +154,30 @@ if __name__ == "__main__":
     _PerformanceData = PerformanceData()
     _PerformanceErrorData = PerformanceErrorData()
 
+    # 소수점 반올림
+    DecimalPoint = 2
+    
     # 성능 데이터 분리
-    DataSplit(DataReader("output.csv"), _PerformanceCalculationConditions, _PerformanceData, _PerformanceErrorData)
+    DataSplit(DataReader("output.csv"), _PerformanceCalculationConditions, _PerformanceData, _PerformanceErrorData, DecimalPoint)
 
     # FrameTime > FPS 변환
-    ConverttoFPS(_PerformanceData, _PerformanceCalculationConditions, 2)
+    ConverttoFPS(_PerformanceData, _PerformanceCalculationConditions, DecimalPoint)
     # 마지막에 남은 1초 안되는 자투리 데이터로 평균 FPS 계산
-    LastDataAvg(_PerformanceData, _PerformanceCalculationConditions, 2)
+    LastDataAvg(_PerformanceData, _PerformanceCalculationConditions, DecimalPoint)
 
     # 파일 저장
-    # 딕셔너리 key를 정의된 key 변수로 교체 권장
-    # PerformanceCsvSave("FPS-Result.csv", f"FPS - 약 {_PerformanceCalculationConditions['benchmarkBasedTime']} ms마다 평균치 계산", PerformanceData["FPSData"])
-    # PerformanceCsvSave("Frametime-Result.csv", f"Frametime", _PerformanceData["frameTimeData"])
-    # PerformanceCsvSave("GPUTime-Result.csv", f"GPUTime", _PerformanceData["gpuTimeData"])
-    # PerformanceCsvSave("Memory-Result.csv", f"Memory(MB)", _PerformanceData["memoryData"])
-    # PerformanceCsvSave("Frametime-Error.csv", f"Frametime error list", _PerformanceErrorData["frametimeErrorData"])
-    # PerformanceCsvSave("GPUTime-error.csv", f"GPUTime error list", _PerformanceErrorData["gpuTimeErrorData"])
-
+    PerformanceCsvSave("FPS-Result.csv", f"FPS - 약 {_PerformanceCalculationConditions[benchmarkBasedTime]} ms마다 평균치 계산", _PerformanceData[FPSData])
+    PerformanceCsvSave("Frametime-Result.csv", f"Frametime", _PerformanceData[frameTimeData])
+    PerformanceCsvSave("GPUTime-Result.csv", f"GPUTime", _PerformanceData[gpuTimeData])
+    PerformanceCsvSave("Memory-Result.csv", f"Memory(MB)", _PerformanceData[memoryData])
+    PerformanceCsvSave("Frametime-Error.csv", f"Frametime error list", _PerformanceErrorData[frametimeErrorData])
+    PerformanceCsvSave("GPUTime-error.csv", f"GPUTime error list", _PerformanceErrorData[gpuTimeErrorData])
     # pprint(_PerformanceData)
 
-    # print("\n\nDone! Missed Frame:", _PerformanceCalculationConditions["missedFrame"])
-    # print("Frametime error:", _PerformanceCalculationConditions["frametimeError"])
-    # print("GPUTime error:", _PerformanceCalculationConditions["gpuTimeError"])
+    print("\n\nDone! Missed Frame:", _PerformanceCalculationConditions[missedFrame])
+    print("Frametime error:", _PerformanceCalculationConditions[frametimeError])
+    print("GPUTime error:", _PerformanceCalculationConditions[gpuTimeError])
     
-    for key, value in _PerformanceData.items():
-        for value in value:
-            print(value)
+    # for key, value in _PerformanceData.items():
+    #     for value in value:
+    #         print(value)
