@@ -29,6 +29,10 @@ class ParsedDataSavedWorker(QWidget):
             # 스타일 시트 설정
             msgBox.setStyleSheet(MsgBoxStyle())
             msgBox.exec_()
+            
+            # Error 텍스트 포함시 강제 종료
+            if "Error:" in setText:
+                sys.exit(1)
         
         except Exception as e:
             print(f"{self._name} - ShowMessagebox Error:", e)

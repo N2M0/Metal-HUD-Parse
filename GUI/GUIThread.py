@@ -177,23 +177,27 @@ class PerformanceParsingResultsSaveThread(QThread):
     
     def run(self):
         try:
-            if all([_PerformanceCalculationConditions, _PerformanceData, _PerformanceErrorData]):
-                PerformanceCsvSave("FPS-Result.csv", f"FPS - 약 {_PerformanceCalculationConditions[benchmarkBasedTime]} ms마다 평균치 계산", _PerformanceData[FPSData])
-                PerformanceCsvSave("Frametime-Result.csv", f"Frametime", _PerformanceData[frameTimeData])
-                PerformanceCsvSave("GPUTime-Result.csv", f"GPUTime", _PerformanceData[gpuTimeData])
-                PerformanceCsvSave("Memory-Result.csv", f"Memory(MB)", _PerformanceData[memoryData])
-                PerformanceCsvSave("Frametime-Error.csv", f"Frametime error list", _PerformanceErrorData[frametimeErrorData])
-                PerformanceCsvSave("GPUTime-error.csv", f"GPUTime error list", _PerformanceErrorData[gpuTimeErrorData])
-                self.MsgBoxNotifications.emit("Success!")
-                
-            else:
-                self.MsgBoxNotifications.emit("Failed!")
+            
+            # 추후에 파일 저장은 팝업창으로 처리.
+            self.Saved()
+            # raise ValueError("test")
                 
         except Exception as e:
             print(f"{self._name} - run Error:", e)
             self.MsgBoxNotifications.emit(f"Error: {str(e)}")
-            self.sleep(5)
-            sys.exit(1)
-        
+            
         finally:
             self.quit()
+    
+    def Saved(self):
+        if all([_PerformanceCalculationConditions, _PerformanceData, _PerformanceErrorData]):
+            PerformanceCsvSave("FPS-Result.csv", f"FPS - 약 {_PerformanceCalculationConditions[benchmarkBasedTime]} ms마다 평균치 계산", _PerformanceData[FPSData])
+            PerformanceCsvSave("Frametime-Result.csv", f"Frametime", _PerformanceData[frameTimeData])
+            PerformanceCsvSave("GPUTime-Result.csv", f"GPUTime", _PerformanceData[gpuTimeData])
+            PerformanceCsvSave("Memory-Result.csv", f"Memory(MB)", _PerformanceData[memoryData])
+            PerformanceCsvSave("Frametime-Error.csv", f"Frametime error list", _PerformanceErrorData[frametimeErrorData])
+            PerformanceCsvSave("GPUTime-error.csv", f"GPUTime error list", _PerformanceErrorData[gpuTimeErrorData])
+            self.MsgBoxNotifications.emit("Success!")
+            
+        else:
+            self.MsgBoxNotifications.emit("Failed!")
