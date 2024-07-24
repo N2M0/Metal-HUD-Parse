@@ -7,17 +7,16 @@ GUI 실행시 문제가 발생하면 아이콘 • 설정 파일의 경로 수�
 
 
 ```
-
- ## # Toolbar FilePath
+# Toolbar FilePath
 SettingFilePath = r"Metal-HUD-Parse\GUI\Settings\Settings_LBL_CB.json"
 ButtonFilePath = r"Metal-HUD-Parse\GUI\Settings\Settings_BTN.json"
 SetDataFilePath = r"Metal-HUD-Parse\GUI\Settings\Settings.json"
 
-## # Icon FilePath
+# Icon FilePath
+# "/" 를 사용해야 합니다.
 DouSBUpIConFilePath = "Metal-HUD-Parse/GUI/icons/up-arrow(DoubleSpinBox).png"
 DouSBDownIConFilePath = "Metal-HUD-Parse/GUI/icons/down-arrow(DoubleSpinBox).png"
 CBDownIconFilePath = "Metal-HUD-Parse/GUI/icons/down-arrow(ComboBox).png"
-
  ```
 
 
