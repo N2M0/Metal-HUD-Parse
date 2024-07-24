@@ -1,3 +1,4 @@
+import os
 
 """
 상수, 메인 GUI 파싱 데이터에 접근할때 사용되는 keys
@@ -27,16 +28,27 @@ gpuTimeErrorData = "gpuTimeErrorData"
 상수, URL 경로 관리
 """
 
+
+# 파일 존재 여부 확인 함수
+def check_file_exists(file_path):
+    if os.path.exists(file_path):
+        return file_path
+    
+    else:
+        base_path = os.getcwd()
+        return os.path.join(base_path, file_path).replace('\\', '/')
+
 # Toolbar FilePath
-SettingFilePath = r"GUI\Settings\Settings_LBL_CB.json"
-ButtonFilePath = r"GUI\Settings\Settings_BTN.json"
-SetDataFilePath = r"GUI\Settings\Settings.json"
+SettingFilePath = check_file_exists("GUI/Settings/Settings_LBL_CB.json")
+ButtonFilePath = check_file_exists("GUI/Settings/Settings_BTN.json")
+SetDataFilePath = check_file_exists("GUI/Settings/Settings.json")
 
 # Icon FilePath
 # "/" 를 사용해야 합니다.
-DouSBUpIConFilePath = "GUI/icons/up-arrow(DoubleSpinBox).png"
-DouSBDownIConFilePath = "GUI/icons/down-arrow(DoubleSpinBox).png"
-CBDownIconFilePath = "GUI/icons/down-arrow(ComboBox).png"
+DouSBUpIConFilePath = check_file_exists("GUI/icons/up-arrow(DoubleSpinBox).png")
+DouSBDownIConFilePath = check_file_exists("GUI/icons/down-arrow(DoubleSpinBox).png")
+CBDownIconFilePath = check_file_exists("GUI/sicons/down-arrow(ComboBox).png")
+
 
 """ 
 상수, 툴바 함수 관리 키
@@ -45,6 +57,7 @@ CBDownIconFilePath = "GUI/icons/down-arrow(ComboBox).png"
 # AvoidDuplicateCreation - CBValueSave
 CBValueSave_Func = "CBValueSave-Func"
 CBValueSave_FileSaved = "CBValueSave-FileSaved"
+
 
 """ 
 상수, 툴바 설정 키-값 정의
