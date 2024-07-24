@@ -40,6 +40,8 @@ class PerformanceParsingThread(QThread):
 
             _PerformanceCalculationConditions[benchmarkBasedTime] = self.benchmarkBasedTimeValue
             self.DataParsed()
+            # 불필요한 키-값 제거
+            self.RemoveKeys()
 
             # 함수 호출
             self.emitInitializeTableSignal()
@@ -72,14 +74,28 @@ class PerformanceParsingThread(QThread):
         except Exception as e:
             print(f"{self._name} - DataParsed Error:", e)
             return None
+    
+    
+    def RemoveKeys(self):
+        try:
+            # 필요없는 키-값 제거
+            remove_keys = [secondSum, frameCount, overlapCheckData]
+            for key in remove_keys:
+                _PerformanceCalculationConditions.pop(key)
+                
+        except Exception as e:
+            print(f"{self._name} - RemoveKeys Error:", e)
+            return None
         
     # 여러개의 딕셔너리를 하나의 딕셔너리로 만듦
     def CombinedDict(self):
         try:
+            # 딕셔너리 합치기
             combined_dict = OrderedDict()
             combined_dict.update(_PerformanceData)
             combined_dict.update(_PerformanceErrorData)
             combined_dict.update(_PerformanceCalculationConditions)
+            
             return combined_dict
         
         except Exception as e:
