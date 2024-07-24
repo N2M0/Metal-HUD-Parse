@@ -14,6 +14,7 @@ class LayUpdateWorker(QWidget):
         self.StartPerformanceLable = self.parent.StartPerformanceLable
         self.ParsedResultsTable = self.parent.ParsedResultsTable
         self.ParsedPbar = self.parent.ParsedPbar
+        self.ParseStartBtn = self.parent.ParseStartBtn
         
         # 인스턴스 변수
         self.FileName = FileName
@@ -25,7 +26,10 @@ class LayUpdateWorker(QWidget):
         try:
             # 0 index parameter parent
             self.ParsingThread = PerformanceParsingThread(self.parent, self.FileName, self.benchmarkBasedTime, self.DecimalPoint)
+            self.ParsingThread.ParseStartBtnState.connect(lambda x: self.ParseStartBtn.setEnabled(x))
             self.ParsingThread.UpdateFileLabelSignal.connect(lambda text: self.StartPerformanceLable.setText(text))
+            self.ParsingThread.EmitTableState.connect(self.TableState)
+            self.ParsingThread.EmitPbarState.connect(self.PbarState)
             self.ParsingThread.EmitInitializeTableSignal.connect(self.InitializeTable)
             self.ParsingThread.EmitParsedSignal.connect(self.UpdateTable)
             self.ParsingThread.EmitParsedPbarSignal.connect(self.UpdateProgressBar)
@@ -35,6 +39,20 @@ class LayUpdateWorker(QWidget):
         except Exception as e:
             print(f"{self._name} - start Error:", e)
 
+    def TableState(self, state):
+        if state == True:
+            self.ParsedResultsTable.show()
+        
+        else:
+            self.ParsedResultsTable.hide()
+        
+    def PbarState(self, state):
+        if state == True:
+            self.ParsedPbar.show()
+        
+        else:
+            self.ParsedPbar.hide()
+        
     # 테이블 초기화
     def InitializeTable(self, label_list, col_count, row_count):
         try:

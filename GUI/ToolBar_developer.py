@@ -1,0 +1,111 @@
+from PyQt5.QtWidgets import (
+    QApplication, 
+    QWidget,
+    QGridLayout,
+    QLabel,
+    QMainWindow,
+    QVBoxLayout
+    )
+from PyQt5.QtCore import Qt
+
+from GUIStyle import *
+from OpenJson import *
+from SaveJSON import *
+from Settings_JSON_Write import *
+from constant import *
+
+developers = {
+    "Square-Dream": {
+        "tooltip": "네모난꿈",
+        "developed": {
+            "tooltip": "개발한 것",
+            "working": "Back-End (Calculation-Formulas)"
+        }
+    },
+    
+    "Home-Gravity": {
+    "tooltip": "집-중력",
+    "developed": {
+        "tooltip": "개발한 것",
+        "working": "Front-End (Graphical-User-Interface)"
+    }
+}
+}
+
+# 만든이
+class Developer(QMainWindow):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._name = __class__.__name__
+        
+        self.InitUI()
+
+    def InitUI(self):
+        try:
+            self.setWindowTitle("Developers")
+            self.move(100, 100)    
+            self.setMinimumSize(700, 400)
+
+            # UI 구현
+            central_widget = QWidget()
+            self.setCentralWidget(central_widget)
+
+            vbox = QVBoxLayout()
+            grid = QGridLayout()
+            grid.setVerticalSpacing(50) # 수직 간격 50
+            central_widget.setLayout(vbox)
+            
+            # 상단 중앙 라벨
+            Developers_label = self.add_Label("Developers", "개발자들")
+            self.add_grid_layout(grid)
+            self.addlayout(vbox, Developers_label, grid)
+            
+        except Exception as e:
+            print(f"{self._name} - InitUI Error:", e)
+
+    def addlayout(self, vbox, Developers_label, grid):
+        vbox.addSpacing(20)
+        vbox.addWidget(Developers_label)
+        vbox.addStretch(1)
+        vbox.addSpacing(10)
+        vbox.addLayout(grid)
+        vbox.addStretch(3)
+    
+    def add_grid_layout(self, grid):
+        col, row = 0, 0
+        
+        for key, value in developers.items():
+            for label_text, tooltip in [(key, value["tooltip"]), 
+                                        (value["developed"]["working"], 
+                                        value["developed"]["tooltip"])]:
+                
+                if row % 2 != 0: # 홀수 행일 때
+                    color = "rgb(58, 134, 255)"
+                
+                else:
+                    color = "rgb(0, 0, 0)"
+                
+                label = self.add_Label(label_text, tooltip, color)
+                grid.addWidget(label, col, row)
+                
+                row += 1
+                if row % 2 == 0:
+                    row = 0
+                    col += 1
+                
+            
+    def add_Label(self, lableName, tooltip_name=None, color="black"):
+        label = QLabel(lableName)
+        LabelType, LabelObjID = "QLabel", "addLabel"
+        label.setToolTip(tooltip_name)
+        label.setObjectName(LabelObjID)
+        label.setStyleSheet(LabelStyle(LabelType+"#"+LabelObjID, 22, color))
+        label.setAlignment(Qt.AlignCenter)
+        
+        return label
+
+if __name__ == "__main__":
+    app = QApplication([])
+    _developer = Developer()
+    _developer.show()
+    app.exec_()

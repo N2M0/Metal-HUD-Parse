@@ -3,6 +3,8 @@ from Metal_HUD_parse import *
 from GUIStyle import *
 from collections import OrderedDict
 import sys
+from OpenJson import *
+from constant import *
 
 # 초기화
 _PerformanceCalculationConditions = None
@@ -12,7 +14,10 @@ _PerformanceErrorData  = None
 # 스레드
 class PerformanceParsingThread(QThread):
     # 서브 스레드에서 메인 스레드로 데이터를 보낼 신호
+    ParseStartBtnState = pyqtSignal(bool)
     UpdateFileLabelSignal = pyqtSignal(str)
+    EmitTableState = pyqtSignal(bool)
+    EmitPbarState = pyqtSignal(bool)
     EmitInitializeTableSignal =  pyqtSignal(list, int, int)
     EmitParsedSignal = pyqtSignal(int, int, str)  # 추가된 신호
     EmitParsedPbarSignal = pyqtSignal(int, int)
@@ -25,13 +30,18 @@ class PerformanceParsingThread(QThread):
         self.FileName = FileName
         self.benchmarkBasedTimeValue = benchmarkBasedTimeValue
         self.DecimalPoint = DecimalPoint
-
         
     # 성능 파싱 시작
     def run(self):
         try:
             # 파싱 데이터를 저장할 변수 전역변수 설정
             global _PerformanceCalculationConditions, _PerformanceData, _PerformanceErrorData
+            
+            # 파싱이 시작중에는 버튼 비활성화
+            self.ParseStartBtnState.emit(False)
+            
+            # 설정 값 가져오기
+            self.settings = OpenJson(SetDataFilePath)
             
             # 파싱 데이터를 저장할 변수
             _PerformanceCalculationConditions = PerformanceCalculationConditions()
@@ -44,8 +54,18 @@ class PerformanceParsingThread(QThread):
             self.RemoveKeys()
 
             # 함수 호출
-            self.emitInitializeTableSignal()
-            self.emitParsedSignal()
+            if self.settings[Preview_data] == Preview_data_parmeters[Preview_data_default]:
+                self.EmitTableState.emit(True)
+                self.EmitPbarState.emit(True)
+                
+                self.emitInitializeTableSignal()
+                self.emitParsedSignal()
+                
+            
+            else:
+                self.EmitTableState.emit(False)
+                self.EmitPbarState.emit(False)
+                
             self.UpdateFileLabelSignal.emit(f'Selected File: "{self.FileName}" Done!')
             
             # 스레드 종료
@@ -59,7 +79,10 @@ class PerformanceParsingThread(QThread):
         
         finally:
             self.quit()
-    
+            
+            # 스레드 종료시 파싱 버튼을 활성화
+            self.ParseStartBtnState.emit(True)
+            
     # 성능 데이터 파싱 함수
     def DataParsed(self):
         try:
@@ -138,14 +161,14 @@ class PerformanceParsingThread(QThread):
                     for row, item in enumerate(value):
                         self.emitParsedSignalItem(col, row, str(item))
                         self.emitParsedPbarValue(sum_pbar, sum_count)
-                        # self.overhead(sum_pbar)
+                        self.overhead(sum_pbar)
                         sum_pbar += 1
 
                 # 데이터 배열이 아닐때
                 else:
                     self.emitParsedSignalItem(col, 0, str(value))
                     self.emitParsedPbarValue(sum_pbar, sum_count)
-                    # self.overhead(sum_pbar)
+                    self.overhead(sum_pbar)
                     sum_pbar += 1
                     
         except Exception as e:
@@ -174,8 +197,9 @@ class PerformanceParsingThread(QThread):
     # 성능 제한 모드, 성능 우선 모드 두가지 모드로 제공할 것.
     def overhead(self, sum_pbar):
         try:
-            if sum_pbar % 3000 == 0:
-                self.msleep(100)
+            if self.settings[Startup_mode] == Startup_mode_parmeters[Startup_mode_default]:
+                if sum_pbar % 3000 == 0:
+                    self.msleep(100)
 
         except Exception as e:
             print(f"{self._name} - overhead Error:", e)

@@ -14,6 +14,7 @@ from OpenJson import *
 from SaveJSON import *
 from Settings_JSON_Write import *
 from ToolBar_OptionsHandler import *
+from ToolBar_developer import *
 from constant import *
 
 
@@ -39,6 +40,8 @@ class SettingsWindow(QMainWindow):
         
         super().__init__(parent)
         self.SettingsManager = OptionsHandler(self)
+        self.developer = Developer(self)
+        
         self.InitUI()
         self.SettingsManager.CBSetValueRead()
 
@@ -72,7 +75,7 @@ class SettingsWindow(QMainWindow):
             setButtons = OpenJson(ButtonFilePath)
 
         try:
-            BtnFuns = [self.SettingsManager.CBValueSave, lambda: None, lambda: None, lambda: None]
+            BtnFuns = [self.SettingsManager.CBValueSave, self.developer.show, lambda: None, lambda: None]
 
             for index, (lable, items) in enumerate(setSttings.items()):
                 self.AddGrid_Lbl_Cb(lable, items, grid, index)
@@ -88,7 +91,7 @@ class SettingsWindow(QMainWindow):
     # 설정, 라벨 - 콤보박스
     def AddGrid_Lbl_Cb(self, lable, items, grid, index):
         try:
-            lbl, cb = self.addLableComboBox(lable, *items)
+            lbl, cb = self.addLabelComboBox(lable, *items)
             # 중복방지 lable
             self.CBDict[lable] = cb
 
@@ -116,7 +119,7 @@ class SettingsWindow(QMainWindow):
             print(f"{self._name} - AddGrid_Btn Error:", e)
 
     # 정의된 라벨과 콤보박스를 추가하는 함수
-    def addLableComboBox(self, lableName, tooltip_name, items):
+    def addLabelComboBox(self, lableName, tooltip_name, items):
         try:
             label = QLabel(lableName)
             LabelType, LabelObjID = "QLabel", "addLabel"
@@ -138,7 +141,7 @@ class SettingsWindow(QMainWindow):
             return label, cb
 
         except Exception as e:
-            print(f"{self._name} - addLableComboBox Error:", e)
+            print(f"{self._name} - addLabelComboBox Error:", e)
             return None, None
     
     # 정의된 버튼을 추가하는 함수
@@ -159,3 +162,9 @@ class SettingsWindow(QMainWindow):
         except Exception as e:
             print(f"{self._name} - addBtn Error:", e)
             return None
+
+if __name__ == "__main__":
+    app = QApplication([])
+    _SettingsWindow = SettingsWindow()
+    _SettingsWindow.show()
+    app.exec_()

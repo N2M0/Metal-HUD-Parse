@@ -25,6 +25,8 @@ class MetalHUDParse(QWidget):
         super().__init__()
         self._name = __class__.__name__
         
+        # 설정 값 가져오기
+        self.settings = OpenJson(SetDataFilePath)
         self.InitUI()
 
     def InitUI(self):
@@ -32,7 +34,9 @@ class MetalHUDParse(QWidget):
             # 윈도우 설정
             # 창 크기 값을 변수로 관리 권장.
             self.setWindowTitle('Metal-HUD Parse')
-            self.setMinimumSize(1200, 800) # 창 크기 고정
+            
+            self._width, self._height = 1200, 800
+            self.setMinimumSize(self._width, self._height) # 창 크기 고정
             
             # 레이아웃 생성
             self.Mainvbox = QVBoxLayout()
@@ -137,6 +141,9 @@ class MetalHUDParse(QWidget):
             # 위 객체들을 레이아웃에 추가하는 함수 초기화
             StartPerformanceframe = self.addlayout()
             
+            # 툴바 설정 값에 의해 숨김 처리된 위젯 초기값.
+            self.layout_Hide()
+            
             return StartPerformanceframe
         
         except Exception as e:
@@ -191,6 +198,12 @@ class MetalHUDParse(QWidget):
         except Exception as e:
             print(f"{self._name} - addlayout Error:", e)
             return None
+
+    def layout_Hide(self):
+        if not self.settings[Preview_data] == Preview_data_parmeters[Preview_data_default]:
+            self.ParsedResultsTable.hide()
+            self.ParsedPbar.hide()
+
 
     # 파일 이름 변경 함수
     def FileChanged(self):
@@ -248,7 +261,7 @@ class MetalHUDParse(QWidget):
     def InitParsedTable(self):
         try:
             ParsedTable = QTableWidget(self)
-            ParsedTable.setMinimumSize(1200 - 80, 300)
+            ParsedTable.setMinimumSize(self._width - 80, 300)
             
             return ParsedTable
         except Exception as e:
@@ -259,7 +272,7 @@ class MetalHUDParse(QWidget):
     def InitQProgressBar(self):
         try:
             pbar = QProgressBar(self)
-            pbar.setMinimumSize(int(1200 // 1.5) - 100, 30)
+            pbar.setMinimumSize(int(self._width // 1.5) - 100, 30)
             pbar.setStyleSheet(PbarStyle())
             # 숫자값의 위치
             pbar.setAlignment(Qt.AlignCenter)
@@ -273,6 +286,7 @@ class MetalHUDParse(QWidget):
     # 스레드 함수
     def StartParsePerformance(self, FileName, benchmarkBasedTime, DecimalPoint):
         try:
+            # 파스 결과를 메인 레이아웃에 업데이트하는 객체
             LayWorker = LayUpdateWorker(self, FileName, benchmarkBasedTime, DecimalPoint)
             LayWorker.start()
             

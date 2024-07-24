@@ -1,15 +1,16 @@
 from constant import *
 
 
-def LabelStyle(id, fontsize):
+def LabelStyle(id, fontsize, color="black"):
     return """
     %s {
         font-family: arial, helvetica, sans-serif;
         font-size: %spx;
         font-weight: bold;
+        color: %s
 
                             }
-                        """ % (id, fontsize)
+                        """ % (id, fontsize, color)
 
 def ButtonStyle(id):
     return """

@@ -44,3 +44,16 @@ CBDownIconFilePath = "GUI/icons/down-arrow(ComboBox).png"
 # AvoidDuplicateCreation - CBValueSave
 CBValueSave_Func = "CBValueSave-Func"
 CBValueSave_FileSaved = "CBValueSave-FileSaved"
+
+""" 
+상수, 툴바 설정 값 키
+"""
+
+# settings_LBL_CB
+Preview_data = "Preview data"
+Preview_data_parmeters = ("used", "not used")
+Preview_data_default = 0
+
+Startup_mode = "Startup mode"
+Startup_mode_parmeters = ("speed mode", "stability mode")
+Startup_mode_default = 1

@@ -9,29 +9,8 @@
     "Startup mode": [
         "시작시 모드 여부",
         [
-            "used",
-            "not used"
-        ]
-    ],
-    "test1": [
-        "test1",
-        [
-            "used",
-            "not used"
-        ]
-    ],
-    "test2": [
-        "test2",
-        [
-            "used",
-            "not used"
-        ]
-    ],
-    "test3": [
-        "test3",
-        [
-            "used",
-            "not used"
+            "speed mode",
+            "stability mode"
         ]
     ]
 }
