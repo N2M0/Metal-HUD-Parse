@@ -14,12 +14,11 @@ def settings_LBL_CB():
 
 def SetData():
     SLC = settings_LBL_CB()
-    Future_name = list(SLC.keys())
     
     setData_ = {
         "Settings_LBL_CB.json" : {    
-            Future_name[0]: ("테이블 미리보기 여부", SLC["Preview data"]),
-            Future_name[1]: ("시작시 모드 여부", SLC["Startup mode"])
+            Preview_data : ("테이블 미리보기 여부", SLC["Preview data"]),
+            Startup_mode : ("시작시 모드 여부", SLC["Startup mode"])
             
         },
 
@@ -33,12 +32,11 @@ def SetData():
 
 def SetDefault():
     SLC = settings_LBL_CB()
-    Future_name = list(SLC.keys())
     
     SetDataDefault = {
         "Settings.json": {
-            Future_name[0] : SLC["Preview data"][Preview_data_default],
-            Future_name[1] : SLC["Startup mode"][Startup_mode_default],
+            Preview_data : SLC[Preview_data][Preview_data_default],
+            Startup_mode : SLC[Startup_mode][Startup_mode_default],
             }
     }
     
