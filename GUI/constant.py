@@ -33,6 +33,7 @@ ButtonFilePath = r"GUI\Settings\Settings_BTN.json"
 SetDataFilePath = r"GUI\Settings\Settings.json"
 
 # Icon FilePath
+# "/" 를 사용해야 합니다.
 DouSBUpIConFilePath = "GUI/icons/up-arrow(DoubleSpinBox).png"
 DouSBDownIConFilePath = "GUI/icons/down-arrow(DoubleSpinBox).png"
 CBDownIconFilePath = "GUI/icons/down-arrow(ComboBox).png"
@@ -46,7 +47,7 @@ CBValueSave_Func = "CBValueSave-Func"
 CBValueSave_FileSaved = "CBValueSave-FileSaved"
 
 """ 
-상수, 툴바 설정 값 키
+상수, 툴바 설정 키-값 정의
 """
 
 # settings_LBL_CB
