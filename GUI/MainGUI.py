@@ -56,9 +56,6 @@ class MetalHUDParse(QWidget):
     # 처음 실행시 최초화면
     def FileReadWindow(self):
         try:
-            FileReadframe = QFrame()
-            FileReadvbox = QVBoxLayout()
-            
             # 설정툴바
             self.settings_toolbar = SettingsToolbar(self)
 
@@ -77,6 +74,20 @@ class MetalHUDParse(QWidget):
             self.FileReadBtn.setMinimumSize(200, 80)
             self.FileReadBtn.clicked.connect(lambda: self.FileUIManager.FileRead())
 
+            FileReadframe = self.FileReadWindow_Layout()
+            return FileReadframe
+            
+
+        except Exception as e:
+            print(f"{self._name} - FileReadWindow Error:", e)
+            return None
+    
+    # FileReadWindow 의 객체를 레이아웃에 추가해주는 함수
+    def FileReadWindow_Layout(self):
+        try:
+            FileReadframe = QFrame()
+            FileReadvbox = QVBoxLayout()
+            
             # 라벨과 버튼을 중앙에 배치
             FileReadvbox.addWidget(self.settings_toolbar, alignment=Qt.AlignTop)
             FileReadvbox.addStretch(1)
@@ -88,9 +99,9 @@ class MetalHUDParse(QWidget):
             FileReadframe.setLayout(FileReadvbox)
             
             return FileReadframe
-
+        
         except Exception as e:
-            print(f"{self._name} - FileReadWindow Error:", e)
+            print(f"{self._name} - FileReadWindow_Layout Error:", e)
             return None
         
     # 처음화면에서 파일 선택시 이동화면
@@ -137,7 +148,7 @@ class MetalHUDParse(QWidget):
             self.ParsedSave = self.addBtn("Parsed Save", self.StartParsePerformanceSave)
             
             # 위 객체들을 레이아웃에 추가하는 함수 초기화
-            StartPerformanceframe = self.addlayout()
+            StartPerformanceframe = self.StartPerformanceWindow_layout()
             
             # 툴바 설정 값에 의해 숨김 처리된 위젯 초기값.
             self.widget_Hide()
@@ -149,7 +160,7 @@ class MetalHUDParse(QWidget):
             return None
     
     # StartPerformanceWindow 의 객체를 레이아웃에 추가해주는 함수
-    def addlayout(self):
+    def StartPerformanceWindow_layout(self):
         try:
             StartPerformanceframe = QFrame()
             StartPerformancevbox = QVBoxLayout()
@@ -194,7 +205,7 @@ class MetalHUDParse(QWidget):
             return StartPerformanceframe
 
         except Exception as e:
-            print(f"{self._name} - addlayout Error:", e)
+            print(f"{self._name} - StartPerformanceWindow_layout Error:", e)
             return None
 
     def widget_Hide(self):
