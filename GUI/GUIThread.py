@@ -53,11 +53,12 @@ class PerformanceParsingThread(QThread):
             # 불필요한 키-값 제거
             self.RemoveKeys()
 
-            # 함수 호출
+            # 기능 활성화, 비활성화
             if self.settings[Preview_data] == Preview_data_parmeters[Preview_data_default]:
                 self.EmitTableState.emit(True)
                 self.EmitPbarState.emit(True)
                 
+                # 함수 호출
                 self.emitInitializeTableSignal()
                 self.emitParsedSignal()
                 

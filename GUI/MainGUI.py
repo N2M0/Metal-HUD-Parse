@@ -25,8 +25,6 @@ class MetalHUDParse(QWidget):
         super().__init__()
         self._name = __class__.__name__
         
-        # 설정 값 가져오기
-        self.settings = OpenJson(SetDataFilePath)
         self.InitUI()
 
     def InitUI(self):
@@ -142,7 +140,7 @@ class MetalHUDParse(QWidget):
             StartPerformanceframe = self.addlayout()
             
             # 툴바 설정 값에 의해 숨김 처리된 위젯 초기값.
-            self.layout_Hide()
+            self.widget_Hide()
             
             return StartPerformanceframe
         
@@ -199,8 +197,10 @@ class MetalHUDParse(QWidget):
             print(f"{self._name} - addlayout Error:", e)
             return None
 
-    def layout_Hide(self):
-        if not self.settings[Preview_data] == Preview_data_parmeters[Preview_data_default]:
+    def widget_Hide(self):
+        # 설정 값 가져오기
+        settings = OpenJson(SetDataFilePath)
+        if not settings[Preview_data] == Preview_data_parmeters[Preview_data_default]:
             self.ParsedResultsTable.hide()
             self.ParsedPbar.hide()
 
