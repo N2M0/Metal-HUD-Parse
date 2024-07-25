@@ -3,7 +3,7 @@ from Metal_HUD_parse import *
 from GUIStyle import *
 from collections import OrderedDict
 import sys
-from OpenJson import *
+from Json_func import *
 from constant import *
 
 # 초기화

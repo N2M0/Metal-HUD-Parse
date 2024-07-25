@@ -3,8 +3,7 @@ from PyQt5.QtWidgets import (
     )
 
 from GUIStyle import *
-from OpenJson import *
-from SaveJSON import *
+from Json_func import *
 from Settings_JSON_Write import *
 from constant import *
 

@@ -10,8 +10,7 @@ from PyQt5.QtWidgets import (
 
 from PyQt5.QtCore import Qt, QSize
 from GUIStyle import *
-from OpenJson import *
-from SaveJSON import *
+from Json_func import *
 from Settings_JSON_Write import *
 from ToolBar_OptionsHandler import *
 from ToolBar_developer import *
@@ -21,8 +20,7 @@ from constant import *
 # 콤보박스 아이템간의 간격을 조절하는 클래스.
 class CustomDelegate(QStyledItemDelegate):
     def sizeHint(self, option, index):
-        return QSize(option.rect.width(), 40)
-
+        return QSize(option.rect.width(), 50)
 
 # 설정 화면을 구성하는 클래스
 class SettingsWindow(QMainWindow):
@@ -52,8 +50,8 @@ class SettingsWindow(QMainWindow):
     # 기본 UI 초기화
     def InitUI(self):
         self.setWindowTitle("Settings")
-        self.move(100, 100)
-        self.setMinimumSize(600, 600)
+        self.setMinimumSize(800, 600)
+        self.resize(1000, 800)
 
         # UI 구현
         central_widget = QWidget()
@@ -135,7 +133,7 @@ class SettingsWindow(QMainWindow):
             # 콤보박스 아이템간의 높이조절
             cb = QComboBox(self)
             cb.setItemDelegate(CustomDelegate(cb))
-            cb.setMaximumSize(180, 40)
+            cb.setMaximumSize(380, 40)
             cb.setStyleSheet(ComboBoxStyle(self.font_family))
 
             # 아이템 추가
@@ -154,7 +152,7 @@ class SettingsWindow(QMainWindow):
             button = QPushButton(name) 
 
             button.clicked.connect(fun)
-            button.setMaximumSize(180, 80)
+            button.setMaximumSize(380, 100)
             # 툴팁
             button.setToolTip(tooltip_name)
             button_Type, button_ObjID = "QPushButton", "addBtn"

@@ -9,8 +9,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import Qt
 
 from GUIStyle import *
-from OpenJson import *
-from SaveJSON import *
+from Json_func import *
 from Settings_JSON_Write import *
 from constant import *
 
@@ -47,7 +46,6 @@ class Developer(QMainWindow):
     def InitUI(self):
         try:
             self.setWindowTitle("Developers")
-            self.move(100, 100)    
             self.setMinimumSize(700, 400)
 
             # UI 구현

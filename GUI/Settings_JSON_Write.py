@@ -7,7 +7,8 @@ def BasicSettingMenu(*args):
 def settings_LBL_CB():
     SLC = {
     Preview_data : BasicSettingMenu(*Preview_data_parmeters),
-    Startup_mode : BasicSettingMenu(*Startup_mode_parmeters)
+    Startup_mode : BasicSettingMenu(*Startup_mode_parmeters),
+    Font_Changed : BasicSettingMenu(*Font_Changed_parmeters)
     }
     
     return SLC
@@ -17,8 +18,9 @@ def SetData():
     
     setData_ = {
         "Settings_LBL_CB.json" : {    
-            Preview_data : ("테이블 미리보기 여부", SLC["Preview data"]),
-            Startup_mode : ("시작시 모드 여부", SLC["Startup mode"])
+            Preview_data : ("테이블 미리보기 여부", SLC[Preview_data]),
+            Startup_mode : ("시작시 모드 여부", SLC[Startup_mode]),
+            Font_Changed : ("폰트 변경 (재시작 필요)", SLC[Font_Changed])
             
         },
 
@@ -37,6 +39,7 @@ def SetDefault():
         "Settings.json": {
             Preview_data : SLC[Preview_data][Preview_data_default],
             Startup_mode : SLC[Startup_mode][Startup_mode_default],
+            Font_Changed : SLC[Font_Changed][Font_Changed_default],
             }
     }
     

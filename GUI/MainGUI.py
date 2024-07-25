@@ -20,6 +20,7 @@ from ToolBar import *
 from SavedWorker import *
 from LayWorker import *
 from constant import *
+from Json_func import *
 
 class MetalHUDParse(QWidget):
     def __init__(self):
