@@ -19,12 +19,16 @@ from CustomQDSpin import *
 from ToolBar import *
 from SavedWorker import *
 from LayWorker import *
+from constant import *
 
 class MetalHUDParse(QWidget):
     def __init__(self):
         super().__init__()
         self._name = __class__.__name__
-        
+        # 특정 폴더에 있는 폰트 로드
+        font_id = QtGui.QFontDatabase.addApplicationFont(font_path)
+        self.font_family = QtGui.QFontDatabase.applicationFontFamilies(font_id)[0]
+
         self.InitUI()
 
     def InitUI(self):
@@ -63,14 +67,14 @@ class MetalHUDParse(QWidget):
             self.FileLabel = QLabel("Load The File.")
             FileLabelType, FileLabelObjID = "QLabel", "FileLabel"
             self.FileLabel.setObjectName(FileLabelObjID)
-            self.FileLabel.setStyleSheet(LabelStyle(FileLabelType+"#"+FileLabelObjID, 25))
+            self.FileLabel.setStyleSheet(LabelStyle(FileLabelType+"#"+FileLabelObjID, self.font_family, 25))
             self.FileLabel.setAlignment(Qt.AlignCenter)
             
             # 파일 버튼 생성
             self.FileReadBtn = QPushButton('File Read')
             FileButtonType, FileButtonObjID = "QPushButton", "FileReadBtn"
             self.FileReadBtn.setObjectName(FileButtonObjID)
-            self.FileReadBtn.setStyleSheet(ButtonStyle(FileButtonType+"#"+FileButtonObjID))
+            self.FileReadBtn.setStyleSheet(ButtonStyle(FileButtonType+"#"+FileButtonObjID, self.font_family))
             self.FileReadBtn.setMinimumSize(200, 80)
             self.FileReadBtn.clicked.connect(lambda: self.FileUIManager.FileRead())
 
@@ -117,7 +121,7 @@ class MetalHUDParse(QWidget):
             self.StartPerformanceLable = QLabel("Metal-HUD Parse")
             StartPerformanceLabelType, StartPerformanceLabelObjID = "QLabel", "StartPerformanceLable"
             self.StartPerformanceLable.setObjectName(StartPerformanceLabelObjID)
-            self.StartPerformanceLable.setStyleSheet(LabelStyle(StartPerformanceLabelType+"#"+StartPerformanceLabelObjID, 25))
+            self.StartPerformanceLable.setStyleSheet(LabelStyle(StartPerformanceLabelType+"#"+StartPerformanceLabelObjID, self.font_family, 25))
             self.StartPerformanceLable.setAlignment(Qt.AlignCenter)
             
             # 벤치마크 베이스 시간
@@ -233,7 +237,7 @@ class MetalHUDParse(QWidget):
             _addbtn = QPushButton(BtnName)
             _addbtnType, _addbtnObjID = "QPushButton", "AddBtn"
             _addbtn.setObjectName(_addbtnObjID)
-            _addbtn.setStyleSheet(ButtonStyle(_addbtnType+"#"+_addbtnObjID))
+            _addbtn.setStyleSheet(ButtonStyle(_addbtnType+"#"+_addbtnObjID, self.font_family))
             _addbtn.setMinimumSize(190, 70)
             _addbtn.clicked.connect(func)
             
@@ -251,15 +255,12 @@ class MetalHUDParse(QWidget):
                 setSingleStep=1,
                 setValue=setValue,
                 setMinimumSize=(120, 55),
-                setStyleSheet=QDoubleSpinBoxStyle(),
                 setDecimals=0,
                 setAlignment=Qt.AlignCenter            
             )
             
             QDSpinObjLabel = CustomQDSpinBoxLabel(self).QDSpinBoxLabel(
-                LabelText=LabelText,
-                setStyleSheet=LabelStyle
-                
+                LabelText=LabelText
             )
             
             return QDSpinObj, QDSpinObjLabel
@@ -284,7 +285,7 @@ class MetalHUDParse(QWidget):
         try:
             pbar = QProgressBar(self)
             pbar.setMinimumSize(int(self._width // 1.5) - 100, 30)
-            pbar.setStyleSheet(PbarStyle())
+            pbar.setStyleSheet(PbarStyle(self.font_family))
             # 숫자값의 위치
             pbar.setAlignment(Qt.AlignCenter)
 

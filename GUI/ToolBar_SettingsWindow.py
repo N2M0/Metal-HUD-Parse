@@ -29,6 +29,10 @@ class SettingsWindow(QMainWindow):
     def __init__(self, parent=None):
         self._name = __class__.__name__
         
+        # 특정 폴더에 있는 폰트 로드
+        font_id = QtGui.QFontDatabase.addApplicationFont(font_path)
+        self.font_family = QtGui.QFontDatabase.applicationFontFamilies(font_id)[0]
+
         # cb data
         self.CBDict = {}
         
@@ -125,14 +129,14 @@ class SettingsWindow(QMainWindow):
             LabelType, LabelObjID = "QLabel", "addLabel"
             label.setToolTip(tooltip_name)
             label.setObjectName(LabelObjID)
-            label.setStyleSheet(LabelStyle(LabelType+"#"+LabelObjID, 22))
+            label.setStyleSheet(LabelStyle(LabelType+"#"+LabelObjID, self.font_family, 22))
             label.setAlignment(Qt.AlignCenter)
 
             # 콤보박스 아이템간의 높이조절
             cb = QComboBox(self)
             cb.setItemDelegate(CustomDelegate(cb))
             cb.setMaximumSize(180, 40)
-            cb.setStyleSheet(ComboBoxStyle())
+            cb.setStyleSheet(ComboBoxStyle(self.font_family))
 
             # 아이템 추가
             for item in items:
@@ -155,7 +159,7 @@ class SettingsWindow(QMainWindow):
             button.setToolTip(tooltip_name)
             button_Type, button_ObjID = "QPushButton", "addBtn"
             button.setObjectName(button_ObjID)
-            button.setStyleSheet(ButtonStyle(button_Type+"#"+button_ObjID))
+            button.setStyleSheet(ButtonStyle(button_Type+"#"+button_ObjID, self.font_family))
 
             return button
 

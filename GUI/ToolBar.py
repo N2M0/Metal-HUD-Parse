@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import (
 
 from GUIStyle import *
 from ToolBar_SettingsWindow import *
+from constant import *
 
 # 메인 GUI에 툴바를 구성하는 클래스
 class SettingsToolbar(QWidget):
@@ -16,13 +17,17 @@ class SettingsToolbar(QWidget):
         super().__init__(parent)
         self._name = __class__.__name__
         
+        # 특정 폴더에 있는 폰트 로드
+        font_id = QtGui.QFontDatabase.addApplicationFont(font_path)
+        self.font_family = QtGui.QFontDatabase.applicationFontFamilies(font_id)[0]
+        
         self.InitUI()
 
     def InitUI(self):
         try:
             self.layout = QVBoxLayout()
             self.toolbar = QToolBar()
-            self.toolbar.setStyleSheet(ToolbarStyle())
+            self.toolbar.setStyleSheet(ToolbarStyle(self.font_family))
 
             # Settings button creation
             self.settings_action = QAction("Settings", self)

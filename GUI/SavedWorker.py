@@ -1,11 +1,17 @@
 from PyQt5.QtWidgets import QWidget, QMessageBox
 from GUIStyle import *
 from GUIThread import *
+from constant import *
 
 class ParsedDataSavedWorker(QWidget):
     def __init__(self, parent):
         super(ParsedDataSavedWorker, self).__init__(parent)
         self._name = __class__.__name__
+        
+        # 특정 폴더에 있는 폰트 로드
+        font_id = QtGui.QFontDatabase.addApplicationFont(font_path)
+        self.font_family = QtGui.QFontDatabase.applicationFontFamilies(font_id)[0]
+
         
         self.parent = parent
     
@@ -27,7 +33,7 @@ class ParsedDataSavedWorker(QWidget):
             msgBox.setText(setText)
             
             # 스타일 시트 설정
-            msgBox.setStyleSheet(MsgBoxStyle())
+            msgBox.setStyleSheet(MsgBoxStyle(self.font_family))
             msgBox.exec_()
             
             # Error 텍스트 포함시 강제 종료

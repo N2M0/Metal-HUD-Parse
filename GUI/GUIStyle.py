@@ -1,23 +1,22 @@
 from constant import *
+from PyQt5 import QtGui
 
 
-def LabelStyle(id, fontsize, color="black"):
+def LabelStyle(id, font_family, fontsize, color="black"):
     return """
     %s {
-        font-family: arial, helvetica, sans-serif;
+        font-family: '%s';
         font-size: %spx;
-        font-weight: bold;
         color: %s
 
                             }
-                        """ % (id, fontsize, color)
+                        """ % (id, font_family, fontsize, color)
 
-def ButtonStyle(id):
+def ButtonStyle(id, font_family):
     return """
         %s {
-            font-family: arial, helvetica, sans-serif;
+            font-family: '%s';
             font-size: 25px;
-            font-weight: bold;
             color: white;
             background-color: rgb(58, 134, 255);
             border-radius: 15px;
@@ -32,7 +31,7 @@ def ButtonStyle(id):
                 background-color: #d0d0d0;
             }
 
-                            """ % (id, id, id)
+                            """ % (id, font_family, id, id)
 
 
 
@@ -41,12 +40,11 @@ def ButtonStyle(id):
 # 1. <a href="https://www.flaticon.com/free-icons/up-arrow" title="up arrow icons">Up arrow icons created by Roundicons - Flaticon</a>
 # 2. down-button
 # 2. <a href="https://www.flaticon.com/free-icons/down-arrow" title="down arrow icons">Down arrow icons created by Roundicons - Flaticon</a>
-def QDoubleSpinBoxStyle():
+def QDoubleSpinBoxStyle(font_family):
     return """
         QDoubleSpinBox {
-            font-family: Arial, Helvetica, sans-serif;
+            font-family: '%s';
             font-size: 18px;
-            font-weight: bold;
             color: black;
             background-color: #f0f0f0;
             border: 1px solid #a0a0a0;
@@ -75,22 +73,21 @@ def QDoubleSpinBoxStyle():
         }
             
             """ % (
+                font_family,
                 DouSBUpIConFilePath,
                 DouSBDownIConFilePath,
             )
 
-def MsgBoxStyle():
+def MsgBoxStyle(font_family):
     return """
             QMessageBox {
-                font-family: arial, helvetica, sans-serif;
+                font-family: '%s';
                 font-size: 15px;
-                font-weight: bold;
                 border-radius: 15px;
             }
             QPushButton {
-                font-family: arial, helvetica, sans-serif;
+                font-family: '%s';
                 font-size: 15px;
-                font-weight: bold;
                 background-color: rgb(58, 134, 255);
                 border-radius: 15px;
                 color: white;
@@ -101,11 +98,11 @@ def MsgBoxStyle():
             QLabel{
                 min-width: 300px;
                 }
-        """
+        """ % (font_family, font_family)
 
 
 
-def ToolbarStyle():
+def ToolbarStyle(font_family):
     return """
             QToolBar {
                 background-color: #f0f0f0;
@@ -114,14 +111,13 @@ def ToolbarStyle():
             }
 
             QToolButton {
-                font-family: Arial, Helvetica, sans-serif;
+                font-family: '%s';
                 background-color: transparent;
                 border: none;
                 padding: 8px;
                 border-radius: 8px;  /* Inherit toolbar's rounded corners */
                 color: white;
                 background-color: rgb(58, 134, 255);
-                font-weight: bold;
             }
 
             QToolButton:hover {
@@ -131,15 +127,14 @@ def ToolbarStyle():
             QToolButton:pressed {
                 background-color: #d0d0d0;
             }
-        """
+        """ % font_family
 
 
 
-def PbarStyle():
+def PbarStyle(font_family):
     return """
             QProgressBar {
-                font-family: arial, helvetica, sans-serif;
-                font-weight: bold;
+                font-family: '%s';
                 border: 2px solid grey;
                 border-radius: 8px;
                 background-color: #FFFFFF;
@@ -150,18 +145,17 @@ def PbarStyle():
                 background-color: rgb(58, 134, 255);
                 border-radius: 5px; /* 둥근 효과 */
             }
-        """
+        """ % font_family
 
 
 # 저작권 표시
 # 1. QComboBox::down-arrow
 # 1. <a href="https://www.flaticon.com/free-icons/down-arrow" title="down arrow icons">Down arrow icons created by Roundicons - Flaticon</a>
-def ComboBoxStyle():
+def ComboBoxStyle(font_family):
     return """
         QComboBox {
-            font-family: arial, helvetica, sans-serif;
+            font-family: '%s';
             font-size: 15px;
-            font-weight: bold;
             border-radius: 4px;
             border: 2px solid rgb(58, 134, 255);;
             padding: 3px;
@@ -189,13 +183,9 @@ def ComboBoxStyle():
         
         QComboBox QAbstractItemView {
             border: 1px solid rgb(175, 175, 175);
-            font-family: arial, helvetica, sans-serif;
+            font-family: '%s';
             font-size: 15px;
-            font-weight: bold;
         }
 
-    """ % CBDownIconFilePath
+    """ % (font_family, CBDownIconFilePath, font_family)
 
-
-# 아이콘이 표시되지 않을시 아이콘 URL 경로 수정 필요.
-# 후에 문자열 포탯팅 등으로 아이콘의 상대경로를 반환하도록 코드를 작성할 것.

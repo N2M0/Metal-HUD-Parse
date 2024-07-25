@@ -38,6 +38,10 @@ class Developer(QMainWindow):
         super().__init__(parent)
         self._name = __class__.__name__
         
+        # 특정 폴더에 있는 폰트 로드
+        font_id = QtGui.QFontDatabase.addApplicationFont(font_path)
+        self.font_family = QtGui.QFontDatabase.applicationFontFamilies(font_id)[0]
+
         self.InitUI()
 
     def InitUI(self):
@@ -107,7 +111,7 @@ class Developer(QMainWindow):
             LabelType, LabelObjID = "QLabel", "addLabel"
             label.setToolTip(tooltip_name)
             label.setObjectName(LabelObjID)
-            label.setStyleSheet(LabelStyle(LabelType+"#"+LabelObjID, 22, color))
+            label.setStyleSheet(LabelStyle(LabelType+"#"+LabelObjID, self.font_family, 22, color))
             label.setAlignment(Qt.AlignCenter)
             
             return label

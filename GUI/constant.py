@@ -35,6 +35,10 @@ def check_file_exists(file_path):
     base_path = os.path.dirname(os.path.realpath(__file__))
     return os.path.join(base_path, file_path).replace('\\', '/')
 
+
+# 폰트 경로
+font_path = check_file_exists("Fonts/Open_Sans/static/OpenSans-Bold.ttf")  # 폰트 파일 경로
+
 # Toolbar FilePath
 SettingFilePath = check_file_exists("Settings/Settings_LBL_CB.json")
 ButtonFilePath = check_file_exists("Settings/Settings_BTN.json")
