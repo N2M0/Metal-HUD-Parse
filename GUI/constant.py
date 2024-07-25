@@ -59,6 +59,9 @@ URL 경로 관리
 # 폰트 경로
 font_path = Font_path("Settings/Settings.json", Font_Changed) # 폰트 파일 경로
 
+# 설정 경로
+SettingsWritePath = check_file_exists("Settings/%s")
+
 # Toolbar FilePath
 SettingFilePath = check_file_exists("Settings/Settings_LBL_CB.json")
 ButtonFilePath = check_file_exists("Settings/Settings_BTN.json")

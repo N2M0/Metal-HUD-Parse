@@ -54,7 +54,7 @@ def SetSaved(setData_ = None):
     
     # tuple 로 유지할것
     for filename, filedata in data.items():
-        with open(rf"GUI\Settings\{filename}", "w", encoding="utf-8") as f:
+        with open(SettingsWritePath % filename, "w", encoding="utf-8") as f:
             f.write(json.dumps(filedata, ensure_ascii=False, indent=4))
 
 if __name__ == "__main__":

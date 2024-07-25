@@ -42,16 +42,12 @@
             "OpenSans_Condensed-SemiBoldItalic.ttf",
             "OpenSans_SemiCondensed-Bold.ttf",
             "OpenSans_SemiCondensed-BoldItalic.ttf",
-            "OpenSans_SemiCondensed-ExtraBold.ttf",
-            "OpenSans_SemiCondensed-ExtraBoldItalic.ttf",
             "OpenSans_SemiCondensed-Italic.ttf",
             "OpenSans_SemiCondensed-Light.ttf",
             "OpenSans_SemiCondensed-LightItalic.ttf",
             "OpenSans_SemiCondensed-Medium.ttf",
             "OpenSans_SemiCondensed-MediumItalic.ttf",
-            "OpenSans_SemiCondensed-Regular.ttf",
-            "OpenSans_SemiCondensed-SemiBold.ttf",
-            "OpenSans_SemiCondensed-SemiBoldItalic.ttf"
+            "OpenSans_SemiCondensed-Regular.ttf"
         ]
     ]
 }

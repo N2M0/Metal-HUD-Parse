@@ -9,12 +9,25 @@ def check_file_exists(file_path):
 
 # 폰트 불러오기
 def Font_Read(font_path):
-    # 특정 폴더 경로
+    # 적용되지 않는 폰트들
+    remove_font = [
+        "OpenSans_SemiCondensed-SemiBoldItalic.ttf", 
+        "OpenSans_SemiCondensed-SemiBold.ttf", 
+        "OpenSans_SemiCondensed-ExtraBold.ttf", 
+        "OpenSans_SemiCondensed-ExtraBoldItalic.ttf"
+        ]
+    
+    # 특정 폴더 경로 확인
     folder_path = check_file_exists(font_path)
+    
     # 폴더의 파일 목록 가져오기
     files = os.listdir(folder_path)
     
-    return files
+    # 제거할 폰트를 제외한 파일 목록 필터링
+    filtered_files = [file for file in files 
+                        if file not in remove_font]
+    
+    return filtered_files
 
 # 폰트 패치
 def Font_path(font_path, access_key):
