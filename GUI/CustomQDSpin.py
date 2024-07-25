@@ -47,7 +47,6 @@ class CustomQDSpinBoxLabel:
         self._name = __class__.__name__
         
         # 특정 폴더에 있는 폰트 로드
-        font_path = "GUI/Fonts/Open_Sans/static/OpenSans-Bold.ttf"  # 폰트 파일 경로
         font_id = QtGui.QFontDatabase.addApplicationFont(font_path)
         self.font_family = QtGui.QFontDatabase.applicationFontFamilies(font_id)[0]
 
