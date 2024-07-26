@@ -5,84 +5,116 @@ from constant import *
 
 # Metal-HUD.csv 파일 열기
 def DataReader(FileName):
-    with open(FileName, 'r', newline='') as f:
-        reader = csv.reader(f)
-        data = list(reader)
-    return data
+    try:
+        if FileName.endswith(".csv"):
+            with open(FileName, 'r', newline='') as f:
+                reader = csv.reader(f)
+                data = list(reader)
+            return data
+        
+        else:
+            print("DataReader File Extension Selection Error:", "Not a *.csv file.")
+            return None
     
-    # HUDFile = open(FileName, 'r')
-    # return csv.reader(HUDFile)
+    except Exception as e:
+        print("DataReader Error:", e)
+        return None
 
 # 데이터 분리
-def DataSplit(hudRawData, PerformanceCalculationConditions, PerformanceData, PerformanceErrorData):
-    for line in hudRawData:
-        # 콘솔로 들어온 데이터 중 중복된 값이 있어서 제거 처리
-        if PerformanceCalculationConditions[overlapCheckData] != line[0]:
-                PerformanceCalculationConditions[overlapCheckData] = line[0]
-                PerformanceCalculationConditions[missedFrame] += int(line[1])
-                
-                # 메모리 데이터
-                PerformanceData[memoryData].append(float(line[2]))
-
-                for i in range(3, len(line)):
-                    # 일부 데이터의 소수점 자리가 <...>로 들어올 때가 있어서 제거 처리
-                    if ("<" not in line[i]):
-                        if (line[i] != ""):
-                            if i % 2 == 1:
-                                # 성능 시간 데이터
-                                PerformanceData[frameTimeData].append(float(line[i]))
-                                
-                            else:
-                                # GPU 시간 데이터
-                                PerformanceData[gpuTimeData].append(float(line[i]))
-                    else:
-                        if i % 2 == 1:
-                            PerformanceCalculationConditions[frametimeError] += 1
-                            PerformanceErrorData[frametimeErrorData].append(line[i])
-                        else:
-                            PerformanceCalculationConditions[gpuTimeError] += 1
-                            PerformanceErrorData[gpuTimeErrorData].append(line[i])
-        else:
-            continue
+def DataSplit(hudRawData, PerformanceCalculationConditions, PerformanceData, PerformanceErrorData, DecimalPoint = 2):
+    try:
         
+        # 소수점 값 처리 조건문
+        # a. 2 보다 값이 크면 2 를 반환
+        # b. 2 보다 값이 작으면 임의 값을 반환
+        DecimalPointValue = DecimalPoint if DecimalPoint <= 2 else 2
+        
+        for line in hudRawData:
+            # 콘솔로 들어온 데이터 중 중복된 값이 있어서 제거 처리
+            if PerformanceCalculationConditions[overlapCheckData] != line[0]:
+                    PerformanceCalculationConditions[overlapCheckData] = line[0]
+                    PerformanceCalculationConditions[missedFrame] += int(line[1])
+                    
+                    # 메모리 데이터
+                    PerformanceData[memoryData].append(round(float(line[2]), DecimalPointValue))
+
+                    for i in range(3, len(line)):
+                        # 일부 데이터의 소수점 자리가 <...>로 들어올 때가 있어서 제거 처리
+                        if ("<" not in line[i]):
+                            if (line[i] != ""):
+                                if i % 2 == 1:
+                                    # 성능 시간 데이터
+                                    PerformanceData[frameTimeData].append(round(float(line[i]), DecimalPointValue))
+                                    
+                                else:
+                                    # GPU 시간 데이터
+                                    PerformanceData[gpuTimeData].append(round(float(line[i]), DecimalPointValue))
+                        else:
+                            if i % 2 == 1:
+                                PerformanceCalculationConditions[frametimeError] += 1
+                                PerformanceErrorData[frametimeErrorData].append(line[i])
+                            else:
+                                PerformanceCalculationConditions[gpuTimeError] += 1
+                                PerformanceErrorData[gpuTimeErrorData].append(line[i])
+            else:
+                continue
+            
+    except Exception as e:
+        print("DataSplit Error:", e)
+        return None
 
 # FPS 계산식
 def FPSCalculation(PerformanceCalculationConditions, DecimalPoint = 2):
-    return round(
+    try:
+        return round(
         (PerformanceCalculationConditions[frameCount] * 
         PerformanceCalculationConditions[benchmarkBasedTime] / 
         PerformanceCalculationConditions[secondSum]) * 
-        1000 /
+        1000 / 
         PerformanceCalculationConditions[benchmarkBasedTime],
         DecimalPoint
         )
-
+        
+    except Exception as e:
+        print("FPSCalculation Error:", e)
+        return None
+        
 # FrameTime > FPS 변환
 # 평균 FPS = 소수점 3번째 자리에서 반올림 처리 (2자리까지만 표시)
 def ConverttoFPS(PerformanceData, PerformanceCalculationConditions, DecimalPoint = 2):
-    for i in range(len(PerformanceData[frameTimeData])):
-        PerformanceCalculationConditions[secondSum] += float(PerformanceData[frameTimeData][i])
-        PerformanceCalculationConditions[frameCount] += 1
-        
-        if PerformanceCalculationConditions[secondSum] >= PerformanceCalculationConditions[benchmarkBasedTime]:
-            PerformanceData[FPSData].append(FPSCalculation(PerformanceCalculationConditions, DecimalPoint))
+    try:
+        for i in range(len(PerformanceData[frameTimeData])):
+            PerformanceCalculationConditions[secondSum] += float(PerformanceData[frameTimeData][i])
+            PerformanceCalculationConditions[frameCount] += 1
             
-            # 반복 할때마다 초기화
-            PerformanceCalculationConditions[frameCount] = 0
-            PerformanceCalculationConditions[secondSum] = 0
+            if PerformanceCalculationConditions[secondSum] >= PerformanceCalculationConditions[benchmarkBasedTime]:
+                PerformanceData[FPSData].append(FPSCalculation(PerformanceCalculationConditions, DecimalPoint))
+                
+                # 반복 할때마다 초기화
+                PerformanceCalculationConditions[frameCount] = 0
+                PerformanceCalculationConditions[secondSum] = 0
+                
+    except Exception as e:
+        print("ConverttoFPS Error:", e)
+        return None
 
 # 마지막에 남은 1초 안되는 자투리 데이터로 평균 FPS 계산
 def LastDataAvg(PerformanceData, PerformanceCalculationConditions, DecimalPoint = 2):
-    # 분모가 0일때 예외처리
-    if PerformanceCalculationConditions[secondSum] != 0:
-        PerformanceData[FPSData].append(FPSCalculation(PerformanceCalculationConditions, DecimalPoint))
-
+    try:
+        # 분모가 0일때 예외처리
+        if PerformanceCalculationConditions[secondSum] != 0:
+            PerformanceData[FPSData].append(FPSCalculation(PerformanceCalculationConditions, DecimalPoint))
+    except Exception as e:
+        print("LastDataAvg Error:", e)
 
 # 파일 저장 함수
 def PerformanceCsvSave(FileName, title, data):
-    df = pd.DataFrame({title : data})
-    df.to_csv(FileName)
-
+    try:
+        df = pd.DataFrame({title : data})
+        df.to_csv(FileName)
+        
+    except Exception as e:
+        print("PerformanceCsvSave Error:", e)
 
 #benchmarkBasedTime 여기에 몇 ms마다 FPS 평균을 낼 것인지 입력
 #benchmarkBasedTime 값이 너무 작으면 실제보다 과하게 프레임이 튀어 보일 수 있음
@@ -122,28 +154,30 @@ if __name__ == "__main__":
     _PerformanceData = PerformanceData()
     _PerformanceErrorData = PerformanceErrorData()
 
+    # 소수점 반올림
+    DecimalPoint = 2
+    
     # 성능 데이터 분리
-    DataSplit(DataReader("output.csv"), _PerformanceCalculationConditions, _PerformanceData, _PerformanceErrorData)
+    DataSplit(DataReader("output.csv"), _PerformanceCalculationConditions, _PerformanceData, _PerformanceErrorData, DecimalPoint)
 
     # FrameTime > FPS 변환
-    ConverttoFPS(_PerformanceData, _PerformanceCalculationConditions, 2)
+    ConverttoFPS(_PerformanceData, _PerformanceCalculationConditions, DecimalPoint)
     # 마지막에 남은 1초 안되는 자투리 데이터로 평균 FPS 계산
-    LastDataAvg(_PerformanceData, _PerformanceCalculationConditions, 2)
+    LastDataAvg(_PerformanceData, _PerformanceCalculationConditions, DecimalPoint)
 
     # 파일 저장
-    # PerformanceCsvSave("FPS-Result.csv", f"FPS - 약 {_PerformanceCalculationConditions['benchmarkBasedTime']} ms마다 평균치 계산", PerformanceData["FPSData"])
-    # PerformanceCsvSave("Frametime-Result.csv", f"Frametime", _PerformanceData["frameTimeData"])
-    # PerformanceCsvSave("GPUTime-Result.csv", f"GPUTime", _PerformanceData["gpuTimeData"])
-    # PerformanceCsvSave("Memory-Result.csv", f"Memory(MB)", _PerformanceData["memoryData"])
-    # PerformanceCsvSave("Frametime-Error.csv", f"Frametime error list", _PerformanceErrorData["frametimeErrorData"])
-    # PerformanceCsvSave("GPUTime-error.csv", f"GPUTime error list", _PerformanceErrorData["gpuTimeErrorData"])
-
+    PerformanceCsvSave("FPS-Result.csv", f"FPS - 약 {_PerformanceCalculationConditions[benchmarkBasedTime]} ms마다 평균치 계산", _PerformanceData[FPSData])
+    PerformanceCsvSave("Frametime-Result.csv", f"Frametime", _PerformanceData[frameTimeData])
+    PerformanceCsvSave("GPUTime-Result.csv", f"GPUTime", _PerformanceData[gpuTimeData])
+    PerformanceCsvSave("Memory-Result.csv", f"Memory(MB)", _PerformanceData[memoryData])
+    PerformanceCsvSave("Frametime-Error.csv", f"Frametime error list", _PerformanceErrorData[frametimeErrorData])
+    PerformanceCsvSave("GPUTime-error.csv", f"GPUTime error list", _PerformanceErrorData[gpuTimeErrorData])
     # pprint(_PerformanceData)
 
-    # print("\n\nDone! Missed Frame:", _PerformanceCalculationConditions["missedFrame"])
-    # print("Frametime error:", _PerformanceCalculationConditions["frametimeError"])
-    # print("GPUTime error:", _PerformanceCalculationConditions["gpuTimeError"])
+    print("\n\nDone! Missed Frame:", _PerformanceCalculationConditions[missedFrame])
+    print("Frametime error:", _PerformanceCalculationConditions[frametimeError])
+    print("GPUTime error:", _PerformanceCalculationConditions[gpuTimeError])
     
-    for key, value in _PerformanceData.items():
-        for value in value:
-            print(value)
+    # for key, value in _PerformanceData.items():
+    #     for value in value:
+    #         print(value)

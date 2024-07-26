@@ -1,0 +1,53 @@
+{
+    "Preview data": [
+        "테이블 미리보기 여부",
+        [
+            "used",
+            "not used"
+        ]
+    ],
+    "Startup mode": [
+        "시작시 모드 여부",
+        [
+            "speed mode",
+            "stability mode"
+        ]
+    ],
+    "Font changed (Restart required)": [
+        "폰트 변경 (재시작 필요)",
+        [
+            "OpenSans-Bold.ttf",
+            "OpenSans-BoldItalic.ttf",
+            "OpenSans-ExtraBold.ttf",
+            "OpenSans-ExtraBoldItalic.ttf",
+            "OpenSans-Italic.ttf",
+            "OpenSans-Light.ttf",
+            "OpenSans-LightItalic.ttf",
+            "OpenSans-Medium.ttf",
+            "OpenSans-MediumItalic.ttf",
+            "OpenSans-Regular.ttf",
+            "OpenSans-SemiBold.ttf",
+            "OpenSans-SemiBoldItalic.ttf",
+            "OpenSans_Condensed-Bold.ttf",
+            "OpenSans_Condensed-BoldItalic.ttf",
+            "OpenSans_Condensed-ExtraBold.ttf",
+            "OpenSans_Condensed-ExtraBoldItalic.ttf",
+            "OpenSans_Condensed-Italic.ttf",
+            "OpenSans_Condensed-Light.ttf",
+            "OpenSans_Condensed-LightItalic.ttf",
+            "OpenSans_Condensed-Medium.ttf",
+            "OpenSans_Condensed-MediumItalic.ttf",
+            "OpenSans_Condensed-Regular.ttf",
+            "OpenSans_Condensed-SemiBold.ttf",
+            "OpenSans_Condensed-SemiBoldItalic.ttf",
+            "OpenSans_SemiCondensed-Bold.ttf",
+            "OpenSans_SemiCondensed-BoldItalic.ttf",
+            "OpenSans_SemiCondensed-Italic.ttf",
+            "OpenSans_SemiCondensed-Light.ttf",
+            "OpenSans_SemiCondensed-LightItalic.ttf",
+            "OpenSans_SemiCondensed-Medium.ttf",
+            "OpenSans_SemiCondensed-MediumItalic.ttf",
+            "OpenSans_SemiCondensed-Regular.ttf"
+        ]
+    ]
+}
