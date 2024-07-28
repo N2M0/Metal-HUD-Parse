@@ -3,6 +3,10 @@ from PyQt5.QtCore import Qt
 from GUIStyle import *
 from GUIThread import *
 import sys
+from applog import *
+
+logger = InitLogger()
+
 
 # 메인 레이아웃을 업데이트 하기 위한 클래스
 class LayUpdateWorker(QWidget):
@@ -37,7 +41,7 @@ class LayUpdateWorker(QWidget):
             self.ParsingThread.start()
             
         except Exception as e:
-            print(f"{self._name} - start Error:", e)
+            logger.error(f"{self._name} - start Error: {e}")
 
     def TableState(self, state):
         if state == True:
@@ -63,7 +67,7 @@ class LayUpdateWorker(QWidget):
             self.ParsedResultsTable.setHorizontalHeaderLabels(label_list)
             
         except Exception as e:
-            print(f"{self._name} - InitializeTable Error:", e)
+            logger.error(f"{self._name} - InitializeTable Error: {e}")
             
             
     # 테이블 업데이트 함수
@@ -75,7 +79,7 @@ class LayUpdateWorker(QWidget):
             self.ParsedResultsTable.setItem(row, col, item)
 
         except Exception as e:
-            print(f"{self._name} - UpdateTable Error:", e)
+            logger.error(f"{self._name} - UpdateTable Error: {e}")
             sys.exit(1)
 
     # 프로그래스바 업데이트 함수
@@ -85,5 +89,5 @@ class LayUpdateWorker(QWidget):
             self.ParsedPbar.setValue(int(progress))  # 프로그래스바 업데이트
 
         except Exception as e:
-            print(f"{self._name} - UpdateProgressBar Error:", e)
+            logger.error(f"{self._name} - UpdateProgressBar Error: {e}")
             sys.exit(1)

@@ -72,3 +72,6 @@ SetDataFilePath = check_file_exists("Settings/Settings.json")
 DouSBUpIConFilePath = check_file_exists("icons/up-arrow(DoubleSpinBox).png")
 DouSBDownIConFilePath = check_file_exists("icons/down-arrow(DoubleSpinBox).png")
 CBDownIconFilePath = check_file_exists("icons/down-arrow(ComboBox).png")
+
+# logging FilePath
+loggingFilePath = check_file_exists(f"debugs/app_{CurrentTime()}.log")

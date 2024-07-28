@@ -5,10 +5,15 @@ from PyQt5.QtWidgets import (
     QAction, 
     QToolBar, 
     )
+from PyQt5 import QtGui
 
 from GUIStyle import *
 from ToolBar_SettingsWindow import *
 from constant import *
+from applog import *
+
+logger = InitLogger()
+
 
 # 메인 GUI에 툴바를 구성하는 클래스
 class SettingsToolbar(QWidget):
@@ -39,7 +44,7 @@ class SettingsToolbar(QWidget):
             self.setLayout(self.layout)
             
         except Exception as e:
-            print(f"{self._name} - InitUI Error:", e)
+            logger.error(f"{self._name} - InitUI Error: {e}")
             
     def show_settings(self):
         try:
@@ -47,7 +52,7 @@ class SettingsToolbar(QWidget):
             self.settings_window.show()
             
         except Exception as e:
-            print(f"{self._name} - show_settings Error:", e)
+            logger.error(f"{self._name} - show_settings Error: {e}")
             
 if __name__ == "__main__":
     app = QApplication([])

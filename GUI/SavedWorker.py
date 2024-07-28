@@ -1,7 +1,12 @@
 from PyQt5.QtWidgets import QWidget, QMessageBox
+from PyQt5 import QtGui
 from GUIStyle import *
 from GUIThread import *
 from constant import *
+from applog import *
+
+logger = InitLogger()
+
 
 class ParsedDataSavedWorker(QWidget):
     def __init__(self, parent):
@@ -23,7 +28,7 @@ class ParsedDataSavedWorker(QWidget):
             self.SaveThread.start()
             
         except Exception as e:
-            print(f"{self._name} - start Error:", e)
+            logger.error(f"{self._name} - start Error: {e}")
             
     # 메시지박스
     def ShowMessagebox(self, setText):
@@ -41,5 +46,5 @@ class ParsedDataSavedWorker(QWidget):
                 sys.exit(1)
         
         except Exception as e:
-            print(f"{self._name} - ShowMessagebox Error:", e)
+            logger.error(f"{self._name} - ShowMessagebox Error: {e}")
             

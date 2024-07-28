@@ -2,6 +2,10 @@ import csv
 import pandas as pd
 from pprint import pprint
 from constant import *
+from applog import *
+
+logger = InitLogger()
+
 
 # Metal-HUD.csv 파일 열기
 def DataReader(FileName):
@@ -13,11 +17,11 @@ def DataReader(FileName):
             return data
         
         else:
-            print("DataReader File Extension Selection Error:", "Not a *.csv file.")
+            logger.debug("DataReader File Extension Selection Error:", "Not a *.csv file.")
             return None
     
     except Exception as e:
-        print("DataReader Error:", e)
+        logger.error(f"DataReader Error: {e}")
         return None
 
 # 데이터 분리
@@ -60,7 +64,7 @@ def DataSplit(hudRawData, PerformanceCalculationConditions, PerformanceData, Per
                 continue
             
     except Exception as e:
-        print("DataSplit Error:", e)
+        logger.error(f"DataSplit Error: {e}")
         return None
 
 # FPS 계산식
@@ -76,7 +80,7 @@ def FPSCalculation(PerformanceCalculationConditions, DecimalPoint = 2):
         )
         
     except Exception as e:
-        print("FPSCalculation Error:", e)
+        logger.error(f"FPSCalculation Error: {e}")
         return None
         
 # FrameTime > FPS 변환
@@ -95,7 +99,7 @@ def ConverttoFPS(PerformanceData, PerformanceCalculationConditions, DecimalPoint
                 PerformanceCalculationConditions[secondSum] = 0
                 
     except Exception as e:
-        print("ConverttoFPS Error:", e)
+        logger.error(f"ConverttoFPS Error: {e}")
         return None
 
 # 마지막에 남은 1초 안되는 자투리 데이터로 평균 FPS 계산
@@ -105,7 +109,7 @@ def LastDataAvg(PerformanceData, PerformanceCalculationConditions, DecimalPoint 
         if PerformanceCalculationConditions[secondSum] != 0:
             PerformanceData[FPSData].append(FPSCalculation(PerformanceCalculationConditions, DecimalPoint))
     except Exception as e:
-        print("LastDataAvg Error:", e)
+        logger.error(f"LastDataAvg Error: {e}")
 
 # 파일 저장 함수
 def PerformanceCsvSave(FileName, title, data):
@@ -114,7 +118,7 @@ def PerformanceCsvSave(FileName, title, data):
         df.to_csv(FileName)
         
     except Exception as e:
-        print("PerformanceCsvSave Error:", e)
+        logger.error(f"PerformanceCsvSave Error: {e}")
 
 #benchmarkBasedTime 여기에 몇 ms마다 FPS 평균을 낼 것인지 입력
 #benchmarkBasedTime 값이 너무 작으면 실제보다 과하게 프레임이 튀어 보일 수 있음
@@ -174,9 +178,9 @@ if __name__ == "__main__":
     PerformanceCsvSave("GPUTime-error.csv", f"GPUTime error list", _PerformanceErrorData[gpuTimeErrorData])
     # pprint(_PerformanceData)
 
-    print("\n\nDone! Missed Frame:", _PerformanceCalculationConditions[missedFrame])
-    print("Frametime error:", _PerformanceCalculationConditions[frametimeError])
-    print("GPUTime error:", _PerformanceCalculationConditions[gpuTimeError])
+    logger.debug("\n\nDone! Missed Frame:", _PerformanceCalculationConditions[missedFrame])
+    logger.debug("Frametime error:", _PerformanceCalculationConditions[frametimeError])
+    logger.debug("GPUTime error:", _PerformanceCalculationConditions[gpuTimeError])
     
     # for key, value in _PerformanceData.items():
     #     for value in value:

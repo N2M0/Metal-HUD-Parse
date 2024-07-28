@@ -1,5 +1,9 @@
 import json
 from constant import *
+from applog import *
+
+logger = InitLogger()
+
 
 def BasicSettingMenu(*args):
     return [*args]
@@ -60,4 +64,4 @@ def SetSaved(setData_ = None):
 if __name__ == "__main__":
     SetSaved()
     SetSaved(SetDefault())
-    print("Saved!")
+    logger.debug("Saved!")

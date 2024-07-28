@@ -5,6 +5,9 @@ from collections import OrderedDict
 import sys
 from Json_func import *
 from constant import *
+from applog import *
+
+logger = InitLogger()
 
 # 초기화
 _PerformanceCalculationConditions = None
@@ -73,7 +76,7 @@ class PerformanceParsingThread(QThread):
             self.ThreadFinishedSignal.emit()
         
         except Exception as e:
-            print(f"{self._name} - run Error:", e)
+            logger.error(f"{self._name} - run Error: {e}")
             
             # 오류 발생시 바로 종료.
             sys.exit(1)
@@ -96,7 +99,7 @@ class PerformanceParsingThread(QThread):
             self.UpdateFileLabelSignal.emit(f'Selected File: "{self.FileName}" Loding(Saveable.)...')
             
         except Exception as e:
-            print(f"{self._name} - DataParsed Error:", e)
+            logger.error(f"{self._name} - DataParsed Error: {e}")
             return None
     
     
@@ -108,7 +111,7 @@ class PerformanceParsingThread(QThread):
                 _PerformanceCalculationConditions.pop(key)
                 
         except Exception as e:
-            print(f"{self._name} - RemoveKeys Error:", e)
+            logger.error(f"{self._name} - RemoveKeys Error: {e}")
             return None
         
     # 여러개의 딕셔너리를 하나의 딕셔너리로 만듦
@@ -123,7 +126,7 @@ class PerformanceParsingThread(QThread):
             return combined_dict
         
         except Exception as e:
-            print(f"{self._name} - CombinedDict Error:", e)
+            logger.error(f"{self._name} - CombinedDict Error: {e}")
             return None
     
     # 컴빈드 데이터 계산
@@ -131,7 +134,7 @@ class PerformanceParsingThread(QThread):
         try:
             return [len(v) for v in combined_dict.values() if isinstance(v, list)]
         except Exception as e:
-            print(f"{self._name} - CombinedDictData Error:", e)
+            logger.error(f"{self._name} - CombinedDictData Error: {e}")
             return None
         
     # 테이블에 row, col 초기 설정 데이터를 전달하는 함수
@@ -145,7 +148,7 @@ class PerformanceParsingThread(QThread):
             self.EmitInitializeTableSignal.emit(label_list, col_count, row_count)
         
         except Exception as e:
-            print(f"{self._name} - emitInitializeTableSignal Error:", e)
+            logger.error(f"{self._name} - emitInitializeTableSignal Error: {e}")
             return None
     
     # 파싱 데이터를 테이블에 데이터를 전달하는 함수
@@ -173,7 +176,7 @@ class PerformanceParsingThread(QThread):
                     sum_pbar += 1
                     
         except Exception as e:
-            print(f"{self._name} - emitParsedSignal Error:", e)
+            logger.error(f"{self._name} - emitParsedSignal Error: {e}")
             return None
     
     # 테이블 아이템 신호 업데이트
@@ -182,7 +185,7 @@ class PerformanceParsingThread(QThread):
             self.EmitParsedSignal.emit(col, row, item)
 
         except Exception as e:
-            print(f"{self._name} - emitParsedSignalItem Error:", e)
+            logger.error(f"{self._name} - emitParsedSignalItem Error: {e}")
             return None
     
     # 진행상황 프로그래스바 신호 업데이트
@@ -191,7 +194,7 @@ class PerformanceParsingThread(QThread):
             self.EmitParsedPbarSignal.emit(sum_pbar, sum_count)
 
         except Exception as e:
-            print(f"{self._name} - emitParsedPbarValue Error:", e)
+            logger.error(f"{self._name} - emitParsedPbarValue Error: {e}")
             return None
             
     # 메인 스레드가 업데이트를 하기위해 서브 스레드를 잠시 멈추는 함수
@@ -203,7 +206,7 @@ class PerformanceParsingThread(QThread):
                     self.msleep(100)
 
         except Exception as e:
-            print(f"{self._name} - overhead Error:", e)
+            logger.error(f"{self._name} - overhead Error: {e}")
             return None
 
 
@@ -224,7 +227,7 @@ class PerformanceParsingResultsSaveThread(QThread):
             # raise ValueError("test")
                 
         except Exception as e:
-            print(f"{self._name} - run Error:", e)
+            logger.error(f"{self._name} - run Error: {e}")
             self.MsgBoxNotifications.emit(f"Error: {str(e)}")
             
         finally:

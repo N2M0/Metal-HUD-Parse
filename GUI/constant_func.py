@@ -1,5 +1,6 @@
 import os
 from Json_func import *
+import datetime
 
 # 파일 존재 여부 확인 함수
 def check_file_exists(file_path):
@@ -38,3 +39,20 @@ def Font_path(font_path, access_key):
     
     else:
         return check_file_exists("Fonts/Open_Sans/static/OpenSans-Bold.ttf")  # 폰트 파일 경로
+
+
+def CurrentTime():
+    dt = datetime.datetime.now()
+    
+    if dt.hour < 12:
+        # 오전
+        meridiem = "AM"
+
+    else:
+        meridiem = "PM"
+    
+    hour = dt.hour % 12
+    if hour == 0:
+        hour = 12
+    
+    return dt.strftime(f"%Y-%m-%d_{meridiem}_{hour}-%M-%S")

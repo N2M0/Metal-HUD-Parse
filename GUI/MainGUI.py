@@ -21,6 +21,9 @@ from SavedWorker import *
 from LayWorker import *
 from constant import *
 from Json_func import *
+from applog import *
+
+logger = InitLogger()
 
 class MetalHUDParse(QWidget):
     def __init__(self):
@@ -56,7 +59,7 @@ class MetalHUDParse(QWidget):
             self.setLayout(self.Mainvbox)
 
         except Exception as e:
-            print(f"{self._name} - InitUI Error:", e)
+            logger.error(f"{self._name} - InitUI Error: {e}")
 
     # 처음 실행시 최초화면
     def FileReadWindow(self):
@@ -84,7 +87,7 @@ class MetalHUDParse(QWidget):
             
 
         except Exception as e:
-            print(f"{self._name} - FileReadWindow Error:", e)
+            logger.error(f"{self._name} - FileReadWindow Error: {e}")
             return None
     
     # FileReadWindow 의 객체를 레이아웃에 추가해주는 함수
@@ -106,7 +109,7 @@ class MetalHUDParse(QWidget):
             return FileReadframe
         
         except Exception as e:
-            print(f"{self._name} - FileReadWindow_Layout Error:", e)
+            logger.error(f"{self._name} - FileReadWindow_Layout Error: {e}")
             return None
         
     # 처음화면에서 파일 선택시 이동화면
@@ -161,7 +164,7 @@ class MetalHUDParse(QWidget):
             return StartPerformanceframe
         
         except Exception as e:
-            print(f"{self._name} - StartPerformanceWindow Error:", e)
+            logger.error(f"{self._name} - StartPerformanceWindow Error: {e}")
             return None
     
     # StartPerformanceWindow 의 객체를 레이아웃에 추가해주는 함수
@@ -210,7 +213,7 @@ class MetalHUDParse(QWidget):
             return StartPerformanceframe
 
         except Exception as e:
-            print(f"{self._name} - StartPerformanceWindow_layout Error:", e)
+            logger.error(f"{self._name} - StartPerformanceWindow_layout Error: {e}")
             return None
 
     def widget_Hide(self):
@@ -229,7 +232,7 @@ class MetalHUDParse(QWidget):
                 self.FileName = f
                 
         except Exception as e:
-            print(f"{self._name} - FileChanged Error:", e)
+            logger.error(f"{self._name} - FileChanged Error: {e}")
             return None
 
     # 버튼 추가 함수
@@ -245,7 +248,7 @@ class MetalHUDParse(QWidget):
             return _addbtn
 
         except Exception as e:
-            print(f"{self._name} - addBtn Error:", e)
+            logger.error(f"{self._name} - addBtn Error: {e}")
             return None
     
     # 스핀박스 추가 함수
@@ -267,7 +270,7 @@ class MetalHUDParse(QWidget):
             return QDSpinObj, QDSpinObjLabel
 
         except Exception as e:
-            print(f"{self._name} - addQDSpinBox Error:", e)
+            logger.error(f"{self._name} - addQDSpinBox Error: {e}")
             return None, None
         
     # 데이터 미리보기 표시
@@ -278,7 +281,7 @@ class MetalHUDParse(QWidget):
             
             return ParsedTable
         except Exception as e:
-            print(f"{self._name} - InitParsedTable Error:", e)
+            logger.error(f"{self._name} - InitParsedTable Error: {e}")
             return None
             
     # 프로그래스바 표시
@@ -293,7 +296,7 @@ class MetalHUDParse(QWidget):
             return pbar
         
         except Exception as e:
-            print(f"{self._name} - InitQProgressBar Error:", e)
+            logger.error(f"{self._name} - InitQProgressBar Error: {e}")
             return None
         
     # 스레드 함수
@@ -304,7 +307,7 @@ class MetalHUDParse(QWidget):
             LayWorker.start()
             
         except Exception as e:
-            print(f"{self._name} - StartParsePerformance Error:", e)
+            logger.error(f"{self._name} - StartParsePerformance Error: {e}")
             
     def StartParsePerformanceSave(self):
         try:
@@ -312,7 +315,7 @@ class MetalHUDParse(QWidget):
             SaveWorked.start()
             
         except Exception as e:
-            print(f"{self._name} - StartParsePerformanceSave Error:", e)
+            logger.error(f"{self._name} - StartParsePerformanceSave Error: {e}")
 
 
 if __name__ == '__main__':

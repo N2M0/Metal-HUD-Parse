@@ -7,11 +7,15 @@ from PyQt5.QtWidgets import (
     QVBoxLayout
     )
 from PyQt5.QtCore import Qt
-
+from PyQt5 import QtGui
 from GUIStyle import *
 from Json_func import *
 from Settings_JSON_Write import *
 from constant import *
+from applog import *
+
+logger = InitLogger()
+
 
 developers = {
     "Square-Dream": {
@@ -63,7 +67,7 @@ class Developer(QMainWindow):
             self.addlayout(vbox, Developers_label, grid)
             
         except Exception as e:
-            print(f"{self._name} - InitUI Error:", e)
+            logger.error(f"{self._name} - InitUI Error: {e}")
 
     def addlayout(self, vbox, Developers_label, grid):
         try:
@@ -75,7 +79,7 @@ class Developer(QMainWindow):
             vbox.addStretch(3)
             
         except Exception as e:
-            print(f"{self._name} - addlayout Error:", e)
+            logger.error(f"{self._name} - addlayout Error: {e}")
             
     def add_grid_layout(self, grid):
         try:
@@ -101,7 +105,7 @@ class Developer(QMainWindow):
                         col += 1
                         
         except Exception as e:
-            print(f"{self._name} - add_grid_layout Error:", e)
+            logger.error(f"{self._name} - add_grid_layout Error: {e}")
             
     def add_Label(self, lableName, tooltip_name=None, color="black"):
         try:
@@ -115,7 +119,7 @@ class Developer(QMainWindow):
             return label
         
         except Exception as e:
-            print(f"{self._name} - add_Label Error:", e)
+            logger.error(f"{self._name} - add_Label Error: {e}")
             
             
             

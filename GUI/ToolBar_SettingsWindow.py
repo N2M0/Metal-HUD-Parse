@@ -9,12 +9,17 @@ from PyQt5.QtWidgets import (
     )
 
 from PyQt5.QtCore import Qt, QSize
+from PyQt5 import QtGui
 from GUIStyle import *
 from Json_func import *
 from Settings_JSON_Write import *
 from ToolBar_OptionsHandler import *
 from ToolBar_developer import *
 from constant import *
+from applog import *
+
+logger = InitLogger()
+
 
 
 # 콤보박스 아이템간의 간격을 조절하는 클래스.
@@ -88,7 +93,7 @@ class SettingsWindow(QMainWindow):
                     self.AddGrid_Btn(ExistingIndex, grid, BtnFuns, setButtons)
                     
         except Exception as e:
-            print(f"{self._name} - InitUI - 1 Error:", e)
+            logger.error(f"{self._name} - InitUI - 1 Error: {e}")
             
     # 설정, 라벨 - 콤보박스
     def AddGrid_Lbl_Cb(self, lable, items, grid, index):
@@ -101,7 +106,7 @@ class SettingsWindow(QMainWindow):
                 grid.addWidget(obj, index, obj_index)
                 
         except Exception as e:
-            print(f"{self._name} - AddGrid_Lbl_Cb Error:", e)
+            logger.error(f"{self._name} - AddGrid_Lbl_Cb Error: {e}")
             
     # 설정, 버튼
     def AddGrid_Btn(self, index, grid, BtnFuns, setButtons):
@@ -118,7 +123,7 @@ class SettingsWindow(QMainWindow):
                 BtnRowindex += 1
                 
         except Exception as e:
-            print(f"{self._name} - AddGrid_Btn Error:", e)
+            logger.error(f"{self._name} - AddGrid_Btn Error: {e}")
 
     # 정의된 라벨과 콤보박스를 추가하는 함수
     def addLabelComboBox(self, lableName, tooltip_name, items):
@@ -143,7 +148,7 @@ class SettingsWindow(QMainWindow):
             return label, cb
 
         except Exception as e:
-            print(f"{self._name} - addLabelComboBox Error:", e)
+            logger.error(f"{self._name} - addLabelComboBox Error: {e}")
             return None, None
     
     # 정의된 버튼을 추가하는 함수
@@ -162,7 +167,7 @@ class SettingsWindow(QMainWindow):
             return button
 
         except Exception as e:
-            print(f"{self._name} - addBtn Error:", e)
+            logger.error(f"{self._name} - addBtn Error: {e}")
             return None
 
 if __name__ == "__main__":

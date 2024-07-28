@@ -1,0 +1,7 @@
+2024-07-28 23:53:31,823 - root - DEBUG - 설정 불러오기 성공: Preview data == Preview data - used - ToolBar_OptionsHandler.py:42
+2024-07-28 23:53:31,823 - root - DEBUG - 설정 불러오기 성공: Startup mode == Startup mode - stability mode - ToolBar_OptionsHandler.py:42
+2024-07-28 23:53:31,823 - root - DEBUG - 설정 불러오기 성공: Font changed (Restart required) == Font changed (Restart required) - OpenSans-Bold.ttf - ToolBar_OptionsHandler.py:42
+2024-07-28 23:53:38,842 - root - DEBUG - Save button clicked - 3 - ToolBar_OptionsHandler.py:52
+2024-07-28 23:53:38,843 - root - DEBUG - Preview data - used 설정 값이 저장됨. - ToolBar_OptionsHandler.py:58
+2024-07-28 23:53:38,844 - root - DEBUG - Startup mode - stability mode 설정 값이 저장됨. - ToolBar_OptionsHandler.py:58
+2024-07-28 23:53:38,845 - root - DEBUG - Font changed (Restart required) - OpenSans-Bold.ttf 설정 값이 저장됨. - ToolBar_OptionsHandler.py:58
