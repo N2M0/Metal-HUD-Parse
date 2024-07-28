@@ -28,6 +28,11 @@ logger = InitLogger()
 class MetalHUDParse(QWidget):
     def __init__(self):
         super().__init__()
+        logger.info("프로그램 시작")  # 프로그램 시작 시 메시지
+
+        # 종료 시그널에 슬롯 연결
+        self.closeEvent = self.on_close
+        
         self._name = __class__.__name__
         # 특정 폴더에 있는 폰트 로드
         font_id = QtGui.QFontDatabase.addApplicationFont(font_path)
@@ -317,6 +322,9 @@ class MetalHUDParse(QWidget):
         except Exception as e:
             logger.error(f"{self._name} - StartParsePerformanceSave Error: {e}")
 
+    def on_close(self, event):
+        logger.info("프로그램 종료")  # 종료 시 메시지
+        event.accept()  # 종료 이벤트를 수락
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

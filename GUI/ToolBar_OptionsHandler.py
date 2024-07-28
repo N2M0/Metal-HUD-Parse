@@ -49,7 +49,6 @@ class OptionsHandler(QWidget):
     def CBValueSave(self):
         CBSetValueTemp = {} # 임시 설정 저장
 
-        logger.debug("Save button clicked - %s" % len(self.CBDict.values()))
         for Lable, combobox in self.CBDict.items():
             CBSetValueTemp[Lable] = combobox.currentText()
             # 설정 불러오기 배열값 저장

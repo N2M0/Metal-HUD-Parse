@@ -1,3 +1,7 @@
 # python file [*.pyc, pycache] 를 포함하지 않음.
 *.pyc
 __pycache__/
+
+# logging file [*.log, debugs] 를 포함하지 않음.
+*.log
+debugs/

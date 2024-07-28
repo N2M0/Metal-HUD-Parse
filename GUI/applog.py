@@ -18,7 +18,7 @@ def InitLogger():
         stream_handler.setLevel(logging.DEBUG)  # 터미널에 출력할 로그 레벨 설정
 
         # 포맷터 설정
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s - %(filename)s:%(lineno)d')
+        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(name)s - %(message)s - %(filename)s:%(lineno)d')
         file_handler.setFormatter(formatter)
         stream_handler.setFormatter(formatter)
 
