@@ -2,6 +2,5 @@
 *.pyc
 __pycache__/
 
-# logging file [*.log, debugs] 를 포함하지 않음.
+# logging file [*.log] 를 포함하지 않음.
 *.log
-debugs/
