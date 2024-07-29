@@ -6,7 +6,7 @@ from GUIStyle import *
 from constant import *
 from applog import *
 
-logger = InitLogger()
+logger = InitLogger(CurrentFileName(__file__))
 
 
 # 스핀박스를 구성하는 클래스

@@ -5,7 +5,7 @@ from GUIThread import *
 from constant import *
 from applog import *
 
-logger = InitLogger()
+logger = InitLogger(CurrentFileName(__file__))
 
 
 class ParsedDataSavedWorker(QWidget):

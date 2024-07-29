@@ -8,7 +8,7 @@ from Settings_JSON_Write import *
 from constant import *
 from applog import *
 
-logger = InitLogger()
+logger = InitLogger(CurrentFileName(__file__))
 
 
 # 설정 불러오기/저장하기를 구성하는 클래스

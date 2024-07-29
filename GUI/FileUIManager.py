@@ -4,7 +4,7 @@ from Metal_HUD_parse import *
 from GUIStyle import *
 from applog import *
 
-logger = InitLogger()
+logger = InitLogger(CurrentFileName(__file__))
 
 # 메인 GUI 에서 파일 관련을 관리 및 구성하는 클래스 
 class FileUIManager:

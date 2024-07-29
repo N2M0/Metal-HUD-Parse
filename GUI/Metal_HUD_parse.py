@@ -4,7 +4,7 @@ from pprint import pprint
 from constant import *
 from applog import *
 
-logger = InitLogger()
+logger = InitLogger(CurrentFileName(__file__))
 
 
 # Metal-HUD.csv 파일 열기

@@ -7,7 +7,7 @@ from Json_func import *
 from constant import *
 from applog import *
 
-logger = InitLogger()
+logger = InitLogger(CurrentFileName(__file__))
 
 # 초기화
 _PerformanceCalculationConditions = None

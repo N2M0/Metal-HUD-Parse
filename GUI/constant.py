@@ -60,18 +60,18 @@ URL 경로 관리
 font_path = Font_path("Settings/Settings.json", Font_Changed) # 폰트 파일 경로
 
 # 설정 경로
-SettingsWritePath = check_file_exists("Settings/%s")
+SettingsWritePath = get_absolute_path("Settings/%s")
 
 # Toolbar FilePath
-SettingFilePath = check_file_exists("Settings/Settings_LBL_CB.json")
-ButtonFilePath = check_file_exists("Settings/Settings_BTN.json")
-SetDataFilePath = check_file_exists("Settings/Settings.json")
+SettingFilePath = get_absolute_path("Settings/Settings_LBL_CB.json")
+ButtonFilePath = get_absolute_path("Settings/Settings_BTN.json")
+SetDataFilePath = get_absolute_path("Settings/Settings.json")
 
 # Icon FilePath
 # "/" 를 사용해야 합니다.
-DouSBUpIConFilePath = check_file_exists("icons/up-arrow(DoubleSpinBox).png")
-DouSBDownIConFilePath = check_file_exists("icons/down-arrow(DoubleSpinBox).png")
-CBDownIconFilePath = check_file_exists("icons/down-arrow(ComboBox).png")
+DouSBUpIConFilePath = get_absolute_path("icons/up-arrow(DoubleSpinBox).png")
+DouSBDownIConFilePath = get_absolute_path("icons/down-arrow(DoubleSpinBox).png")
+CBDownIconFilePath = get_absolute_path("icons/down-arrow(ComboBox).png")
 
 # logging FilePath
-loggingFilePath = check_file_exists(f"debugs/app_{CurrentTime()}.log")
+FolderPath = MakeFolder(f"debugs/{CurrentTime()}")

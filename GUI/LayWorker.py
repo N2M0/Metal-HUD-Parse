@@ -5,7 +5,7 @@ from GUIThread import *
 import sys
 from applog import *
 
-logger = InitLogger()
+logger = InitLogger(CurrentFileName(__file__))
 
 
 # 메인 레이아웃을 업데이트 하기 위한 클래스

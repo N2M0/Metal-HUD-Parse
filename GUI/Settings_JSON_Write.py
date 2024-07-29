@@ -2,7 +2,7 @@ import json
 from constant import *
 from applog import *
 
-logger = InitLogger()
+logger = InitLogger(CurrentFileName(__file__))
 
 
 def BasicSettingMenu(*args):

@@ -12,8 +12,7 @@ from ToolBar_SettingsWindow import *
 from constant import *
 from applog import *
 
-logger = InitLogger()
-
+logger = InitLogger(CurrentFileName(__file__))
 
 # 메인 GUI에 툴바를 구성하는 클래스
 class SettingsToolbar(QWidget):

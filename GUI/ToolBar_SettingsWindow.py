@@ -18,8 +18,7 @@ from ToolBar_developer import *
 from constant import *
 from applog import *
 
-logger = InitLogger()
-
+logger = InitLogger(CurrentFileName(__file__))
 
 
 # 콤보박스 아이템간의 간격을 조절하는 클래스.

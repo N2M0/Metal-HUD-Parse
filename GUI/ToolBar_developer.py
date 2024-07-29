@@ -14,7 +14,7 @@ from Settings_JSON_Write import *
 from constant import *
 from applog import *
 
-logger = InitLogger()
+logger = InitLogger(CurrentFileName(__file__))
 
 
 developers = {
