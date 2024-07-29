@@ -2,5 +2,8 @@
 *.pyc
 __pycache__/
 
-# logging file [*.log] 를 포함하지 않음.
-*.log
+# debug 폴더 내의 모든 파일과 폴더를 무시
+debugs/*
+
+# .txt 파일만 포함
+!debugs/**/*.txt
