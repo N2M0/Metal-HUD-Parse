@@ -40,7 +40,7 @@ def Font_path(font_path, access_key):
     else:
         return get_absolute_path("Fonts/Open_Sans/static/OpenSans-Bold.ttf")  # 폰트 파일 경로
 
-
+# 현재시간
 def CurrentTime():
     dt = datetime.datetime.now()
     
@@ -57,12 +57,12 @@ def CurrentTime():
     
     return dt.strftime(f"%Y-%m-%d_{meridiem}_{hour}-%M-%S")
 
-
+# 폴더 생성
 def MakeFolder(folder_name):
     if folder_name is not None:
-        # 디렉토리가 존재하는지 확인
         folder_path = get_absolute_path(folder_name)
         
+        # 디렉토리가 존재하는지 확인
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)  # 디렉토리가 없으면 생성
             return folder_path  # 새로 생성한 폴더 경로 반환

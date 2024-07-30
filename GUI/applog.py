@@ -1,7 +1,6 @@
 import logging
 import os
 from constant import *
-from constant_func import *
 
 def InitLogger(filename):
     # 로그 파일 경로 설정

@@ -43,7 +43,7 @@ class SettingsToolbar(QWidget):
             self.setLayout(self.layout)
             
         except Exception as e:
-            logger.error(f"{self._name} - InitUI Error: {e}")
+            logger.error(f"{self._name} - 툴바 버튼을 초기화하는 과정에 문제가 생겼습니다. | Error Code: {e}")
             
     def show_settings(self):
         try:
@@ -51,7 +51,7 @@ class SettingsToolbar(QWidget):
             self.settings_window.show()
             
         except Exception as e:
-            logger.error(f"{self._name} - show_settings Error: {e}")
+            logger.error(f"{self._name} - 설정 화면을 오픈하는 중에 문제가 생겼습니다. | Error Code: {e}")
             
 if __name__ == "__main__":
     app = QApplication([])

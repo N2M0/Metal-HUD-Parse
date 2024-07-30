@@ -21,7 +21,7 @@ def DataReader(FileName):
             return None
     
     except Exception as e:
-        logger.error(f"DataReader Error: {e}")
+        logger.error(f"데이터를 불러오는 과정에 문제가 생겼습니다. | Error Code: {e}")
         return None
 
 # 데이터 분리
@@ -64,7 +64,7 @@ def DataSplit(hudRawData, PerformanceCalculationConditions, PerformanceData, Per
                 continue
             
     except Exception as e:
-        logger.error(f"DataSplit Error: {e}")
+        logger.error(f"데이터를 분리하는 과정에 문제가 생겼습니다. | Error Code: {e}")
         return None
 
 # FPS 계산식
@@ -80,7 +80,7 @@ def FPSCalculation(PerformanceCalculationConditions, DecimalPoint = 2):
         )
         
     except Exception as e:
-        logger.error(f"FPSCalculation Error: {e}")
+        logger.error(f"FPS 계산식에 문제가 생겼습니다. | Error Code: {e}")
         return None
         
 # FrameTime > FPS 변환
@@ -99,7 +99,7 @@ def ConverttoFPS(PerformanceData, PerformanceCalculationConditions, DecimalPoint
                 PerformanceCalculationConditions[secondSum] = 0
                 
     except Exception as e:
-        logger.error(f"ConverttoFPS Error: {e}")
+        logger.error(f"FPS를 변환하는 과정에 문제가 생겼습니다. | Error Code: {e}")
         return None
 
 # 마지막에 남은 1초 안되는 자투리 데이터로 평균 FPS 계산
@@ -109,7 +109,7 @@ def LastDataAvg(PerformanceData, PerformanceCalculationConditions, DecimalPoint 
         if PerformanceCalculationConditions[secondSum] != 0:
             PerformanceData[FPSData].append(FPSCalculation(PerformanceCalculationConditions, DecimalPoint))
     except Exception as e:
-        logger.error(f"LastDataAvg Error: {e}")
+        logger.error(f"마지막 FPS 데이터를 변환하는 과정에 문제가 생겼습니다. | Error Code: {e}")
 
 # 파일 저장 함수
 def PerformanceCsvSave(FileName, title, data):
@@ -118,7 +118,7 @@ def PerformanceCsvSave(FileName, title, data):
         df.to_csv(FileName)
         
     except Exception as e:
-        logger.error(f"PerformanceCsvSave Error: {e}")
+        logger.error(f"결과값을 저장하는 과정에 문제가 생겼습니다. | Error Code: {e}")
 
 #benchmarkBasedTime 여기에 몇 ms마다 FPS 평균을 낼 것인지 입력
 #benchmarkBasedTime 값이 너무 작으면 실제보다 과하게 프레임이 튀어 보일 수 있음

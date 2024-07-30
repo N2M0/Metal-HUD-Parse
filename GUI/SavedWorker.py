@@ -28,7 +28,7 @@ class ParsedDataSavedWorker(QWidget):
             self.SaveThread.start()
             
         except Exception as e:
-            logger.error(f"{self._name} - start Error: {e}")
+            logger.error(f"{self._name} - 세이브 스레드를 실행하는 과정에 문제가 생겼습니다. | Error Code: {e}")
             
     # 메시지박스
     def ShowMessagebox(self, setText):
@@ -46,5 +46,5 @@ class ParsedDataSavedWorker(QWidget):
                 sys.exit(1)
         
         except Exception as e:
-            logger.error(f"{self._name} - ShowMessagebox Error: {e}")
+            logger.error(f"{self._name} - 세이브 스레드의 메시지박스를 실행하는 과정에 생겼습니다. | Error Code: {e}")
             

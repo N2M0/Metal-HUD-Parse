@@ -92,7 +92,7 @@ class SettingsWindow(QMainWindow):
                     self.AddGrid_Btn(ExistingIndex, grid, BtnFuns, setButtons)
                     
         except Exception as e:
-            logger.error(f"{self._name} - InitUI - 1 Error: {e}")
+            logger.error(f"{self._name} - 설정화면을 초기화하는 과정에 문제가 생겼습니다. | Error Code: {e}")
             
     # 설정, 라벨 - 콤보박스
     def AddGrid_Lbl_Cb(self, lable, items, grid, index):
@@ -105,7 +105,8 @@ class SettingsWindow(QMainWindow):
                 grid.addWidget(obj, index, obj_index)
                 
         except Exception as e:
-            logger.error(f"{self._name} - AddGrid_Lbl_Cb Error: {e}")
+            # AddGrid_Lbl_Cb
+            logger.error(f"{self._name} - 설정화면을 구성하는 레이블과 콤보박스를 추가하는 과정에 문제가 생겼습니다. | Error Code: {e}")
             
     # 설정, 버튼
     def AddGrid_Btn(self, index, grid, BtnFuns, setButtons):
@@ -122,7 +123,8 @@ class SettingsWindow(QMainWindow):
                 BtnRowindex += 1
                 
         except Exception as e:
-            logger.error(f"{self._name} - AddGrid_Btn Error: {e}")
+            # AddGrid_Btn
+            logger.error(f"{self._name} - 설정화면을 구성하는 버튼을 추가하는 과정에 문제가 생겼습니다. Error Code: {e}")
 
     # 정의된 라벨과 콤보박스를 추가하는 함수
     def addLabelComboBox(self, lableName, tooltip_name, items):
@@ -147,7 +149,7 @@ class SettingsWindow(QMainWindow):
             return label, cb
 
         except Exception as e:
-            logger.error(f"{self._name} - addLabelComboBox Error: {e}")
+            logger.error(f"{self._name} - 설정화면을 구성하는 레이블과 콤보박스의 값이 정의되게 하는 함수의 믄제가 생겼습니다. | Error Code: {e}")
             return None, None
     
     # 정의된 버튼을 추가하는 함수
@@ -166,7 +168,7 @@ class SettingsWindow(QMainWindow):
             return button
 
         except Exception as e:
-            logger.error(f"{self._name} - addBtn Error: {e}")
+            logger.error(f"{self._name} - 설정화면을 구성하는 버튼의 값이 정의되게 하는 함수의 믄제가 생겼습니다. | Error Code: {e}")
             return None
 
 if __name__ == "__main__":

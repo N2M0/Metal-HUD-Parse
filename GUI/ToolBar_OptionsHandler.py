@@ -57,5 +57,5 @@ class OptionsHandler(QWidget):
                 logger.debug(f"{Lable} - {combobox.currentText()} 설정 값이 저장됨.")
             
             except Exception as e:
-                logger.error(f"{self._name} - CBValueSave Error: {e}")
+                logger.error(f"{self._name} - 설정값을 저장하는 데에 문제가 생겼습니다. | Error Code: {e}")
                 logger.error(f"{Lable} - {combobox.currentText()} 설정 값 저장을 실패함.")
