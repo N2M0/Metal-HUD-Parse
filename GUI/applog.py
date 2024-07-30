@@ -1,6 +1,6 @@
 import logging
 import os
-from constant import *
+from config_paths import *
 
 def InitLogger(filename):
     # 로그 파일 경로 설정

@@ -1,5 +1,5 @@
 import json
-from constant import *
+from config_paths import *
 from applog import *
 
 logger = InitLogger(CurrentFileName(__file__))

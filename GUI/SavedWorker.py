@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QWidget, QMessageBox
 from PyQt5 import QtGui
 from GUIStyle import *
 from GUIThread import *
-from constant import *
+from config_paths import *
 from applog import *
 
 logger = InitLogger(CurrentFileName(__file__))

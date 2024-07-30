@@ -3,8 +3,8 @@ from Metal_HUD_parse import *
 from GUIStyle import *
 from collections import OrderedDict
 import sys
-from Json_func import *
-from constant import *
+from Json_Utils import *
+from config_paths import *
 from applog import *
 
 logger = InitLogger(CurrentFileName(__file__))

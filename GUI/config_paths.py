@@ -1,4 +1,4 @@
-from constant_func import *
+from config_paths_Utils import *
 
 """
 메인 GUI 파싱 데이터에 접근할때 사용되는 keys
@@ -24,14 +24,6 @@ frametimeErrorData = "frametimeErrorData"
 gpuTimeErrorData = "gpuTimeErrorData"
 
 
-""" 
-툴바 함수 관리 키
-"""
-
-# AvoidDuplicateCreation - CBValueSave
-CBValueSave_Func = "CBValueSave-Func"
-CBValueSave_FileSaved = "CBValueSave-FileSaved"
-
 
 """ 
 툴바 설정 키-값 정의
@@ -53,11 +45,11 @@ Font_Changed_default = 0
 
 
 """ 
-URL 경로 관리
+URL/경로 관리
 """
 
 # 폰트 경로
-font_path = Font_path("Settings/Settings.json", Font_Changed) # 폰트 파일 경로
+font_path = Font_Path("Settings/Settings.json", Font_Changed) # 폰트 파일 경로
 
 # 설정 경로
 SettingsWritePath = get_absolute_path("Settings/%s")

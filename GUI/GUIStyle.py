@@ -1,4 +1,4 @@
-from constant import *
+from config_paths import *
 
 
 def LabelStyle(id, font_family, fontsize, color="black"):

@@ -1,6 +1,9 @@
 import os
-from Json_func import *
+from Json_Utils import *
 import datetime
+
+# 여기는 constant 에서 사용되는 보조 함수를 관리하는 파일입니다.
+
 
 # 주어진 파일 경로에 대한 절대 경로를 반환하는 함수
 def get_absolute_path(relative_path):
@@ -18,20 +21,19 @@ def Font_Read(font_path):
         "OpenSans_SemiCondensed-ExtraBoldItalic.ttf"
         ]
     
-    # 특정 폴더 경로 확인
+    # 특정 폴더 경로 확인 및 파일 목록 가져오기
     folder_path = get_absolute_path(font_path)
     
-    # 폴더의 파일 목록 가져오기
-    files = os.listdir(folder_path)
-    
-    # 제거할 폰트를 제외한 파일 목록 필터링
-    filtered_files = [file for file in files 
-                        if file not in remove_font]
+    # 파일 목록 필터링
+    filtered_files = [
+        file for file in os.listdir(folder_path) 
+        if file not in remove_font
+        ]
     
     return filtered_files
 
 # 폰트 패치
-def Font_path(font_path, access_key):
+def Font_Path(font_path, access_key):
     Settings = OpenJson(get_absolute_path(font_path))
     
     if access_key in Settings.keys():

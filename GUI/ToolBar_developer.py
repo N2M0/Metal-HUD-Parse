@@ -8,10 +8,8 @@ from PyQt5.QtWidgets import (
     )
 from PyQt5.QtCore import Qt
 from PyQt5 import QtGui
+from config_paths import *
 from GUIStyle import *
-from Json_func import *
-from Settings_JSON_Write import *
-from constant import *
 from applog import *
 
 logger = InitLogger(CurrentFileName(__file__))

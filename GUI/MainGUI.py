@@ -19,8 +19,8 @@ from CustomQDSpin import *
 from ToolBar import *
 from SavedWorker import *
 from LayWorker import *
-from constant import *
-from Json_func import *
+from config_paths import *
+from Json_Utils import *
 from applog import *
 
 logger = InitLogger(CurrentFileName(__file__))

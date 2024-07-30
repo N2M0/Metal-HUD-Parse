@@ -3,7 +3,6 @@ from PyQt5.QtCore import Qt
 from PyQt5 import QtGui
 from Metal_HUD_parse import *
 from GUIStyle import *
-from constant import *
 from applog import *
 
 logger = InitLogger(CurrentFileName(__file__))

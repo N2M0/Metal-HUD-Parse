@@ -9,7 +9,7 @@ from PyQt5 import QtGui
 
 from GUIStyle import *
 from ToolBar_SettingsWindow import *
-from constant import *
+from config_paths import *
 from applog import *
 
 logger = InitLogger(CurrentFileName(__file__))

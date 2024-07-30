@@ -11,11 +11,11 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import Qt, QSize
 from PyQt5 import QtGui
 from GUIStyle import *
-from Json_func import *
+from Json_Utils import *
 from Settings_JSON_Write import *
 from ToolBar_OptionsHandler import *
 from ToolBar_developer import *
-from constant import *
+from config_paths import *
 from applog import *
 
 logger = InitLogger(CurrentFileName(__file__))
@@ -37,12 +37,6 @@ class SettingsWindow(QMainWindow):
 
         # cb data
         self.CBDict = {}
-        
-        # 중복 생성 방지
-        self.AvoidDuplicateCreation = {
-            CBValueSave_Func: True,
-            CBValueSave_FileSaved: True
-        }
         
         super().__init__(parent)
         self.SettingsManager = OptionsHandler(self)

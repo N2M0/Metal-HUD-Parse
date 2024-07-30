@@ -3,9 +3,9 @@ from PyQt5.QtWidgets import (
     )
 
 from GUIStyle import *
-from Json_func import *
+from Json_Utils import *
 from Settings_JSON_Write import *
-from constant import *
+from config_paths import *
 from applog import *
 
 logger = InitLogger(CurrentFileName(__file__))
@@ -20,7 +20,6 @@ class OptionsHandler(QWidget):
         # 부모 객체 매개변수 정의
         self.parent = parent
         self.CBDict = self.parent.CBDict
-        self.AvoidDuplicateCreation = self.parent.AvoidDuplicateCreation
         
     def CBSetValueRead(self):
         try:

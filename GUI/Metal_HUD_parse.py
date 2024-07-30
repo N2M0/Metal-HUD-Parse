@@ -1,7 +1,7 @@
 import csv
 import pandas as pd
 from pprint import pprint
-from constant import *
+from config_paths import *
 from applog import *
 
 logger = InitLogger(CurrentFileName(__file__))
