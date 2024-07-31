@@ -117,7 +117,7 @@ class Developer(QMainWindow):
             return label
         
         except Exception as e:
-            logger.error(f"{self._name} - 개발자 화면을 구성하는 서브(그리드) 레이아웃에 추가하는 레이블 위젯 함수의 문제가 생겼습니다. | Error Code: {e}")
+            logger.error(f"{self._name} - 정의된 레이블 함수에 문제가 생겼습니다. | Error Code: {e}")
             
             
             

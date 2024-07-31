@@ -35,7 +35,7 @@ class FileUIManager:
                 self.FileLabel.setText(f'Selected File: Failed.')
                 
         except Exception as e:
-            logger.error(f"{self._name} - FileRead Error: {e}")
+            logger.error(f"{self._name} - 파일을 불러오는 함수에 문제가 생겼습니다.  | Error Code: {e}")
 
         # 창 위치를 중앙에 배치하는 함수를 호출
         self.center()
@@ -50,7 +50,7 @@ class FileUIManager:
             self.parent.move(qr.topLeft())
             
         except Exception as e:
-            logger.error(f"{self._name} - Center Error: {e}")
+            logger.error(f"{self._name} - 화면을 중앙에 배치하는 함수에 문제가 생겼습니다.  | Error Code: {e}")
     
     # 파싱할 파일을 변경하는 함수
     def FileChanged(self):
@@ -65,5 +65,5 @@ class FileUIManager:
                 return self.FileName
 
         except Exception as e:
-            logger.error(f"{self._name} - FileChanged Error: {e}")
+            logger.error(f"{self._name} - 파일을 변경하는 함수에 문제가 생겼습니다. | Error Code: {e}")
             return None

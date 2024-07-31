@@ -143,7 +143,7 @@ class SettingsWindow(QMainWindow):
             return label, cb
 
         except Exception as e:
-            logger.error(f"{self._name} - 설정화면을 구성하는 레이블과 콤보박스의 값이 정의되게 하는 함수의 믄제가 생겼습니다. | Error Code: {e}")
+            logger.error(f"{self._name} - 정의된 레이블, 콤보박스 함수에 문제가 생겼습니다. | Error Code: {e}")
             return None, None
     
     # 정의된 버튼을 추가하는 함수
@@ -162,7 +162,7 @@ class SettingsWindow(QMainWindow):
             return button
 
         except Exception as e:
-            logger.error(f"{self._name} - 설정화면을 구성하는 버튼의 값이 정의되게 하는 함수의 믄제가 생겼습니다. | Error Code: {e}")
+            logger.error(f"{self._name} - 정의된 버튼 함수에 문제가 생겼습니다. | Error Code: {e}")
             return None
 
 if __name__ == "__main__":

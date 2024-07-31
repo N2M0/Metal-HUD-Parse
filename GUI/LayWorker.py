@@ -41,7 +41,7 @@ class LayUpdateWorker(QWidget):
             self.ParsingThread.start()
             
         except Exception as e:
-            logger.error(f"{self._name} - start Error: {e}")
+            logger.error(f"{self._name} - Parse 스레드를 시작하는 과정에 문제가 생겼습니다. | Error Code: {e}")
 
     def TableState(self, state):
         if state == True:
@@ -67,7 +67,7 @@ class LayUpdateWorker(QWidget):
             self.ParsedResultsTable.setHorizontalHeaderLabels(label_list)
             
         except Exception as e:
-            logger.error(f"{self._name} - InitializeTable Error: {e}")
+            logger.error(f"{self._name} - 미리보기 테이블 초기값을 설정하는 데에 문제가 생겼습니다. | Error Code: {e}")
             
             
     # 테이블 업데이트 함수
@@ -79,7 +79,7 @@ class LayUpdateWorker(QWidget):
             self.ParsedResultsTable.setItem(row, col, item)
 
         except Exception as e:
-            logger.error(f"{self._name} - UpdateTable Error: {e}")
+            logger.error(f"{self._name} - 미리보기 테이블에 값을 업데이트하는 중에 문제가 생겼습니다. | Error Code: {e}")
             sys.exit(1)
 
     # 프로그래스바 업데이트 함수
@@ -89,5 +89,5 @@ class LayUpdateWorker(QWidget):
             self.ParsedPbar.setValue(int(progress))  # 프로그래스바 업데이트
 
         except Exception as e:
-            logger.error(f"{self._name} - UpdateProgressBar Error: {e}")
+            logger.error(f"{self._name} - 프로그래스바를 업데이트하는 중에 문제가 생겼습니다. | Error Code: {e}")
             sys.exit(1)
