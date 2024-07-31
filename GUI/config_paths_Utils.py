@@ -1,8 +1,8 @@
 import os
 from Json_Utils import *
-import datetime
+from datetime import datetime
 
-# 여기는 constant 에서 사용되는 보조 함수를 관리하는 파일입니다.
+# 여기는 config_paths 에서 사용되는 보조 함수를 관리하는 파일입니다.
 
 
 # 주어진 파일 경로에 대한 절대 경로를 반환하는 함수
@@ -44,18 +44,14 @@ def Font_Path(font_path, access_key):
 
 # 현재시간
 def CurrentTime():
-    dt = datetime.datetime.now()
+    dt = datetime.now()
     
-    if dt.hour < 12:
-        # 오전
-        meridiem = "AM"
-
-    else:
-        meridiem = "PM"
+    # AM = 오전
+    meridiem = "AM" if dt.hour < 12 else "PM" 
     
-    hour = dt.hour % 12
-    if hour == 0:
-        hour = 12
+    # 12형식
+    dt_hour = dt.hour % 12
+    hour = 12 if dt_hour == 0 else dt_hour
     
     return dt.strftime(f"%Y-%m-%d_{meridiem}_{hour}-%M-%S")
 
