@@ -328,6 +328,23 @@ class MetalHUDParse(QWidget):
         logger.info("프로그램 종료")  # 종료 시 메시지
         event.accept()  # 종료 이벤트를 수락
 
+    # 창 닫기 버튼 상태 변경
+    def set_window_close_button_state_changed(self, enabled):
+        current_flags = self.windowFlags()
+        
+        if enabled:
+            # X 버튼이 비활성화된 상태가 아닐 때만 활성화
+            if not (current_flags & Qt.WindowCloseButtonHint):
+                self.setWindowFlags(current_flags | Qt.WindowCloseButtonHint)  # X 버튼 활성화
+                
+        else:
+            # X 버튼이 활성화된 상태일 때만 비활성화
+            if (current_flags & Qt.WindowCloseButtonHint):
+                self.setWindowFlags(current_flags & ~Qt.WindowCloseButtonHint)  # X 버튼 비활성화
+
+        self.setVisible(False)  # 창을 숨김
+        self.setVisible(True)   # 다시 표시하여 플래그 변경 사항 반영
+        
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     window = MetalHUDParse()

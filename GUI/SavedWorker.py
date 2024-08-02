@@ -1,4 +1,5 @@
 from PyQt5.QtWidgets import QWidget, QMessageBox
+from PyQt5.QtCore import Qt
 from PyQt5 import QtGui
 from GUIStyle import *
 from GUIThread import *
@@ -17,12 +18,15 @@ class ParsedDataSavedWorker(QWidget):
         self.font_family = QtGui.QFontDatabase.applicationFontFamilies(font_id)[0]
 
         self.parent = parent
+        self.ParsedSave = self.parent.ParsedSave
     
     # parent 연결 주의
     def start(self):
         try:
             logger.info(f"스레드가 생성 됐습니다.")
+            
             self.SaveThread = PerformanceParsingResultsSaveThread(parent=self.parent)
+            self.SaveThread.ParsedSaveBtnState.connect(lambda x: self.ParsedSave.setEnabled(x))
             self.SaveThread.MsgBoxNotifications.connect(self.ShowMessagebox)
             self.SaveThread.ThreadFinishedSignal.connect(self.stop)
             self.SaveThread.start()
@@ -46,15 +50,16 @@ class ParsedDataSavedWorker(QWidget):
                 sys.exit(1)
         
         except Exception as e:
-            logger.error(f"세이브 스레드의 메시지박스를 실행하는 과정에 생겼습니다. | Error Code: {e}")
+            logger.error(f"데이터 저장 스레드의 메시지박스를 실행하는 과정에 생겼습니다. | Error Code: {e}")
 
     # 종료
     def stop(self):
-        # 스레드 종료
-        logger.info(f"스레드가 삭제 됐습니다.")
-        self.SaveThread.quit()    # 이벤트 루프 종료
-        self.SaveThread.wait()    # 스레드가 종료될 때까지 대기
-        self.SaveThread.deleteLater()  # 안전하게 삭제 예약
+        if self.SaveThread.isRunning():
+            # 스레드 종료
+            logger.info(f"스레드가 삭제 됐습니다.")
+            self.SaveThread.quit()    # 이벤트 루프 종료
+            self.SaveThread.wait()    # 스레드가 종료될 때까지 대기
+            self.SaveThread.deleteLater()  # 안전하게 삭제 예약
 
         # 서브 클래스 종료
         self.deleteLater()

@@ -19,10 +19,10 @@ class PerformanceParsingThread(QThread):
     # 서브 스레드에서 메인 스레드로 데이터를 보낼 신호
     ParseStartBtnState = pyqtSignal(bool)
     UpdateFileLabelSignal = pyqtSignal(str)
-    EmitTableState = pyqtSignal(bool)
-    EmitPbarState = pyqtSignal(bool)
+    EmitTableState = pyqtSignal(bool, object)
+    EmitPbarState = pyqtSignal(bool, object)
     EmitInitializeTableSignal =  pyqtSignal(list, int, int)
-    EmitParsedSignal = pyqtSignal(int, int, str)  # 추가된 신호
+    EmitParsedSignal = pyqtSignal(int, int, str)
     EmitParsedPbarSignal = pyqtSignal(int, int)
     EmitTableResize = pyqtSignal()
     ThreadFinishedSignal = pyqtSignal()
@@ -33,6 +33,10 @@ class PerformanceParsingThread(QThread):
         self.FileName = FileName
         self.benchmarkBasedTimeValue = benchmarkBasedTimeValue
         self.DecimalPoint = DecimalPoint
+        
+        self.parent = parent
+        self.ParsedResultsTable = self.parent.ParsedResultsTable
+        self.ParsedPbar = self.parent.ParsedPbar
         
     # 성능 파싱 시작
     def run(self):
@@ -59,8 +63,8 @@ class PerformanceParsingThread(QThread):
 
             # 기능 활성화, 비활성화
             if self.settings[Preview_data] == Preview_data_parmeters[Preview_data_default]:
-                self.EmitTableState.emit(True)
-                self.EmitPbarState.emit(True)
+                self.EmitTableState.emit(True, self.ParsedResultsTable)
+                self.EmitPbarState.emit(True, self.ParsedPbar)
                 
                 # 함수 호출
                 self.emitInitializeTableSignal()
@@ -68,8 +72,8 @@ class PerformanceParsingThread(QThread):
                 
             
             else:
-                self.EmitTableState.emit(False)
-                self.EmitPbarState.emit(False)
+                self.EmitTableState.emit(False, self.ParsedResultsTable)
+                self.EmitPbarState.emit(False, self.ParsedPbar)
                 
             self.UpdateFileLabelSignal.emit(f'Selected File: "{self.FileName}" Done!')
             
@@ -228,6 +232,7 @@ class PerformanceParsingThread(QThread):
 
 # 파일로 저장
 class PerformanceParsingResultsSaveThread(QThread):
+    ParsedSaveBtnState = pyqtSignal(bool)
     MsgBoxNotifications = pyqtSignal(str)
     ThreadFinishedSignal = pyqtSignal()
     
@@ -236,6 +241,8 @@ class PerformanceParsingResultsSaveThread(QThread):
     
     def run(self):
         try:
+            # 스레드 시작시 파일 저장 버튼을 비활성화
+            self.ParsedSaveBtnState.emit(False)
             self.Saved()
                 
         except Exception as e:
@@ -243,6 +250,9 @@ class PerformanceParsingResultsSaveThread(QThread):
             self.MsgBoxNotifications.emit(f"Error Code: {str(e)}")
             
         finally:
+            # 스레드 종료시 파일 저장 버튼을 활성화
+            self.ParsedSaveBtnState.emit(True)
+            
             # 스레드 종료
             self.ThreadFinishedSignal.emit()
     
