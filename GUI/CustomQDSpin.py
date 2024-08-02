@@ -11,7 +11,6 @@ logger = InitLogger(CurrentFileName(__file__))
 # 스핀박스를 구성하는 클래스
 class CustomQDoubleSpinBox:
     def __init__(self, parent):
-        self._name = __class__.__name__
         
         # 특정 폴더에 있는 폰트 로드
         font_id = QtGui.QFontDatabase.addApplicationFont(font_path)
@@ -42,7 +41,7 @@ class CustomQDoubleSpinBox:
             return _QDSpinBox
         
         except Exception as e:
-            logger.error(f"{self._name} - 스핀박스를 정의하는 함수에 문제가 생겼습니다. | Error Code: {e}")
+            logger.error(f"스핀박스를 정의하는 함수에 문제가 생겼습니다. | Error Code: {e}")
             return None
         
 # 스핀박스 레이블을 구성하는 클래스
@@ -67,6 +66,6 @@ class CustomQDSpinBoxLabel:
             return _QDSBLabel
         
         except Exception as e:
-            logger.error(f"{self._name} - 스핀박스 레이블을 정의하는 함수에 문제가 생겼습니다. | Error Code: {e}")
+            logger.error(f"스핀박스 레이블을 정의하는 함수에 문제가 생겼습니다. | Error Code: {e}")
             return None   
 

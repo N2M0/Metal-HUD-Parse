@@ -33,7 +33,6 @@ class MetalHUDParse(QWidget):
         # 종료 시그널에 슬롯 연결
         self.closeEvent = self.on_close
         
-        self._name = __class__.__name__
         # 특정 폴더에 있는 폰트 로드
         font_id = QtGui.QFontDatabase.addApplicationFont(font_path)
         self.font_family = QtGui.QFontDatabase.applicationFontFamilies(font_id)[0]
@@ -64,7 +63,7 @@ class MetalHUDParse(QWidget):
             self.setLayout(self.Mainvbox)
 
         except Exception as e:
-            logger.error(f"{self._name} - 메인 화면을 초기화하는 과정에 문제가 생겼습니다. | Error Code: {e}")
+            logger.error(f"메인 화면을 초기화하는 과정에 문제가 생겼습니다. | Error Code: {e}")
 
     # 처음 실행시 최초화면
     def FileReadWindow(self):
@@ -92,7 +91,7 @@ class MetalHUDParse(QWidget):
             
 
         except Exception as e:
-            logger.error(f"{self._name} - 파일 불러오기 화면의 문제가 생겼습니다. | Error Code: {e}")
+            logger.error(f"파일 불러오기 화면의 문제가 생겼습니다. | Error Code: {e}")
             return None
     
     # FileReadWindow 의 객체를 레이아웃에 추가해주는 함수
@@ -114,7 +113,7 @@ class MetalHUDParse(QWidget):
             return FileReadframe
         
         except Exception as e:
-            logger.error(f"{self._name} - 파일 불러오기 화면의 레이아웃 또는 위젯을 추가하는 과정에 문제가 생겼습니다. | Error Code: {e}")
+            logger.error(f"파일 불러오기 화면의 레이아웃 또는 위젯을 추가하는 과정에 문제가 생겼습니다. | Error Code: {e}")
             return None
         
     # 처음화면에서 파일 선택시 이동화면
@@ -169,7 +168,7 @@ class MetalHUDParse(QWidget):
             return StartPerformanceframe
         
         except Exception as e:
-            logger.error(f"{self._name} - 시작 성능 화면의 문제가 생겼습니다. | Error Code: {e}")
+            logger.error(f"시작 성능 화면의 문제가 생겼습니다. | Error Code: {e}")
             return None
     
     # StartPerformanceWindow 의 객체를 레이아웃에 추가해주는 함수
@@ -218,7 +217,7 @@ class MetalHUDParse(QWidget):
             return StartPerformanceframe
 
         except Exception as e:
-            logger.error(f"{self._name} - 시작 성능 화면의 레이아웃 또는 위젯을 추가하는 과정에 문제가 생겼습니다. | Error Code: {e}")
+            logger.error(f"시작 성능 화면의 레이아웃 또는 위젯을 추가하는 과정에 문제가 생겼습니다. | Error Code: {e}")
             return None
 
     def widget_Hide(self):
@@ -237,7 +236,7 @@ class MetalHUDParse(QWidget):
                 self.FileName = f
                 
         except Exception as e:
-            logger.error(f"{self._name} - 파일을 변경하는 과정에 문제가 생겼습니다. | Error Code: {e}")
+            logger.error(f"파일을 변경하는 과정에 문제가 생겼습니다. | Error Code: {e}")
             return None
 
     # 버튼 추가 함수
@@ -253,7 +252,7 @@ class MetalHUDParse(QWidget):
             return _addbtn
 
         except Exception as e:
-            logger.error(f"{self._name} - 정의된 버튼 함수에 문제가 생겼습니다. | Error Code: {e}")
+            logger.error(f"정의된 버튼 함수에 문제가 생겼습니다. | Error Code: {e}")
             return None
     
     # 스핀박스 추가 함수
@@ -275,7 +274,7 @@ class MetalHUDParse(QWidget):
             return QDSpinObj, QDSpinObjLabel
 
         except Exception as e:
-            logger.error(f"{self._name} - 정의된 스핀박스 함수에 문제가 생겼습니다. | Error Code: {e}")
+            logger.error(f"정의된 스핀박스 함수에 문제가 생겼습니다. | Error Code: {e}")
             return None, None
         
     # 데이터 미리보기 표시
@@ -286,7 +285,7 @@ class MetalHUDParse(QWidget):
             
             return ParsedTable
         except Exception as e:
-            logger.error(f"{self._name} - 미리보기 테이블을 추가하는 과정에 문제가 생겼습니다. | Error Code: {e}")
+            logger.error(f"미리보기 테이블을 추가하는 과정에 문제가 생겼습니다. | Error Code: {e}")
             return None
             
     # 프로그래스바 표시
@@ -301,7 +300,7 @@ class MetalHUDParse(QWidget):
             return pbar
         
         except Exception as e:
-            logger.error(f"{self._name} - 프로그래스바를 추가하는 과정에 문제가 생겼습니다. | Error Code: {e}")
+            logger.error(f"프로그래스바를 추가하는 과정에 문제가 생겼습니다. | Error Code: {e}")
             return None
         
     # 스레드 함수
@@ -312,7 +311,7 @@ class MetalHUDParse(QWidget):
             LayWorker.start()
             
         except Exception as e:
-            logger.error(f"{self._name} - Parse 관련 레이아웃 업데이트 클래스에 문제가 생겼습니다. | Error Code: {e}")
+            logger.error(f"Parse 관련 레이아웃 업데이트 클래스에 문제가 생겼습니다. | Error Code: {e}")
             
     def StartParsePerformanceSave(self):
         try:
@@ -320,7 +319,7 @@ class MetalHUDParse(QWidget):
             SaveWorked.start()
             
         except Exception as e:
-            logger.error(f"{self._name} - Parsed Data를 저장하는 클래스에 문제가 생겼습니다. | Error Code: {e}")
+            logger.error(f"Parsed Data를 저장하는 클래스에 문제가 생겼습니다. | Error Code: {e}")
 
     # 종료 이벤트
     def on_close(self, event):

@@ -29,7 +29,6 @@ class CustomDelegate(QStyledItemDelegate):
 # 설정 화면을 구성하는 클래스
 class SettingsWindow(QMainWindow):
     def __init__(self, parent=None):
-        self._name = __class__.__name__
         
         # 특정 폴더에 있는 폰트 로드
         font_id = QtGui.QFontDatabase.addApplicationFont(font_path)
@@ -69,13 +68,13 @@ class SettingsWindow(QMainWindow):
 
         except (FileNotFoundError, json.JSONDecodeError):
             # 기본 설정값 초기화
-            SetSaved()
+            SetSaved(SetData())
 
             setSttings = OpenJson(SettingFilePath)
             setButtons = OpenJson(ButtonFilePath)
 
         try:
-            BtnFuns = [self.SettingsManager.CBValueSave, self.developer.show, lambda: None, lambda: None]
+            BtnFuns = [self.SettingsManager.CBValueSave, self.developer.show]
 
             for index, (lable, items) in enumerate(setSttings.items()):
                 self.AddGrid_Lbl_Cb(lable, items, grid, index)
@@ -86,7 +85,7 @@ class SettingsWindow(QMainWindow):
                     self.AddGrid_Btn(ExistingIndex, grid, BtnFuns, setButtons)
                     
         except Exception as e:
-            logger.error(f"{self._name} - 설정화면을 초기화하는 과정에 문제가 생겼습니다. | Error Code: {e}")
+            logger.error(f"설정화면을 초기화하는 과정에 문제가 생겼습니다. | Error Code: {e}")
             
     # 설정, 라벨 - 콤보박스
     def AddGrid_Lbl_Cb(self, lable, items, grid, index):
@@ -100,7 +99,7 @@ class SettingsWindow(QMainWindow):
                 
         except Exception as e:
             # AddGrid_Lbl_Cb
-            logger.error(f"{self._name} - 설정화면을 구성하는 레이블과 콤보박스를 추가하는 과정에 문제가 생겼습니다. | Error Code: {e}")
+            logger.error(f"설정화면을 구성하는 레이블과 콤보박스를 추가하는 과정에 문제가 생겼습니다. | Error Code: {e}")
             
     # 설정, 버튼
     def AddGrid_Btn(self, index, grid, BtnFuns, setButtons):
@@ -118,7 +117,7 @@ class SettingsWindow(QMainWindow):
                 
         except Exception as e:
             # AddGrid_Btn
-            logger.error(f"{self._name} - 설정화면을 구성하는 버튼을 추가하는 과정에 문제가 생겼습니다. Error Code: {e}")
+            logger.error(f"설정화면을 구성하는 버튼을 추가하는 과정에 문제가 생겼습니다. Error Code: {e}")
 
     # 정의된 라벨과 콤보박스를 추가하는 함수
     def addLabelComboBox(self, lableName, tooltip_name, items):
@@ -143,7 +142,7 @@ class SettingsWindow(QMainWindow):
             return label, cb
 
         except Exception as e:
-            logger.error(f"{self._name} - 정의된 레이블, 콤보박스 함수에 문제가 생겼습니다. | Error Code: {e}")
+            logger.error(f"정의된 레이블, 콤보박스 함수에 문제가 생겼습니다. | Error Code: {e}")
             return None, None
     
     # 정의된 버튼을 추가하는 함수
@@ -162,7 +161,7 @@ class SettingsWindow(QMainWindow):
             return button
 
         except Exception as e:
-            logger.error(f"{self._name} - 정의된 버튼 함수에 문제가 생겼습니다. | Error Code: {e}")
+            logger.error(f"정의된 버튼 함수에 문제가 생겼습니다. | Error Code: {e}")
             return None
 
 if __name__ == "__main__":

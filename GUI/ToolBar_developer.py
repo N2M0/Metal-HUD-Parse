@@ -37,7 +37,6 @@ developers = {
 class Developer(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self._name = __class__.__name__
         
         # 특정 폴더에 있는 폰트 로드
         font_id = QtGui.QFontDatabase.addApplicationFont(font_path)
@@ -65,7 +64,7 @@ class Developer(QMainWindow):
             self.addlayout(vbox, Developers_label, grid)
             
         except Exception as e:
-            logger.error(f"{self._name} - 개발자 화면을 초기화하는 과정에 문제가 생겼습니다. | Error Code: {e}")
+            logger.error(f"개발자 화면을 초기화하는 과정에 문제가 생겼습니다. | Error Code: {e}")
 
     def addlayout(self, vbox, Developers_label, grid):
         try:
@@ -77,7 +76,7 @@ class Developer(QMainWindow):
             vbox.addStretch(3)
             
         except Exception as e:
-            logger.error(f"{self._name} - 개발자 화면을 구성하는 메인 레이아웃에 서브(그리드) 레이아웃 또는 위젯을 추가하는 과정에 문제가 생겼습니다. | Error Code: {e}")
+            logger.error(f"개발자 화면을 구성하는 메인 레이아웃에 서브(그리드) 레이아웃 또는 위젯을 추가하는 과정에 문제가 생겼습니다. | Error Code: {e}")
             
     def add_grid_layout(self, grid):
         try:
@@ -103,7 +102,7 @@ class Developer(QMainWindow):
                         col += 1
                         
         except Exception as e:
-            logger.error(f"{self._name} - 개발자 화면을 구성하는 서브(그리드) 레이아웃에 위젯을 추가하는 과정에 문제가 생겼습니다. | Error Code: {e}")
+            logger.error(f"개발자 화면을 구성하는 서브(그리드) 레이아웃에 위젯을 추가하는 과정에 문제가 생겼습니다. | Error Code: {e}")
             
     def add_Label(self, lableName, tooltip_name=None, color="black"):
         try:
@@ -117,7 +116,7 @@ class Developer(QMainWindow):
             return label
         
         except Exception as e:
-            logger.error(f"{self._name} - 정의된 레이블 함수에 문제가 생겼습니다. | Error Code: {e}")
+            logger.error(f"정의된 레이블 함수에 문제가 생겼습니다. | Error Code: {e}")
             
             
             

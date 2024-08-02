@@ -28,7 +28,6 @@ class PerformanceParsingThread(QThread):
     
     def __init__(self, parent, FileName, benchmarkBasedTimeValue, DecimalPoint):
         super().__init__(parent)
-        self._name = __class__.__name__
         
         self.FileName = FileName
         self.benchmarkBasedTimeValue = benchmarkBasedTimeValue
@@ -76,7 +75,7 @@ class PerformanceParsingThread(QThread):
             self.ThreadFinishedSignal.emit()
         
         except Exception as e:
-            logger.error(f"{self._name} - 성능 파싱 스레드에서 실행 내용을 정의하는 데에 문제가 생겼습니다. | Error Code: {e}")
+            logger.error(f"성능 파싱 스레드에서 실행 내용을 정의하는 데에 문제가 생겼습니다. | Error Code: {e}")
             
             # 오류 발생시 바로 종료.
             sys.exit(1)
@@ -99,7 +98,7 @@ class PerformanceParsingThread(QThread):
             self.UpdateFileLabelSignal.emit(f'Selected File: "{self.FileName}" Loding(Saveable.)...')
             
         except Exception as e:
-            logger.error(f"{self._name} - 스레드에서 데이터 Parse 함수를 실행하는 중에 문제가 생겼습니다. | Error Code: {e}")
+            logger.error(f"스레드에서 데이터 Parse 함수를 실행하는 중에 문제가 생겼습니다. | Error Code: {e}")
             return None
     
     
@@ -111,7 +110,7 @@ class PerformanceParsingThread(QThread):
                 _PerformanceCalculationConditions.pop(key)
                 
         except Exception as e:
-            logger.error(f"{self._name} - 불필요한 Keys:Values를 제거하는데 문제가 생겼습니다. | Error Code: {e}")
+            logger.error(f"불필요한 Keys:Values를 제거하는데 문제가 생겼습니다. | Error Code: {e}")
             return None
         
     # 여러개의 딕셔너리를 하나의 딕셔너리로 만듦
@@ -126,7 +125,7 @@ class PerformanceParsingThread(QThread):
             return combined_dict
         
         except Exception as e:
-            logger.error(f"{self._name} - 여러개의 딕셔너리를 합치는 중에 문제가 생겼습니다. | Error Code: {e}")
+            logger.error(f"여러개의 딕셔너리를 합치는 중에 문제가 생겼습니다. | Error Code: {e}")
             return None
     
     # 컴빈드 데이터 계산
@@ -134,7 +133,7 @@ class PerformanceParsingThread(QThread):
         try:
             return [len(v) for v in combined_dict.values() if isinstance(v, list)]
         except Exception as e:
-            logger.error(f"{self._name} - 합쳐진 딕셔너리 데이터를 계산하는데 문제가 생겼습니다. | Error Code: {e}")
+            logger.error(f"합쳐진 딕셔너리 데이터를 계산하는데 문제가 생겼습니다. | Error Code: {e}")
             return None
         
     # 테이블에 row, col 초기 설정 데이터를 전달하는 함수
@@ -148,36 +147,47 @@ class PerformanceParsingThread(QThread):
             self.EmitInitializeTableSignal.emit(label_list, col_count, row_count)
         
         except Exception as e:
-            logger.error(f"{self._name} - 미리보기 테이블에 초기값을 방출하는데 문제가 생겼습니다. | Error Code: {e}")
+            logger.error(f"미리보기 테이블에 초기값을 방출하는데 문제가 생겼습니다. | Error Code: {e}")
             return None
     
     # 파싱 데이터를 테이블하고 프로그래스바에 데이터를 전달하는 함수
     def emitParsedSignal(self):
         try:
-            combined_dict = self.CombinedDict()
-            data = self.CombinedDictData(combined_dict)
-            sum_count = sum(data) + len(_PerformanceCalculationConditions.values()) # 프로그래스바 100% 기준 해당하는 값
+            # 원시 데이터
+            self.rawDataProcessing()
+                    
+        except Exception as e:
+            logger.error(f"미리보기 테이블 시그널, 프로그래스바 시그널에 데이터를 전달하는 과정에 문제가 생겼습니다. | Error Code: {e}")
+            return None
+    
+    # 원시 데이터
+    def rawDataProcessing(self):
+        combined_dict = self.CombinedDict()
+        data = self.CombinedDictData(combined_dict)
+        sum_count = sum(data) + len(_PerformanceCalculationConditions.values()) # 프로그래스바 100% 기준 해당하는 값
 
-            sum_pbar = 1
-            for col, value in enumerate(combined_dict.values()):
-                # 타입 검사
-                if isinstance(value, (list, tuple)):
-                    for row, item in enumerate(value):
-                        self.emitParsedSignalItem(col, row, str(item))
-                        self.emitParsedPbarValue(sum_pbar, sum_count)
-                        self.overhead(sum_pbar)
-                        sum_pbar += 1
-
-                # 데이터 배열이 아닐때
-                else:
-                    self.emitParsedSignalItem(col, 0, str(value))
+        sum_pbar = 1
+        for col, value in enumerate(combined_dict.values()):
+            # 타입 검사
+            if isinstance(value, (list, tuple)):
+                for row, item in enumerate(value):
+                    self.emitParsedSignalItem(col, row, str(item))
                     self.emitParsedPbarValue(sum_pbar, sum_count)
                     self.overhead(sum_pbar)
                     sum_pbar += 1
-                    
-        except Exception as e:
-            logger.error(f"{self._name} - 미리보기 테이블 시그널, 프로그래스바 시그널에 데이터를 전달하는 과정에 문제가 생겼습니다. | Error Code: {e}")
-            return None
+
+            # 데이터 배열이 아닐때
+            else:
+                self.emitParsedSignalItem(col, 0, str(value))
+                self.emitParsedPbarValue(sum_pbar, sum_count)
+                self.overhead(sum_pbar)
+                sum_pbar += 1
+    
+    # 통계화된 데이터
+    def statisticalDataProcessing(self):
+        # 통계화된 데이터 처리 로직, 작성 필요.
+        pass
+
     
     # 테이블 아이템 신호 업데이트
     def emitParsedSignalItem(self, col, row, item):
@@ -185,7 +195,7 @@ class PerformanceParsingThread(QThread):
             self.EmitParsedSignal.emit(col, row, item)
 
         except Exception as e:
-            logger.error(f"{self._name} - 미리보기 테이블에 데이터를 방출하는 과정에 문제가 생겼습니다. | Error Code: {e}")
+            logger.error(f"미리보기 테이블에 데이터를 방출하는 과정에 문제가 생겼습니다. | Error Code: {e}")
             return None
     
     # 진행상황 프로그래스바 신호 업데이트
@@ -194,7 +204,7 @@ class PerformanceParsingThread(QThread):
             self.EmitParsedPbarSignal.emit(sum_pbar, sum_count)
 
         except Exception as e:
-            logger.error(f"{self._name} - 프로그래스바에 데이터를 방출하는 과정에 문제가 생겼습니다. | Error Code: {e}")
+            logger.error(f"프로그래스바에 데이터를 방출하는 과정에 문제가 생겼습니다. | Error Code: {e}")
             return None
             
     # 메인 스레드가 업데이트를 하기위해 서브 스레드를 잠시 멈추는 함수
@@ -206,7 +216,7 @@ class PerformanceParsingThread(QThread):
                     self.msleep(100)
 
         except Exception as e:
-            logger.error(f"{self._name} - 성능 제한 모드에 문제가 생겼습니다. | Error Code: {e}")
+            logger.error(f"성능 제한 모드에 문제가 생겼습니다. | Error Code: {e}")
             return None
 
 
@@ -217,14 +227,13 @@ class PerformanceParsingResultsSaveThread(QThread):
     
     def __init__(self, parent=None):
         super().__init__(parent)
-        self._name = __class__.__name__
     
     def run(self):
         try:
             self.Saved()
                 
         except Exception as e:
-            logger.error(f"{self._name} - 데이터 저장 스레드에서 실행 내용을 정의하는 데에 문제가 생겼습니다. | Error Code: {e}")
+            logger.error(f"데이터 저장 스레드에서 실행 내용을 정의하는 데에 문제가 생겼습니다. | Error Code: {e}")
             self.MsgBoxNotifications.emit(f"Error Code: {str(e)}")
             
         finally:

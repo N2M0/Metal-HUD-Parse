@@ -19,7 +19,6 @@ class SettingsToolbar(QWidget):
     
     def __init__(self, parent=None):
         super().__init__(parent)
-        self._name = __class__.__name__
         
         # 특정 폴더에 있는 폰트 로드
         font_id = QtGui.QFontDatabase.addApplicationFont(font_path)
@@ -43,7 +42,7 @@ class SettingsToolbar(QWidget):
             self.setLayout(self.layout)
             
         except Exception as e:
-            logger.error(f"{self._name} - 툴바 버튼을 초기화하는 과정에 문제가 생겼습니다. | Error Code: {e}")
+            logger.error(f"툴바 버튼을 초기화하는 과정에 문제가 생겼습니다. | Error Code: {e}")
             
     def show_settings(self):
         try:
@@ -51,7 +50,7 @@ class SettingsToolbar(QWidget):
             self.settings_window.show()
             
         except Exception as e:
-            logger.error(f"{self._name} - 설정 화면을 오픈하는 중에 문제가 생겼습니다. | Error Code: {e}")
+            logger.error(f"설정 화면을 오픈하는 중에 문제가 생겼습니다. | Error Code: {e}")
             
 if __name__ == "__main__":
     app = QApplication([])

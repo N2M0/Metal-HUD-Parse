@@ -11,7 +11,6 @@ logger = InitLogger(CurrentFileName(__file__))
 class ParsedDataSavedWorker(QWidget):
     def __init__(self, parent):
         super(ParsedDataSavedWorker, self).__init__(parent)
-        self._name = __class__.__name__
         
         # 특정 폴더에 있는 폰트 로드
         font_id = QtGui.QFontDatabase.addApplicationFont(font_path)
@@ -28,7 +27,7 @@ class ParsedDataSavedWorker(QWidget):
             self.SaveThread.start()
             
         except Exception as e:
-            logger.error(f"{self._name} - 세이브 스레드를 실행하는 과정에 문제가 생겼습니다. | Error Code: {e}")
+            logger.error(f"세이브 스레드를 실행하는 과정에 문제가 생겼습니다. | Error Code: {e}")
             
     # 메시지박스
     def ShowMessagebox(self, setText):
@@ -46,5 +45,5 @@ class ParsedDataSavedWorker(QWidget):
                 sys.exit(1)
         
         except Exception as e:
-            logger.error(f"{self._name} - 세이브 스레드의 메시지박스를 실행하는 과정에 생겼습니다. | Error Code: {e}")
+            logger.error(f"세이브 스레드의 메시지박스를 실행하는 과정에 생겼습니다. | Error Code: {e}")
             
