@@ -39,11 +39,13 @@ class PerformanceParsingThread(QThread):
             # 파싱 데이터를 저장할 변수 전역변수 설정
             global _PerformanceCalculationConditions, _PerformanceData, _PerformanceErrorData
             
-            # 파싱이 시작중에는 버튼 비활성화
-            self.ParseStartBtnState.emit(False)
+            logger.info(f"스레드가 생성 됐습니다.")
             
             # 설정 값 가져오기
             self.settings = OpenJson(SetDataFilePath)
+
+            # 파싱이 시작중에는 버튼 비활성화
+            self.ParseStartBtnState.emit(False)
             
             # 파싱 데이터를 저장할 변수
             _PerformanceCalculationConditions = PerformanceCalculationConditions()
@@ -85,6 +87,9 @@ class PerformanceParsingThread(QThread):
             
             # 스레드 종료시 파싱 버튼을 활성화
             self.ParseStartBtnState.emit(True)
+            
+            logger.info(f"스레드가 삭제 됐습니다.")
+
             
     # 성능 데이터 파싱 함수
     def DataParsed(self):
