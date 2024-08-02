@@ -312,6 +312,7 @@ class MetalHUDParse(QWidget):
             
         except Exception as e:
             logger.error(f"Parse 관련 레이아웃 업데이트 클래스에 문제가 생겼습니다. | Error Code: {e}")
+        
             
     def StartParsePerformanceSave(self):
         try:
@@ -320,6 +321,7 @@ class MetalHUDParse(QWidget):
             
         except Exception as e:
             logger.error(f"Parsed Data를 저장하는 클래스에 문제가 생겼습니다. | Error Code: {e}")
+
 
     # 종료 이벤트
     def on_close(self, event):

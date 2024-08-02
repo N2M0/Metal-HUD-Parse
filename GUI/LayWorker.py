@@ -27,6 +27,7 @@ class LayUpdateWorker(QWidget):
     # 스레드 객체 생성
     def start(self):
         try:
+            logger.info(f"스레드가 생성 됐습니다.")
             # 0 index parameter parent
             self.ParsingThread = PerformanceParsingThread(self.parent, self.FileName, self.benchmarkBasedTime, self.DecimalPoint)
             self.ParsingThread.ParseStartBtnState.connect(lambda x: self.ParseStartBtn.setEnabled(x))
@@ -36,11 +37,12 @@ class LayUpdateWorker(QWidget):
             self.ParsingThread.EmitInitializeTableSignal.connect(self.InitializeTable)
             self.ParsingThread.EmitParsedSignal.connect(self.UpdateTable)
             self.ParsingThread.EmitParsedPbarSignal.connect(self.UpdateProgressBar)
-            self.ParsingThread.ThreadFinishedSignal.connect(self.ParsedResultsTable.resizeColumnsToContents)
+            self.ParsingThread.EmitTableResize.connect(self.ParsedResultsTable.resizeColumnsToContents)
+            self.ParsingThread.ThreadFinishedSignal.connect(self.stop)
             self.ParsingThread.start()
             
         except Exception as e:
-            logger.error(f"Parse 스레드를 시작하는 과정에 문제가 생겼습니다. | Error Code: {e}")
+            logger.error(f"Parse 스레드를 생성하는 과정에 문제가 생겼습니다. | Error Code: {e}")
 
     def TableState(self, state):
         if state == True:
@@ -90,3 +92,14 @@ class LayUpdateWorker(QWidget):
         except Exception as e:
             logger.error(f"프로그래스바를 업데이트하는 중에 문제가 생겼습니다. | Error Code: {e}")
             sys.exit(1)
+    
+    # 종료
+    def stop(self):
+        # 스레드 종료
+        logger.info(f"스레드가 삭제 됐습니다.")
+        self.ParsingThread.quit()    # 이벤트 루프 종료
+        self.ParsingThread.wait()    # 스레드가 종료될 때까지 대기
+        self.ParsingThread.deleteLater()  # 안전하게 삭제 예약
+        
+        # 서브 클래스 종료
+        self.deleteLater()

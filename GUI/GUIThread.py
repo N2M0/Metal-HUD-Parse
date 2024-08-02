@@ -24,6 +24,7 @@ class PerformanceParsingThread(QThread):
     EmitInitializeTableSignal =  pyqtSignal(list, int, int)
     EmitParsedSignal = pyqtSignal(int, int, str)  # 추가된 신호
     EmitParsedPbarSignal = pyqtSignal(int, int)
+    EmitTableResize = pyqtSignal()
     ThreadFinishedSignal = pyqtSignal()
     
     def __init__(self, parent, FileName, benchmarkBasedTimeValue, DecimalPoint):
@@ -39,7 +40,6 @@ class PerformanceParsingThread(QThread):
             # 파싱 데이터를 저장할 변수 전역변수 설정
             global _PerformanceCalculationConditions, _PerformanceData, _PerformanceErrorData
             
-            logger.info(f"스레드가 생성 됐습니다.")
             
             # 설정 값 가져오기
             self.settings = OpenJson(SetDataFilePath)
@@ -73,8 +73,9 @@ class PerformanceParsingThread(QThread):
                 
             self.UpdateFileLabelSignal.emit(f'Selected File: "{self.FileName}" Done!')
             
-            # 스레드 종료
-            self.ThreadFinishedSignal.emit()
+            # 테이블 리사이즈
+            self.EmitTableResize.emit()
+            
         
         except Exception as e:
             logger.error(f"성능 파싱 스레드에서 실행 내용을 정의하는 데에 문제가 생겼습니다. | Error Code: {e}")
@@ -83,12 +84,11 @@ class PerformanceParsingThread(QThread):
             sys.exit(1)
         
         finally:
-            self.quit()
-            
             # 스레드 종료시 파싱 버튼을 활성화
             self.ParseStartBtnState.emit(True)
             
-            logger.info(f"스레드가 삭제 됐습니다.")
+            # 스레드 종료
+            self.ThreadFinishedSignal.emit()
 
             
     # 성능 데이터 파싱 함수
@@ -229,6 +229,7 @@ class PerformanceParsingThread(QThread):
 # 파일로 저장
 class PerformanceParsingResultsSaveThread(QThread):
     MsgBoxNotifications = pyqtSignal(str)
+    ThreadFinishedSignal = pyqtSignal()
     
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -242,7 +243,8 @@ class PerformanceParsingResultsSaveThread(QThread):
             self.MsgBoxNotifications.emit(f"Error Code: {str(e)}")
             
         finally:
-            self.quit()
+            # 스레드 종료
+            self.ThreadFinishedSignal.emit()
     
     def Saved(self):
         if all([_PerformanceCalculationConditions, _PerformanceData, _PerformanceErrorData]):
