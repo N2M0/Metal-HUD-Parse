@@ -24,6 +24,11 @@ frametimeErrorData = "frametimeErrorData"
 gpuTimeErrorData = "gpuTimeErrorData"
 
 
+"""
+메인 GUI 여러작업의 실행 여부를 결정하는 Keys.
+"""
+parse_thread_state = "parse_thread_state"
+
 
 """ 
 툴바 설정 키-값 정의

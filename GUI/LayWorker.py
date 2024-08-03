@@ -20,6 +20,7 @@ class LayUpdateWorker(QWidget):
         self.ParsedPbar = self.parent.ParsedPbar
         self.ParseStartBtn = self.parent.ParseStartBtn
         self.ParseStopBtn = self.parent.ParseStopBtn
+        self.task_states = self.parent.task_states
         
         # 함수
         self.button_Hide = self.parent.button_Hide
@@ -36,6 +37,9 @@ class LayUpdateWorker(QWidget):
             
             # 종료 버튼 활성화
             self.button_Hide(self.ParseStopBtn, True, (10 ,20), (10 ,20), (10 ,20))
+            
+            # 파싱 스레드의 객체가 생성됐다고 알림
+            self.task_states[parse_thread_state] = True
             
             # 스레드 시그널에 함수 연결
             self.ParsingThread = PerformanceParsingThread(self.parent, self.FileName, self.benchmarkBasedTime, self.DecimalPoint)
@@ -99,6 +103,9 @@ class LayUpdateWorker(QWidget):
         
         # 버튼 숨기기
         self.button_Hide(self.ParseStopBtn, False, (0 ,0), (10 ,20), (10 ,20))
+        
+        # 파싱 스레드의 객체가 삭제됐다고 알림
+        self.task_states[parse_thread_state] = False
         
         # 서브 클래스 종료
         self.deleteLater()

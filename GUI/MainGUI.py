@@ -31,6 +31,11 @@ class MetalHUDParse(QWidget):
     def __init__(self):
         super().__init__()
         logger.info("프로그램 시작")  # 프로그램 시작 시 메시지
+        
+        # 실행여부 정의.
+        self.task_states = {
+            parse_thread_state: False
+        }
 
         # 종료 시그널에 슬롯 연결
         self.closeEvent = self.on_close
@@ -355,7 +360,10 @@ class MetalHUDParse(QWidget):
 
     # 종료 이벤트
     def on_close(self, event):
-        self.LayWorker.stop("메인 스레드가 종료되어 파싱 스레드가 강제 종료 됐습니다.")
+        # 객체가 존재할때만 실행.
+        if self.task_states[parse_thread_state] == True:
+            self.LayWorker.stop("메인 스레드가 종료되어 파싱 스레드가 강제 종료 됐습니다.")
+        
         logger.info("프로그램 종료")  # 종료 시 메시지
         event.accept()  # 종료 이벤트를 수락
 
