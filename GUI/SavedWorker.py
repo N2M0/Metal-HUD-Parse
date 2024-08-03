@@ -28,7 +28,7 @@ class ParsedDataSavedWorker(QWidget):
             self.SaveThread = PerformanceParsingResultsSaveThread(parent=self.parent)
             self.SaveThread.ParsedSaveBtnState.connect(lambda x: self.ParsedSave.setEnabled(x))
             self.SaveThread.MsgBoxNotifications.connect(self.ShowMessagebox)
-            self.SaveThread.ThreadFinishedSignal.connect(self.stop)
+            self.SaveThread.ThreadFinishedSignal.connect(lambda: self.stop("스레드가 종료 됐습니다."))
             self.SaveThread.start()
             
         except Exception as e:
@@ -53,13 +53,17 @@ class ParsedDataSavedWorker(QWidget):
             logger.error(f"데이터 저장 스레드의 메시지박스를 실행하는 과정에 생겼습니다. | Error Code: {e}")
 
     # 종료
-    def stop(self):
-        if self.SaveThread.isRunning():
-            # 스레드 종료
-            logger.info(f"스레드가 삭제 됐습니다.")
-            self.SaveThread.quit()    # 이벤트 루프 종료
-            self.SaveThread.wait()    # 스레드가 종료될 때까지 대기
-            self.SaveThread.deleteLater()  # 안전하게 삭제 예약
-
+    def stop(self, text):
+        # 스레드 종료
+        logger.info(text)
+        self.Thread_stop()
+        
         # 서브 클래스 종료
         self.deleteLater()
+        
+
+    def Thread_stop(self):
+        # self.SaveThread.requestInterruption()
+        self.SaveThread.quit()    # 이벤트 루프 종료
+        self.SaveThread.wait()    # 스레드가 종료될 때까지 대기
+        self.SaveThread.deleteLater()  # 안전하게 삭제 예약

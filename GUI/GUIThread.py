@@ -180,6 +180,10 @@ class PerformanceParsingThread(QThread):
             # 타입 검사
             if isinstance(value, (list, tuple)):
                 for row, item in enumerate(value):
+                    if self.isInterruptionRequested():
+                        logger.info("파싱 스레드가 중단 요청을 받았습니다.")
+                        return
+                    
                     self.emitParsedSignalItem(col, row, str(item))
                     self.emitParsedPbarValue(sum_pbar, sum_count)
                     self.overhead(sum_pbar)
@@ -187,6 +191,10 @@ class PerformanceParsingThread(QThread):
 
             # 데이터 배열이 아닐때
             else:
+                if self.isInterruptionRequested():
+                    logger.info("파싱 스레드가 중단 요청을 받았습니다.")
+                    return
+                
                 self.emitParsedSignalItem(col, 0, str(value))
                 self.emitParsedPbarValue(sum_pbar, sum_count)
                 self.overhead(sum_pbar)
@@ -229,7 +237,6 @@ class PerformanceParsingThread(QThread):
             return None
 
 
-
 # 파일로 저장
 class PerformanceParsingResultsSaveThread(QThread):
     ParsedSaveBtnState = pyqtSignal(bool)
@@ -253,8 +260,13 @@ class PerformanceParsingResultsSaveThread(QThread):
             # 스레드 종료시 파일 저장 버튼을 활성화
             self.ParsedSaveBtnState.emit(True)
             
+            # if self.isInterruptionRequested():
+            #     logger.info("데이터 저장 스레드가 중단 요청을 받았습니다.")
+            #     return
+            
             # 스레드 종료
             self.ThreadFinishedSignal.emit()
+            
     
     def Saved(self):
         if all([_PerformanceCalculationConditions, _PerformanceData, _PerformanceErrorData]):

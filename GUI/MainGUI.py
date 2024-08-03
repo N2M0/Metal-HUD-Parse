@@ -8,7 +8,9 @@ from PyQt5.QtWidgets import (
     QFrame,
     QHBoxLayout,
     QTableWidget,
-    QProgressBar
+    QProgressBar,
+    QSpacerItem,
+    QSizePolicy
     )
 
 from PyQt5.QtCore import Qt
@@ -153,6 +155,9 @@ class MetalHUDParse(QWidget):
                 int(self.DecimalPoint.value())),
                 )
             
+            # 데이터 파싱 중지
+            self.ParseStopBtn = self.addBtn("Parse Stop", self.Parse_Quit)
+            
             # 파일 변경 버튼 초기화
             self.FileChange = self.addBtn("File Change", self.FileChanged)
             
@@ -164,6 +169,9 @@ class MetalHUDParse(QWidget):
             
             # 툴바 설정 값에 의해 숨김 처리된 위젯 초기값.
             self.widget_Hide()
+            
+            # 버튼 숨기기
+            self.button_Hide(self.ParseStopBtn, False, (0 ,0), (10 ,20), (10 ,20))
             
             return StartPerformanceframe
         
@@ -200,15 +208,22 @@ class MetalHUDParse(QWidget):
                 StartPerformancevbox.addSpacing(20) # 여백
             StartPerformancevbox.addStretch(1)
             
-            
             # 수평
-            StartPerformancehbox.addStretch(1)
+            # 스페이서 아이템 생성
+            self.spacer1 = QSpacerItem(10, 20, QSizePolicy.Fixed, QSizePolicy.Minimum)
+            self.spacer2 = QSpacerItem(10, 20, QSizePolicy.Fixed, QSizePolicy.Minimum)
+            self.spacer3 = QSpacerItem(10, 20, QSizePolicy.Fixed, QSizePolicy.Minimum)
+
+            # 레이아웃에 위젯 추가
+            StartPerformancehbox.addStretch(1)  # 왼쪽 여백
             StartPerformancehbox.addWidget(self.ParseStartBtn, alignment=Qt.AlignBottom | Qt.AlignHCenter)
-            StartPerformancehbox.addSpacing(10) # 여백
+            StartPerformancehbox.addItem(self.spacer1)  # 여백
+            StartPerformancehbox.addWidget(self.ParseStopBtn, alignment=Qt.AlignBottom | Qt.AlignHCenter)
+            StartPerformancehbox.addItem(self.spacer2)  # 여백
             StartPerformancehbox.addWidget(self.FileChange, alignment=Qt.AlignBottom | Qt.AlignHCenter)
-            StartPerformancehbox.addSpacing(10) # 여백
+            StartPerformancehbox.addItem(self.spacer3)  # 여백
             StartPerformancehbox.addWidget(self.ParsedSave, alignment=Qt.AlignBottom | Qt.AlignHCenter)
-            StartPerformancehbox.addStretch(1)
+            StartPerformancehbox.addStretch(1)  # 오른쪽 여백
 
             # 레이아웃 추가
             StartPerformancevbox.addLayout(StartPerformancehbox)
@@ -220,12 +235,24 @@ class MetalHUDParse(QWidget):
             logger.error(f"시작 성능 화면의 레이아웃 또는 위젯을 추가하는 과정에 문제가 생겼습니다. | Error Code: {e}")
             return None
 
+    # 버튼 숨기기
+    def button_Hide(self, btn_obj, state, *spacer_Size):
+        
+        # 버튼 숨기기
+        btn_obj.setVisible(state)  # 버튼을 숨깁니다.
+        
+        spacer_Size_1, spacer_Size_2, spacer_Size_3 = spacer_Size
+        self.spacer1.changeSize(*spacer_Size_1, QSizePolicy.Fixed, QSizePolicy.Minimum)  # 여백 숨기기
+        self.spacer2.changeSize(*spacer_Size_2, QSizePolicy.Fixed, QSizePolicy.Minimum)  # 여백 숨기기
+        self.spacer3.changeSize(*spacer_Size_3, QSizePolicy.Fixed, QSizePolicy.Minimum)  # 여백 숨기기
+
+
     def widget_Hide(self):
         # 설정 값 가져오기
         settings = OpenJson(SetDataFilePath)
         if not settings[Preview_data] == Preview_data_parmeters[Preview_data_default]:
-            self.ParsedResultsTable.hide()
-            self.ParsedPbar.hide()
+            self.ParsedResultsTable.hide(False)
+            self.ParsedPbar.setVisible(False)
 
 
     # 파일 이름 변경 함수
@@ -307,12 +334,15 @@ class MetalHUDParse(QWidget):
     def StartParsePerformance(self, FileName, benchmarkBasedTime, DecimalPoint):
         try:
             # 파스 결과를 메인 레이아웃에 업데이트하는 객체
-            LayWorker = LayUpdateWorker(self, FileName, benchmarkBasedTime, DecimalPoint)
-            LayWorker.start()
+            self.LayWorker = LayUpdateWorker(self, FileName, benchmarkBasedTime, DecimalPoint)
+            self.LayWorker.start()
             
         except Exception as e:
             logger.error(f"Parse 관련 레이아웃 업데이트 클래스에 문제가 생겼습니다. | Error Code: {e}")
-        
+    
+    def Parse_Quit(self):
+        self.LayWorker.stop("스레드가 강제 종료 됐습니다.")
+    
             
     def StartParsePerformanceSave(self):
         try:
@@ -325,26 +355,12 @@ class MetalHUDParse(QWidget):
 
     # 종료 이벤트
     def on_close(self, event):
+        self.LayWorker.stop("메인 스레드가 종료되어 파싱 스레드가 강제 종료 됐습니다.")
         logger.info("프로그램 종료")  # 종료 시 메시지
         event.accept()  # 종료 이벤트를 수락
 
-    # 창 닫기 버튼 상태 변경
-    def set_window_close_button_state_changed(self, enabled):
-        current_flags = self.windowFlags()
-        
-        if enabled:
-            # X 버튼이 비활성화된 상태가 아닐 때만 활성화
-            if not (current_flags & Qt.WindowCloseButtonHint):
-                self.setWindowFlags(current_flags | Qt.WindowCloseButtonHint)  # X 버튼 활성화
-                
-        else:
-            # X 버튼이 활성화된 상태일 때만 비활성화
-            if (current_flags & Qt.WindowCloseButtonHint):
-                self.setWindowFlags(current_flags & ~Qt.WindowCloseButtonHint)  # X 버튼 비활성화
 
-        self.setVisible(False)  # 창을 숨김
-        self.setVisible(True)   # 다시 표시하여 플래그 변경 사항 반영
-        
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     window = MetalHUDParse()

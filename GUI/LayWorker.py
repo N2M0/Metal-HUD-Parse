@@ -13,13 +13,16 @@ class LayUpdateWorker(QWidget):
     def __init__(self, parent, FileName, benchmarkBasedTime, DecimalPoint):
         super(LayUpdateWorker, self).__init__(parent)
         
+        # 변수
         self.parent = parent
         self.StartPerformanceLable = self.parent.StartPerformanceLable
         self.ParsedResultsTable = self.parent.ParsedResultsTable
         self.ParsedPbar = self.parent.ParsedPbar
         self.ParseStartBtn = self.parent.ParseStartBtn
-        self.set_window_close_button_state_changed = self.parent.set_window_close_button_state_changed
+        self.ParseStopBtn = self.parent.ParseStopBtn
         
+        # 함수
+        self.button_Hide = self.parent.button_Hide
         
         # 인스턴스 변수
         self.FileName = FileName
@@ -31,10 +34,10 @@ class LayUpdateWorker(QWidget):
         try:
             logger.info(f"스레드가 생성 됐습니다.")
             
-            # 찯 닫기 버튼 비활성화하기
-            self.set_window_close_button_state_changed(False)
+            # 종료 버튼 활성화
+            self.button_Hide(self.ParseStopBtn, True, (10 ,20), (10 ,20), (10 ,20))
             
-            # 0 index parameter parent
+            # 스레드 시그널에 함수 연결
             self.ParsingThread = PerformanceParsingThread(self.parent, self.FileName, self.benchmarkBasedTime, self.DecimalPoint)
             self.ParsingThread.ParseStartBtnState.connect(lambda x: self.ParseStartBtn.setEnabled(x))
             self.ParsingThread.UpdateFileLabelSignal.connect(lambda text: self.StartPerformanceLable.setText(text))
@@ -44,18 +47,14 @@ class LayUpdateWorker(QWidget):
             self.ParsingThread.EmitParsedSignal.connect(self.UpdateTable)
             self.ParsingThread.EmitParsedPbarSignal.connect(self.UpdateProgressBar)
             self.ParsingThread.EmitTableResize.connect(self.ParsedResultsTable.resizeColumnsToContents)
-            self.ParsingThread.ThreadFinishedSignal.connect(self.stop)
+            self.ParsingThread.ThreadFinishedSignal.connect(lambda : self.stop("스레드가 종료 됐습니다."))
             self.ParsingThread.start()
             
         except Exception as e:
             logger.error(f"Parse 스레드를 생성하는 과정에 문제가 생겼습니다. | Error Code: {e}")
 
     def StateChanged(self, state, obj):
-        if state == True:
-            obj.show()
-        
-        else:
-            obj.hide()
+        obj.setVisible(state)
         
     # 테이블 초기화
     def InitializeTable(self, label_list, col_count, row_count):
@@ -93,17 +92,21 @@ class LayUpdateWorker(QWidget):
             sys.exit(1)
     
     # 종료
-    def stop(self):
-        if self.ParsingThread.isRunning():
-            # 스레드 종료
-            logger.info(f"스레드가 삭제 됐습니다.")
-            self.ParsingThread.quit()    # 이벤트 루프 종료
-            self.ParsingThread.wait()    # 스레드가 종료될 때까지 대기
-            self.ParsingThread.deleteLater()  # 안전하게 삭제 예약
+    def stop(self, text):
+        # 스레드 종료
+        logger.info(text)
+        self.Thread_stop()
         
-        
-        # 찯 닫기 버튼 활성화하기
-        self.set_window_close_button_state_changed(True)
+        # 버튼 숨기기
+        self.button_Hide(self.ParseStopBtn, False, (0 ,0), (10 ,20), (10 ,20))
         
         # 서브 클래스 종료
         self.deleteLater()
+        
+
+    def Thread_stop(self):
+        self.ParsingThread.requestInterruption()
+        self.ParsingThread.quit()    # 이벤트 루프 종료
+        self.ParsingThread.wait()    # 스레드가 종료될 때까지 대기
+        self.ParsingThread.deleteLater()  # 안전하게 삭제 예약
+        
