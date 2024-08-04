@@ -1,6 +1,7 @@
 {
     "Preview data": "used",
     "Preview data viewing mode": "Raw mode",
-    "Startup mode": "speed mode",
-    "Font changed (Restart required)": "OpenSans-Bold.ttf"
+    "Startup mode": "stability mode",
+    "Font changed (Restart required)": "OpenSans-Bold.ttf",
+    "Include Index In File Parse data": "Displayed"
 }

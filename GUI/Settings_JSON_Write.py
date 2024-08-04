@@ -11,6 +11,7 @@ def create_settings_data(is_default=False):
         Preview_data_viewing_mode: ("테이블 미리보기 보기 모드", Preview_data_viewing_mode_parmeters) if not is_default else (Preview_data_viewing_mode_parmeters[Preview_data_viewing_mode_default]),
         Startup_mode: ("시작시 모드 여부", Startup_mode_parmeters) if not is_default else (Startup_mode_parmeters[Startup_mode_default]),
         Font_Changed: ("폰트 변경 (재시작 필요)", Font_Changed_parmeters) if not is_default else (Font_Changed_parmeters[Font_Changed_default]),
+        Include_Index_In_File_Parse_data: ("Parse 파일 데이터에 인덱스 포함 여부", Include_Index_In_File_Parse_data_parameters) if not is_default else (Include_Index_In_File_Parse_data_parameters[Include_Index_In_File_Parse_data_default]),
         }
 
 # 레이블 - 콤보박스 - 버튼 데이터

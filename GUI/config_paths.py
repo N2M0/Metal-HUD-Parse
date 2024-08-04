@@ -55,6 +55,10 @@ Font_Changed = "Font changed (Restart required)"
 Font_Changed_parmeters = Font_Read("Fonts/Open_Sans/static")
 Font_Changed_default = 0
 
+# Parse 파일 데이터에 인덱스 포함
+Include_Index_In_File_Parse_data = "Include Index In File Parse data"
+Include_Index_In_File_Parse_data_parameters = ("Displayed", "Not Displayed")
+Include_Index_In_File_Parse_data_default = 0
 
 """ 
 URL/경로 관리

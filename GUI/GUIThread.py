@@ -311,9 +311,12 @@ class PerformanceParsingResultsSaveThread(QThread):
     
     def run(self):
         try:
+            # 설정 값 가져오기
+            self.settings = OpenJson(SetDataFilePath)
+            
             # 스레드 시작시 파일 저장 버튼을 비활성화
             self.ParsedSaveBtnState.emit(False)
-            self.Saved()
+            self.parse_data_save()
                 
         except Exception as e:
             logger.error(f"데이터 저장 스레드에서 실행 내용을 정의하는 데에 문제가 생겼습니다. | Error Code: {e}")
@@ -331,17 +334,29 @@ class PerformanceParsingResultsSaveThread(QThread):
             self.ThreadFinishedSignal.emit()
             
     
-    def Saved(self):
+    def parse_data_save(self):
         if all([_PerformanceCalculationConditions, _PerformanceData, _PerformanceErrorData]):
             # Parse Data Save FilePath
             ParseDataSavePath = MakeFolder(f"Parse_Save/{CurrentTime()}")
 
-            PerformanceCsvSave(ParseDataSavePath, "FPS-Result.csv", f"FPS - 약 {_PerformanceCalculationConditions[benchmarkBasedTime]} ms마다 평균치 계산", _PerformanceData[FPSData])
-            PerformanceCsvSave(ParseDataSavePath, "Frametime-Result.csv", f"Frametime", _PerformanceData[frameTimeData])
-            PerformanceCsvSave(ParseDataSavePath, "GPUTime-Result.csv", f"GPUTime", _PerformanceData[gpuTimeData])
-            PerformanceCsvSave(ParseDataSavePath, "Memory-Result.csv", f"Memory(MB)", _PerformanceData[memoryData])
-            PerformanceCsvSave(ParseDataSavePath, "Frametime-Error.csv", f"Frametime error list", _PerformanceErrorData[frametimeErrorData])
-            PerformanceCsvSave(ParseDataSavePath, "GPUTime-error.csv", f"GPUTime error list", _PerformanceErrorData[gpuTimeErrorData])
+            # 저장할 파일 이름과 관련된 정보
+            performance_data = {
+                "FPS-Result.csv": (f"FPS - 약 {_PerformanceCalculationConditions[benchmarkBasedTime]} ms마다 평균치 계산", _PerformanceData[FPSData]),
+                "Frametime-Result.csv": (f"Frametime", _PerformanceData[frameTimeData]),
+                "GPUTime-Result.csv": (f"GPUTime", _PerformanceData[gpuTimeData]),
+                "Memory-Result.csv": (f"Memory(MB)", _PerformanceData[memoryData]),
+                "Frametime-Error.csv": (f"Frametime error list", _PerformanceErrorData[frametimeErrorData]),
+                "GPUTime-error.csv": (f"GPUTime error list", _PerformanceErrorData[gpuTimeErrorData]),
+            }
+
+            # 인덱스 포함 조건문
+            include_index = True if self.settings[Include_Index_In_File_Parse_data] == Include_Index_In_File_Parse_data_parameters[Include_Index_In_File_Parse_data_default] else False
+            
+            # 반복문을 통해 파일 저장
+            for filename, (description, data) in performance_data.items():
+                PerformanceCsvSave(ParseDataSavePath, filename, description, data, include_index)
+
+
             self.MsgBoxNotifications.emit("Success!")
             
         else:

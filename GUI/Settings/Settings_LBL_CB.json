@@ -56,5 +56,12 @@
             "OpenSans_SemiCondensed-MediumItalic.ttf",
             "OpenSans_SemiCondensed-Regular.ttf"
         ]
+    ],
+    "Include Index In File Parse data": [
+        "Parse 파일 데이터에 인덱스 포함 여부",
+        [
+            "Displayed",
+            "Not Displayed"
+        ]
     ]
 }
