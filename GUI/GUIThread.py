@@ -16,6 +16,12 @@ _PerformanceCalculationConditions = None
 _PerformanceData = None
 _PerformanceErrorData  = None
 
+# 통계 계산 실행 조건 함수.
+def Statistical_Function_Manager(func, values):
+    if len(values) == 0:
+        return None  # 빈 리스트에 대한 처리
+    return func(values)
+
 # 스레드
 class PerformanceParsingThread(QThread):
     # 서브 스레드에서 메인 스레드로 데이터를 보낼 신호
@@ -59,22 +65,25 @@ class PerformanceParsingThread(QThread):
             _PerformanceErrorData = PerformanceErrorData()
 
             _PerformanceCalculationConditions[benchmarkBasedTime] = self.benchmarkBasedTimeValue
+            # 데이터 파싱 계산.
             self.DataParsed()
             # 불필요한 키-값 제거
             self.RemoveKeys()
 
             # 미리보기 테이블 사용 여부
-            Preview_data_change = True if self.settings[Preview_data] == Preview_data_parmeters[Preview_data_default] else False
-            self.EmitTableState.emit(Preview_data_change, self.ParsedResultsTable)
-            self.EmitPbarState.emit(Preview_data_change, self.ParsedPbar)
+            Preview_data_used_change = True if self.settings[Preview_data] == Preview_data_parmeters[Preview_data_default] else False
             
             # 미리보기 테이블 보기 모드
             Preview_data_viewing_mode_change = True if self.settings[Preview_data_viewing_mode] == Preview_data_viewing_mode_parmeters[Preview_data_viewing_mode_default] else False
             
+            self.EmitTableState.emit(Preview_data_used_change, self.ParsedResultsTable)
+            self.EmitPbarState.emit(Preview_data_used_change, self.ParsedPbar)
+            
             # 필요 함수 호출.
-            self.emitInitializeTableSignal(Preview_data_change, Preview_data_viewing_mode_change)
-            self.emitParsedSignal(Preview_data_change, Preview_data_viewing_mode_change)
-                
+            self.emitInitializeTableSignal(Preview_data_used_change, Preview_data_viewing_mode_change)
+            self.emitParsedSignal(Preview_data_used_change, Preview_data_viewing_mode_change)
+            
+            # 완료 레이블 시그널.
             self.UpdateFileLabelSignal.emit(f'Selected File: "{self.FileName}" Done!')
             
             # 테이블 리사이즈
@@ -163,8 +172,12 @@ class PerformanceParsingThread(QThread):
                 else:
                     # 통계 함수
                     self.statistical_functions = {
-                        "mean": np.mean,
-                        "median": np.median
+                        "Maximum":np.max,
+                        "Average": np.mean,
+                        "Median": np.median,
+                        "Minimum": np.min,
+                        "Variance": np.var,
+                        "Stdev": np.std,
                     }
                     
                     y_label_list = list(self.statistical_functions.keys())
@@ -191,7 +204,8 @@ class PerformanceParsingThread(QThread):
         combined_dict = self.CombinedDict()
         data = self.CombinedDictDataCalculate(combined_dict)
         sum_count = sum(data) + len(_PerformanceCalculationConditions.values()) # 프로그래스바 100% 기준 해당하는 값
-
+        
+        # 프로그래스바 계산 초기값
         sum_pbar = 1
         for col, value in enumerate(combined_dict.values()):
             # 타입 검사
@@ -216,43 +230,42 @@ class PerformanceParsingThread(QThread):
                 self.emitParsedPbarValue(sum_pbar, sum_count)
                 self.overhead(sum_pbar)
                 sum_pbar += 1
+                
     
     # 통계화된 데이터
     def statisticalDataProcessing(self):
         combined_dict = self.CombinedDict()
         repeat_value = list(self.statistical_functions.values())
         sum_count = len(combined_dict.keys()) * len(repeat_value) # 프로그래스바 100% 기준 해당하는 값
-        print(sum_count)
         
+        # 프로그래스바 계산 초기값
         sum_pbar = 1
-        for col, fun in enumerate(repeat_value):
+        for col, value in enumerate(combined_dict.values()):
             if self.isInterruptionRequested():
                 logger.info("파싱 스레드가 중단 요청을 받았습니다.")
                 return
             
-            for row, value in enumerate(combined_dict.values()):
+            for row, func in enumerate(repeat_value):
                 if self.isInterruptionRequested():
                     logger.info("파싱 스레드가 중단 요청을 받았습니다.")
                     return
                 
                 # 타입 검사
                 if isinstance(value, (list, tuple)):
-                    value_num = fun(value) if len(value) != 0 else None
-                    print(col, row, value_num)
+                    # 내부 값들이 모두 int 또는 float인지 확인
+                    value_type = Statistical_Function_Manager(func, value) if all(isinstance(v, (int, float)) for v in value) else value
                     
-                    self.emitParsedSignalItem(col, row, str(value_num))
-
+                    # 값이 int 또는 float일 경우에만 추가
+                    Selecting_value = str(round(value_type, self.DecimalPoint)) if isinstance(value_type, (int, float)) else str(f"Errors: {len(value_type) if value_type is not None else None} counted")
+                    self.emitParsedSignalItem(col, row, Selecting_value)
+                    
                 else:
-                    print(col, row, value)
-                    
-                    self.emitParsedSignalItem(col, row, str(value))
-                
+                    self.emitParsedSignalItem(col, row, str(round(value, self.DecimalPoint)))
                 
                 # 프로그래스바 및 성능 모드 계산.
                 self.emitParsedPbarValue(sum_pbar, sum_count)
                 self.overhead(sum_pbar)
                 sum_pbar += 1
-                
 
     
     # 테이블 아이템 신호 업데이트
