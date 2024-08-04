@@ -19,7 +19,7 @@ def DataReader(FileName):
             return data
         
         else:
-            logger.debug("DataReader File Extension Selection Error:", "Not a *.csv file.")
+            logger.debug("DataReader File Extension Selection Error: Not a *.csv file.")
             return None
     
     except Exception as e:
