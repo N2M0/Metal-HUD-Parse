@@ -1,6 +1,6 @@
 import csv
 import pandas as pd
-from pprint import pprint
+# from pprint import pprint
 from config_paths import *
 from applog import *
 
