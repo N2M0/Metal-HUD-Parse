@@ -60,6 +60,8 @@ Font_Changed_default = 0
 URL/경로 관리
 """
 
+# "/" 를 사용해야 합니다.
+
 # 폰트 경로
 font_path = Font_Path("Settings/Settings.json", Font_Changed) # 폰트 파일 경로
 
@@ -72,10 +74,13 @@ ButtonFilePath = get_absolute_path("Settings/Settings_BTN.json")
 SetDataFilePath = get_absolute_path("Settings/Settings.json")
 
 # Icon FilePath
-# "/" 를 사용해야 합니다.
 DouSBUpIConFilePath = get_absolute_path("icons/up-arrow(DoubleSpinBox).png")
 DouSBDownIConFilePath = get_absolute_path("icons/down-arrow(DoubleSpinBox).png")
 CBDownIconFilePath = get_absolute_path("icons/down-arrow(ComboBox).png")
 
 # logging FilePath
 FolderPath = MakeFolder(f"debugs/{CurrentTime()}")
+
+# Parse Data Save FilePath / 해당 폴더 패치는 여기에 표시만 합니다. 
+# 저장을 할때마다 폴더가 새로 생성돼야 하기 때문에 파일 세이브 스레드 영역에 폴더 패치 코드를 작성했습니다.
+# ParseDataSavePath = MakeFolder(f"Parse_Save/{CurrentTime()}")

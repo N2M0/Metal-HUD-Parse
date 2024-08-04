@@ -5,6 +5,7 @@ from collections import OrderedDict
 import sys
 from Json_Utils import *
 from config_paths import *
+from config_paths_Utils import *
 from applog import *
 import numpy as np
 
@@ -332,12 +333,15 @@ class PerformanceParsingResultsSaveThread(QThread):
     
     def Saved(self):
         if all([_PerformanceCalculationConditions, _PerformanceData, _PerformanceErrorData]):
-            PerformanceCsvSave("FPS-Result.csv", f"FPS - 약 {_PerformanceCalculationConditions[benchmarkBasedTime]} ms마다 평균치 계산", _PerformanceData[FPSData])
-            PerformanceCsvSave("Frametime-Result.csv", f"Frametime", _PerformanceData[frameTimeData])
-            PerformanceCsvSave("GPUTime-Result.csv", f"GPUTime", _PerformanceData[gpuTimeData])
-            PerformanceCsvSave("Memory-Result.csv", f"Memory(MB)", _PerformanceData[memoryData])
-            PerformanceCsvSave("Frametime-Error.csv", f"Frametime error list", _PerformanceErrorData[frametimeErrorData])
-            PerformanceCsvSave("GPUTime-error.csv", f"GPUTime error list", _PerformanceErrorData[gpuTimeErrorData])
+            # Parse Data Save FilePath
+            ParseDataSavePath = MakeFolder(f"Parse_Save/{CurrentTime()}")
+
+            PerformanceCsvSave(ParseDataSavePath, "FPS-Result.csv", f"FPS - 약 {_PerformanceCalculationConditions[benchmarkBasedTime]} ms마다 평균치 계산", _PerformanceData[FPSData])
+            PerformanceCsvSave(ParseDataSavePath, "Frametime-Result.csv", f"Frametime", _PerformanceData[frameTimeData])
+            PerformanceCsvSave(ParseDataSavePath, "GPUTime-Result.csv", f"GPUTime", _PerformanceData[gpuTimeData])
+            PerformanceCsvSave(ParseDataSavePath, "Memory-Result.csv", f"Memory(MB)", _PerformanceData[memoryData])
+            PerformanceCsvSave(ParseDataSavePath, "Frametime-Error.csv", f"Frametime error list", _PerformanceErrorData[frametimeErrorData])
+            PerformanceCsvSave(ParseDataSavePath, "GPUTime-error.csv", f"GPUTime error list", _PerformanceErrorData[gpuTimeErrorData])
             self.MsgBoxNotifications.emit("Success!")
             
         else:

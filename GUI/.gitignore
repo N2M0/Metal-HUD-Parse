@@ -2,8 +2,14 @@
 *.pyc
 __pycache__/
 
-# debug 폴더 내의 모든 파일과 폴더를 무시
+# debugs 폴더 내의 모든 파일과 폴더를 무시
 debugs/*
 
 # .txt 파일만 포함
 !debugs/**/*.txt
+
+# Parse_Save 폴더 내의 모든 파일과 폴더를 무시
+Parse_Save/*
+
+# .txt 파일만 포함
+!Parse_Save/**/*.txt

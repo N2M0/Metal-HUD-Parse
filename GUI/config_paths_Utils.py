@@ -2,8 +2,8 @@ import os
 from Json_Utils import *
 from datetime import datetime
 
-# 여기는 config_paths 에서 사용되는 보조 함수를 관리하는 파일입니다.
-
+# 여기는 config_paths 에서 주로 사용되는 보조 함수를 관리하는 파일입니다.
+# config_paths 가 아닌 파일에서도 사용됩니다.
 
 # 주어진 파일 경로에 대한 절대 경로를 반환하는 함수
 def get_absolute_path(relative_path):

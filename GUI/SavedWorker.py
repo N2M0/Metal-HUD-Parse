@@ -38,7 +38,7 @@ class ParsedDataSavedWorker(QWidget):
     def ShowMessagebox(self, setText):
         try:
             msgBox = QMessageBox(parent=self.parent)
-            msgBox.setWindowTitle('Parsed Notifications')
+            msgBox.setWindowTitle('Parse Notification')
             msgBox.setText(setText)
             
             # 스타일 시트 설정
