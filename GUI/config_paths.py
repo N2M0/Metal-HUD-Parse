@@ -35,15 +35,22 @@ parse_thread_state = "parse_thread_state"
 """
 
 # settings_LBL_CB
+# 미리보기 테이블 및 프로그래스바 사용 여부
 Preview_data = "Preview data"
 Preview_data_parmeters = ("used", "not used")
 Preview_data_default = 0
 
+# 미리보기 테이블 보기 모드
+Preview_data_viewing_mode = "Preview data viewing mode"
+Preview_data_viewing_mode_parmeters = ("Raw mode", "statistical mode")
+Preview_data_viewing_mode_default = 0
+
+# 시작시 성능 모드
 Startup_mode = "Startup mode"
 Startup_mode_parmeters = ("speed mode", "stability mode")
 Startup_mode_default = 1
 
-
+# 폰트 변경
 Font_Changed = "Font changed (Restart required)"
 Font_Changed_parmeters = Font_Read("Fonts/Open_Sans/static")
 Font_Changed_default = 0

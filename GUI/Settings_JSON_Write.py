@@ -8,6 +8,7 @@ logger = InitLogger(CurrentFileName(__file__))
 def create_settings_data(is_default=False):
     return {
         Preview_data: ("테이블 미리보기 여부", Preview_data_parmeters) if not is_default else (Preview_data_parmeters[Preview_data_default]),
+        Preview_data_viewing_mode: ("테이블 미리보기 보기 모드", Preview_data_viewing_mode_parmeters) if not is_default else (Preview_data_viewing_mode_parmeters[Preview_data_viewing_mode_default]),
         Startup_mode: ("시작시 모드 여부", Startup_mode_parmeters) if not is_default else (Startup_mode_parmeters[Startup_mode_default]),
         Font_Changed: ("폰트 변경 (재시작 필요)", Font_Changed_parmeters) if not is_default else (Font_Changed_parmeters[Font_Changed_default]),
         }

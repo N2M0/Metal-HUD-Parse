@@ -61,13 +61,17 @@ class LayUpdateWorker(QWidget):
         obj.setVisible(state)
         
     # 테이블 초기화
-    def InitializeTable(self, label_list, col_count, row_count):
+    def InitializeTable(self, x_label_list, y_label_list, col_count, row_count):
         try:
             self.ParsedResultsTable.setColumnCount(0)    
             self.ParsedResultsTable.setRowCount(0)
             self.ParsedResultsTable.setColumnCount(col_count)
             self.ParsedResultsTable.setRowCount(row_count)
-            self.ParsedResultsTable.setHorizontalHeaderLabels(label_list)
+            self.ParsedResultsTable.setHorizontalHeaderLabels(x_label_list)
+            
+            if len(y_label_list) != 0:
+                self.ParsedResultsTable.setVerticalHeaderLabels(y_label_list)
+
             
         except Exception as e:
             logger.error(f"미리보기 테이블 초기값을 설정하는 데에 문제가 생겼습니다. | Error Code: {e}")

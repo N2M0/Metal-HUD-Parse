@@ -6,6 +6,13 @@
             "not used"
         ]
     ],
+    "Preview data viewing mode": [
+        "테이블 미리보기 보기 모드",
+        [
+            "Raw mode",
+            "statistical mode"
+        ]
+    ],
     "Startup mode": [
         "시작시 모드 여부",
         [

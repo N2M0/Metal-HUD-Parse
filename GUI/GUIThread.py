@@ -6,6 +6,8 @@ import sys
 from Json_Utils import *
 from config_paths import *
 from applog import *
+import numpy as np
+
 
 logger = InitLogger(CurrentFileName(__file__))
 
@@ -21,7 +23,7 @@ class PerformanceParsingThread(QThread):
     UpdateFileLabelSignal = pyqtSignal(str)
     EmitTableState = pyqtSignal(bool, object)
     EmitPbarState = pyqtSignal(bool, object)
-    EmitInitializeTableSignal =  pyqtSignal(list, int, int)
+    EmitInitializeTableSignal =  pyqtSignal(list, list, int, int)
     EmitParsedSignal = pyqtSignal(int, int, str)
     EmitParsedPbarSignal = pyqtSignal(int, int)
     EmitTableResize = pyqtSignal()
@@ -61,19 +63,17 @@ class PerformanceParsingThread(QThread):
             # 불필요한 키-값 제거
             self.RemoveKeys()
 
-            # 기능 활성화, 비활성화
-            if self.settings[Preview_data] == Preview_data_parmeters[Preview_data_default]:
-                self.EmitTableState.emit(True, self.ParsedResultsTable)
-                self.EmitPbarState.emit(True, self.ParsedPbar)
-                
-                # 함수 호출
-                self.emitInitializeTableSignal()
-                self.emitParsedSignal()
-                
+            # 미리보기 테이블 사용 여부
+            Preview_data_change = True if self.settings[Preview_data] == Preview_data_parmeters[Preview_data_default] else False
+            self.EmitTableState.emit(Preview_data_change, self.ParsedResultsTable)
+            self.EmitPbarState.emit(Preview_data_change, self.ParsedPbar)
             
-            else:
-                self.EmitTableState.emit(False, self.ParsedResultsTable)
-                self.EmitPbarState.emit(False, self.ParsedPbar)
+            # 미리보기 테이블 보기 모드
+            Preview_data_viewing_mode_change = True if self.settings[Preview_data_viewing_mode] == Preview_data_viewing_mode_parmeters[Preview_data_viewing_mode_default] else False
+            
+            # 필요 함수 호출.
+            self.emitInitializeTableSignal(Preview_data_change, Preview_data_viewing_mode_change)
+            self.emitParsedSignal(Preview_data_change, Preview_data_viewing_mode_change)
                 
             self.UpdateFileLabelSignal.emit(f'Selected File: "{self.FileName}" Done!')
             
@@ -138,7 +138,7 @@ class PerformanceParsingThread(QThread):
             return None
     
     # 컴빈드 데이터 계산
-    def CombinedDictData(self, combined_dict):
+    def CombinedDictDataCalculate(self, combined_dict):
         try:
             return [len(v) for v in combined_dict.values() if isinstance(v, list)]
         except Exception as e:
@@ -146,33 +146,50 @@ class PerformanceParsingThread(QThread):
             return None
         
     # 테이블에 row, col 초기 설정 데이터를 전달하는 함수
-    def emitInitializeTableSignal(self):
-        try:
-            combined_dict = self.CombinedDict()
-            data = self.CombinedDictData(combined_dict)
-            label_list = list(combined_dict.keys())
-            col_count = len(combined_dict)
-            row_count = max(data) # Key 값 중에 가장 많은 Value 하나 찾음.
-            self.EmitInitializeTableSignal.emit(label_list, col_count, row_count)
-        
-        except Exception as e:
-            logger.error(f"미리보기 테이블에 초기값을 방출하는데 문제가 생겼습니다. | Error Code: {e}")
-            return None
+    def emitInitializeTableSignal(self, used, state):
+        if used:
+            try:
+                combined_dict = self.CombinedDict()
+                data = self.CombinedDictDataCalculate(combined_dict)
+                x_label_list = list(combined_dict.keys())
+                col_count = len(combined_dict)
+                
+                # 원시 모드
+                if state:
+                    row_count = max(data) # Key 값 중에 가장 많은 Value 하나 찾음.
+                    self.EmitInitializeTableSignal.emit(x_label_list, [], col_count, row_count)
+                
+                # 통계 모드
+                else:
+                    # 통계 함수
+                    self.statistical_functions = {
+                        "mean": np.mean,
+                        "median": np.median
+                    }
+                    
+                    y_label_list = list(self.statistical_functions.keys())
+                    row_count = len(y_label_list)
+                    self.EmitInitializeTableSignal.emit(x_label_list, y_label_list, col_count, row_count)
+
+            except Exception as e:
+                logger.error(f"미리보기 테이블에 초기값을 방출하는데 문제가 생겼습니다. | Error Code: {e}")
+                return None
     
     # 파싱 데이터를 테이블하고 프로그래스바에 데이터를 전달하는 함수
-    def emitParsedSignal(self):
-        try:
-            # 원시 데이터
-            self.rawDataProcessing()
-                    
-        except Exception as e:
-            logger.error(f"미리보기 테이블 시그널, 프로그래스바 시그널에 데이터를 전달하는 과정에 문제가 생겼습니다. | Error Code: {e}")
-            return None
+    def emitParsedSignal(self, used, viewing_mode):
+        if used:
+            try:
+                # 원시 데이터                                  # 통계 데이터
+                self.rawDataProcessing() if viewing_mode else self.statisticalDataProcessing()
+                
+            except Exception as e:
+                logger.error(f"미리보기 테이블 시그널, 프로그래스바 시그널에 데이터를 전달하는 과정에 문제가 생겼습니다. | Error Code: {e}")
+                return None
     
     # 원시 데이터
     def rawDataProcessing(self):
         combined_dict = self.CombinedDict()
-        data = self.CombinedDictData(combined_dict)
+        data = self.CombinedDictDataCalculate(combined_dict)
         sum_count = sum(data) + len(_PerformanceCalculationConditions.values()) # 프로그래스바 100% 기준 해당하는 값
 
         sum_pbar = 1
@@ -202,8 +219,40 @@ class PerformanceParsingThread(QThread):
     
     # 통계화된 데이터
     def statisticalDataProcessing(self):
-        # 통계화된 데이터 처리 로직, 작성 필요.
-        pass
+        combined_dict = self.CombinedDict()
+        repeat_value = list(self.statistical_functions.values())
+        sum_count = len(combined_dict.keys()) * len(repeat_value) # 프로그래스바 100% 기준 해당하는 값
+        print(sum_count)
+        
+        sum_pbar = 1
+        for col, fun in enumerate(repeat_value):
+            if self.isInterruptionRequested():
+                logger.info("파싱 스레드가 중단 요청을 받았습니다.")
+                return
+            
+            for row, value in enumerate(combined_dict.values()):
+                if self.isInterruptionRequested():
+                    logger.info("파싱 스레드가 중단 요청을 받았습니다.")
+                    return
+                
+                # 타입 검사
+                if isinstance(value, (list, tuple)):
+                    value_num = fun(value) if len(value) != 0 else None
+                    print(col, row, value_num)
+                    
+                    self.emitParsedSignalItem(col, row, str(value_num))
+
+                else:
+                    print(col, row, value)
+                    
+                    self.emitParsedSignalItem(col, row, str(value))
+                
+                
+                # 프로그래스바 및 성능 모드 계산.
+                self.emitParsedPbarValue(sum_pbar, sum_count)
+                self.overhead(sum_pbar)
+                sum_pbar += 1
+                
 
     
     # 테이블 아이템 신호 업데이트
