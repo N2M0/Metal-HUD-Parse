@@ -256,7 +256,7 @@ class MetalHUDParse(QWidget):
         # 설정 값 가져오기
         settings = OpenJson(SetDataFilePath)
         if not settings[Preview_data] == Preview_data_parmeters[Preview_data_default]:
-            self.ParsedResultsTable.hide(False)
+            self.ParsedResultsTable.setVisible(False)
             self.ParsedPbar.setVisible(False)
 
 
@@ -361,8 +361,7 @@ class MetalHUDParse(QWidget):
     # 종료 이벤트
     def on_close(self, event):
         # 객체가 존재할때만 실행.
-        if self.task_states[parse_thread_state] == True:
-            self.LayWorker.stop("메인 스레드가 종료되어 파싱 스레드가 강제 종료 됐습니다.")
+        self.LayWorker.stop("메인 스레드가 종료되어 파싱 스레드가 강제 종료 됐습니다.") if self.task_states[parse_thread_state] == True else None
         
         logger.info("프로그램 종료")  # 종료 시 메시지
         event.accept()  # 종료 이벤트를 수락
