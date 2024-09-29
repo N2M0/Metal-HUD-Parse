@@ -8,7 +8,9 @@ from PyQt5.QtWidgets import (
     QFrame,
     QHBoxLayout,
     QTableWidget,
-    QProgressBar
+    QProgressBar,
+    QSpacerItem,
+    QSizePolicy
     )
 
 from PyQt5.QtCore import Qt
@@ -19,13 +21,25 @@ from CustomQDSpin import *
 from ToolBar import *
 from SavedWorker import *
 from LayWorker import *
-from constant import *
-from Json_func import *
+from config_paths import *
+from Json_Utils import *
+from applog import *
+
+logger = InitLogger(CurrentFileName(__file__))
 
 class MetalHUDParse(QWidget):
     def __init__(self):
         super().__init__()
-        self._name = __class__.__name__
+        logger.info("프로그램 시작")  # 프로그램 시작 시 메시지
+        
+        # 실행여부 정의.
+        self.task_states = {
+            parse_thread_state: False
+        }
+
+        # 종료 시그널에 슬롯 연결
+        self.closeEvent = self.on_close
+        
         # 특정 폴더에 있는 폰트 로드
         font_id = QtGui.QFontDatabase.addApplicationFont(font_path)
         self.font_family = QtGui.QFontDatabase.applicationFontFamilies(font_id)[0]
@@ -56,7 +70,7 @@ class MetalHUDParse(QWidget):
             self.setLayout(self.Mainvbox)
 
         except Exception as e:
-            print(f"{self._name} - InitUI Error:", e)
+            logger.error(f"메인 화면을 초기화하는 과정에 문제가 생겼습니다. | Error Code: {e}")
 
     # 처음 실행시 최초화면
     def FileReadWindow(self):
@@ -84,7 +98,7 @@ class MetalHUDParse(QWidget):
             
 
         except Exception as e:
-            print(f"{self._name} - FileReadWindow Error:", e)
+            logger.error(f"파일 불러오기 화면의 문제가 생겼습니다. | Error Code: {e}")
             return None
     
     # FileReadWindow 의 객체를 레이아웃에 추가해주는 함수
@@ -106,7 +120,7 @@ class MetalHUDParse(QWidget):
             return FileReadframe
         
         except Exception as e:
-            print(f"{self._name} - FileReadWindow_Layout Error:", e)
+            logger.error(f"파일 불러오기 화면의 레이아웃 또는 위젯을 추가하는 과정에 문제가 생겼습니다. | Error Code: {e}")
             return None
         
     # 처음화면에서 파일 선택시 이동화면
@@ -146,6 +160,9 @@ class MetalHUDParse(QWidget):
                 int(self.DecimalPoint.value())),
                 )
             
+            # 데이터 파싱 중지
+            self.ParseStopBtn = self.addBtn("Parse Stop", self.Parse_Quit)
+            
             # 파일 변경 버튼 초기화
             self.FileChange = self.addBtn("File Change", self.FileChanged)
             
@@ -158,10 +175,13 @@ class MetalHUDParse(QWidget):
             # 툴바 설정 값에 의해 숨김 처리된 위젯 초기값.
             self.widget_Hide()
             
+            # 버튼 숨기기
+            self.button_Hide(self.ParseStopBtn, False, (0 ,0), (10 ,20), (10 ,20))
+            
             return StartPerformanceframe
         
         except Exception as e:
-            print(f"{self._name} - StartPerformanceWindow Error:", e)
+            logger.error(f"시작 성능 화면의 문제가 생겼습니다. | Error Code: {e}")
             return None
     
     # StartPerformanceWindow 의 객체를 레이아웃에 추가해주는 함수
@@ -193,15 +213,22 @@ class MetalHUDParse(QWidget):
                 StartPerformancevbox.addSpacing(20) # 여백
             StartPerformancevbox.addStretch(1)
             
-            
             # 수평
-            StartPerformancehbox.addStretch(1)
+            # 스페이서 아이템 생성
+            self.spacer1 = QSpacerItem(10, 20, QSizePolicy.Fixed, QSizePolicy.Minimum)
+            self.spacer2 = QSpacerItem(10, 20, QSizePolicy.Fixed, QSizePolicy.Minimum)
+            self.spacer3 = QSpacerItem(10, 20, QSizePolicy.Fixed, QSizePolicy.Minimum)
+
+            # 레이아웃에 위젯 추가
+            StartPerformancehbox.addStretch(1)  # 왼쪽 여백
             StartPerformancehbox.addWidget(self.ParseStartBtn, alignment=Qt.AlignBottom | Qt.AlignHCenter)
-            StartPerformancehbox.addSpacing(10) # 여백
+            StartPerformancehbox.addItem(self.spacer1)  # 여백
+            StartPerformancehbox.addWidget(self.ParseStopBtn, alignment=Qt.AlignBottom | Qt.AlignHCenter)
+            StartPerformancehbox.addItem(self.spacer2)  # 여백
             StartPerformancehbox.addWidget(self.FileChange, alignment=Qt.AlignBottom | Qt.AlignHCenter)
-            StartPerformancehbox.addSpacing(10) # 여백
+            StartPerformancehbox.addItem(self.spacer3)  # 여백
             StartPerformancehbox.addWidget(self.ParsedSave, alignment=Qt.AlignBottom | Qt.AlignHCenter)
-            StartPerformancehbox.addStretch(1)
+            StartPerformancehbox.addStretch(1)  # 오른쪽 여백
 
             # 레이아웃 추가
             StartPerformancevbox.addLayout(StartPerformancehbox)
@@ -210,15 +237,27 @@ class MetalHUDParse(QWidget):
             return StartPerformanceframe
 
         except Exception as e:
-            print(f"{self._name} - StartPerformanceWindow_layout Error:", e)
+            logger.error(f"시작 성능 화면의 레이아웃 또는 위젯을 추가하는 과정에 문제가 생겼습니다. | Error Code: {e}")
             return None
+
+    # 버튼 숨기기
+    def button_Hide(self, btn_obj, state, *spacer_Size):
+        
+        # 버튼 숨기기
+        btn_obj.setVisible(state)  # 버튼을 숨깁니다.
+        
+        spacer_Size_1, spacer_Size_2, spacer_Size_3 = spacer_Size
+        self.spacer1.changeSize(*spacer_Size_1, QSizePolicy.Fixed, QSizePolicy.Minimum)  # 여백 숨기기
+        self.spacer2.changeSize(*spacer_Size_2, QSizePolicy.Fixed, QSizePolicy.Minimum)  # 여백 숨기기
+        self.spacer3.changeSize(*spacer_Size_3, QSizePolicy.Fixed, QSizePolicy.Minimum)  # 여백 숨기기
+
 
     def widget_Hide(self):
         # 설정 값 가져오기
         settings = OpenJson(SetDataFilePath)
         if not settings[Preview_data] == Preview_data_parmeters[Preview_data_default]:
-            self.ParsedResultsTable.hide()
-            self.ParsedPbar.hide()
+            self.ParsedResultsTable.setVisible(False)
+            self.ParsedPbar.setVisible(False)
 
 
     # 파일 이름 변경 함수
@@ -229,7 +268,7 @@ class MetalHUDParse(QWidget):
                 self.FileName = f
                 
         except Exception as e:
-            print(f"{self._name} - FileChanged Error:", e)
+            logger.error(f"파일을 변경하는 과정에 문제가 생겼습니다. | Error Code: {e}")
             return None
 
     # 버튼 추가 함수
@@ -245,7 +284,7 @@ class MetalHUDParse(QWidget):
             return _addbtn
 
         except Exception as e:
-            print(f"{self._name} - addBtn Error:", e)
+            logger.error(f"정의된 버튼 함수에 문제가 생겼습니다. | Error Code: {e}")
             return None
     
     # 스핀박스 추가 함수
@@ -267,7 +306,7 @@ class MetalHUDParse(QWidget):
             return QDSpinObj, QDSpinObjLabel
 
         except Exception as e:
-            print(f"{self._name} - addQDSpinBox Error:", e)
+            logger.error(f"정의된 스핀박스 함수에 문제가 생겼습니다. | Error Code: {e}")
             return None, None
         
     # 데이터 미리보기 표시
@@ -278,7 +317,7 @@ class MetalHUDParse(QWidget):
             
             return ParsedTable
         except Exception as e:
-            print(f"{self._name} - InitParsedTable Error:", e)
+            logger.error(f"미리보기 테이블을 추가하는 과정에 문제가 생겼습니다. | Error Code: {e}")
             return None
             
     # 프로그래스바 표시
@@ -293,18 +332,22 @@ class MetalHUDParse(QWidget):
             return pbar
         
         except Exception as e:
-            print(f"{self._name} - InitQProgressBar Error:", e)
+            logger.error(f"프로그래스바를 추가하는 과정에 문제가 생겼습니다. | Error Code: {e}")
             return None
         
     # 스레드 함수
     def StartParsePerformance(self, FileName, benchmarkBasedTime, DecimalPoint):
         try:
             # 파스 결과를 메인 레이아웃에 업데이트하는 객체
-            LayWorker = LayUpdateWorker(self, FileName, benchmarkBasedTime, DecimalPoint)
-            LayWorker.start()
+            self.LayWorker = LayUpdateWorker(self, FileName, benchmarkBasedTime, DecimalPoint)
+            self.LayWorker.start()
             
         except Exception as e:
-            print(f"{self._name} - StartParsePerformance Error:", e)
+            logger.error(f"Parse 관련 레이아웃 업데이트 클래스에 문제가 생겼습니다. | Error Code: {e}")
+    
+    def Parse_Quit(self):
+        self.LayWorker.stop("스레드가 강제 종료 됐습니다.")
+    
             
     def StartParsePerformanceSave(self):
         try:
@@ -312,7 +355,17 @@ class MetalHUDParse(QWidget):
             SaveWorked.start()
             
         except Exception as e:
-            print(f"{self._name} - StartParsePerformanceSave Error:", e)
+            logger.error(f"Parsed Data를 저장하는 클래스에 문제가 생겼습니다. | Error Code: {e}")
+
+
+    # 종료 이벤트
+    def on_close(self, event):
+        # 객체가 존재할때만 실행.
+        self.LayWorker.stop("메인 스레드가 종료되어 파싱 스레드가 강제 종료 됐습니다.") if self.task_states[parse_thread_state] == True else None
+        
+        logger.info("프로그램 종료")  # 종료 시 메시지
+        event.accept()  # 종료 이벤트를 수락
+
 
 
 if __name__ == '__main__':

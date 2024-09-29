@@ -1,7 +1,13 @@
 import csv
 import pandas as pd
-from pprint import pprint
-from constant import *
+# from pprint import pprint
+from config_paths import *
+from config_paths_Utils import *
+from applog import *
+import os
+
+logger = InitLogger(CurrentFileName(__file__))
+
 
 # Metal-HUD.csv 파일 열기
 def DataReader(FileName):
@@ -13,11 +19,11 @@ def DataReader(FileName):
             return data
         
         else:
-            print("DataReader File Extension Selection Error:", "Not a *.csv file.")
+            logger.debug("DataReader File Extension Selection Error: Not a *.csv file.")
             return None
     
     except Exception as e:
-        print("DataReader Error:", e)
+        logger.error(f"데이터를 불러오는 과정에 문제가 생겼습니다. | Error Code: {e}")
         return None
 
 # 데이터 분리
@@ -60,7 +66,7 @@ def DataSplit(hudRawData, PerformanceCalculationConditions, PerformanceData, Per
                 continue
             
     except Exception as e:
-        print("DataSplit Error:", e)
+        logger.error(f"데이터를 분리하는 과정에 문제가 생겼습니다. | Error Code: {e}")
         return None
 
 # FPS 계산식
@@ -76,7 +82,7 @@ def FPSCalculation(PerformanceCalculationConditions, DecimalPoint = 2):
         )
         
     except Exception as e:
-        print("FPSCalculation Error:", e)
+        logger.error(f"FPS 계산식에 문제가 생겼습니다. | Error Code: {e}")
         return None
         
 # FrameTime > FPS 변환
@@ -98,7 +104,7 @@ def ConverttoFPS(PerformanceData, PerformanceCalculationConditions, DecimalPoint
                 PerformanceCalculationConditions[secondSum] = 0
                 
     except Exception as e:
-        print("ConverttoFPS Error:", e)
+        logger.error(f"FPS를 변환하는 과정에 문제가 생겼습니다. | Error Code: {e}")
         return None
 
 # 마지막에 남은 1초 안되는 자투리 데이터로 평균 FPS 계산
@@ -108,16 +114,16 @@ def LastDataAvg(PerformanceData, PerformanceCalculationConditions, DecimalPoint 
         if PerformanceCalculationConditions[secondSum] != 0:
             PerformanceData[FPSData].append(FPSCalculation(PerformanceCalculationConditions, DecimalPoint))
     except Exception as e:
-        print("LastDataAvg Error:", e)
+        logger.error(f"마지막 FPS 데이터를 변환하는 과정에 문제가 생겼습니다. | Error Code: {e}")
 
 # 파일 저장 함수
-def PerformanceCsvSave(FileName, title, data):
+def PerformanceCsvSave(ParseDataSavePath, FileName, title, data, Index_number):
     try:
         df = pd.DataFrame({title : data})
-        df.to_csv(FileName)
+        df.to_csv(os.path.join(ParseDataSavePath, FileName), index=Index_number)
         
     except Exception as e:
-        print("PerformanceCsvSave Error:", e)
+        logger.error(f"결과값을 저장하는 과정에 문제가 생겼습니다. | Error Code: {e}")
 
 #benchmarkBasedTime 여기에 몇 ms마다 FPS 평균을 낼 것인지 입력
 #benchmarkBasedTime 값이 너무 작으면 실제보다 과하게 프레임이 튀어 보일 수 있음
@@ -160,8 +166,11 @@ if __name__ == "__main__":
     # 소수점 반올림
     DecimalPoint = 2
     
+    # Parse 데이터 저장시 인덱스 번호 표시 여부
+    include_index = False
+    
     # 성능 데이터 분리
-    DataSplit(DataReader("output.csv"), _PerformanceCalculationConditions, _PerformanceData, _PerformanceErrorData, DecimalPoint)
+    DataSplit(DataReader("output3.csv"), _PerformanceCalculationConditions, _PerformanceData, _PerformanceErrorData, DecimalPoint)
 
     # FrameTime > FPS 변환
     ConverttoFPS(_PerformanceData, _PerformanceCalculationConditions, DecimalPoint)
@@ -169,18 +178,25 @@ if __name__ == "__main__":
     LastDataAvg(_PerformanceData, _PerformanceCalculationConditions, DecimalPoint)
 
     # 파일 저장
-    PerformanceCsvSave("FPS-Result.csv", f"FPS - 약 {_PerformanceCalculationConditions[benchmarkBasedTime]} ms마다 평균치 계산", _PerformanceData[FPSData])
-    PerformanceCsvSave("Frametime-Result.csv", f"Frametime", _PerformanceData[frameTimeData])
-    PerformanceCsvSave("GPUTime-Result.csv", f"GPUTime", _PerformanceData[gpuTimeData])
-    PerformanceCsvSave("Memory-Result.csv", f"Memory(MB)", _PerformanceData[memoryData])
-    PerformanceCsvSave("Frametime-Error.csv", f"Frametime error list", _PerformanceErrorData[frametimeErrorData])
-    PerformanceCsvSave("GPUTime-error.csv", f"GPUTime error list", _PerformanceErrorData[gpuTimeErrorData])
-    # pprint(_PerformanceData)
-
-    print("\n\nDone! Missed Frame:", _PerformanceCalculationConditions[missedFrame])
-    print("Frametime error:", _PerformanceCalculationConditions[frametimeError])
-    print("GPUTime error:", _PerformanceCalculationConditions[gpuTimeError])
+    # Parse Data Save FilePath
+    ParseDataSavePath = MakeFolder(f"Parse_Save/{CurrentTime()}")
     
-    # for key, value in _PerformanceData.items():
-    #     for value in value:
-    #         print(value)
+    
+    # 저장할 파일 이름과 관련된 정보
+    performance_data = {
+        "FPS-Result.csv": (f"FPS - 약 {_PerformanceCalculationConditions[benchmarkBasedTime]} ms마다 평균치 계산", _PerformanceData[FPSData]),
+        "Frametime-Result.csv": (f"Frametime", _PerformanceData[frameTimeData]),
+        "GPUTime-Result.csv": (f"GPUTime", _PerformanceData[gpuTimeData]),
+        "Memory-Result.csv": (f"Memory(MB)", _PerformanceData[memoryData]),
+        "Frametime-Error.csv": (f"Frametime error list", _PerformanceErrorData[frametimeErrorData]),
+        "GPUTime-error.csv": (f"GPUTime error list", _PerformanceErrorData[gpuTimeErrorData]),
+    }
+
+    # 반복문을 통해 파일 저장
+    for filename, (description, data) in performance_data.items():
+        PerformanceCsvSave(ParseDataSavePath, filename, description, data, include_index)
+    
+    
+    logger.debug(f"Done! Missed Frame: {_PerformanceCalculationConditions[missedFrame]}")
+    logger.debug(f"Frametime error: {_PerformanceCalculationConditions[frametimeError]}")
+    logger.debug(f"GPUTime error: {_PerformanceCalculationConditions[gpuTimeError]}")

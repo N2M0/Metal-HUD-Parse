@@ -1,5 +1,4 @@
-from constant import *
-from PyQt5 import QtGui
+from config_paths import *
 
 
 def LabelStyle(id, font_family, fontsize, color="black"):

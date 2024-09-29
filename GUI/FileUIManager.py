@@ -2,17 +2,19 @@ from PyQt5.QtWidgets import  QFileDialog, QDesktopWidget
 from PyQt5.QtCore import QTimer
 from Metal_HUD_parse import *
 from GUIStyle import *
+from applog import *
+
+logger = InitLogger(CurrentFileName(__file__))
 
 # 메인 GUI 에서 파일 관련을 관리 및 구성하는 클래스 
 class FileUIManager:
     def __init__(self, parent):
-        self._name = __class__.__name__
         
         self.parent = parent
-        self.FileLabel = parent.FileLabel
-        self.FileReadframe = parent.FileReadframe
-        self.Mainvbox = parent.Mainvbox
-        self.StartPerformanceWindow = parent.StartPerformanceWindow
+        self.FileLabel = self.parent.FileLabel
+        self.FileReadframe = self.parent.FileReadframe
+        self.Mainvbox = self.parent.Mainvbox
+        self.StartPerformanceWindow = self.parent.StartPerformanceWindow
 
     # 파싱할 파일을 불러오는 함수
     def FileRead(self):
@@ -26,16 +28,17 @@ class FileUIManager:
                 
                 # StartPerformanceWindow 레이아웃 초기화
                 QTimer.singleShot(1000, lambda: self.Mainvbox.addWidget(self.StartPerformanceWindow(self.FileName)))
+
+                # 창 위치를 중앙에 배치하는 함수를 호출
+                self.center()
             
             # 실패했을때
             else:
-                self.FileLabel.setText(f'Selected File: Failed.')
+                self.FileLabel.setText(f'Selected File Error: Please select the *.csv file again.')
                 
         except Exception as e:
-            print(f"{self._name} - FileRead Error:", e)
+            logger.error(f"파일을 불러오는 함수에 문제가 생겼습니다.  | Error Code: {e}")
 
-        # 창 위치를 중앙에 배치하는 함수를 호출
-        self.center()
 
     # 창 위치를 중앙에 배치
     def center(self):
@@ -47,7 +50,7 @@ class FileUIManager:
             self.parent.move(qr.topLeft())
             
         except Exception as e:
-            print(f"{self._name} - Center Error:", e)
+            logger.error(f"화면을 중앙에 배치하는 함수에 문제가 생겼습니다.  | Error Code: {e}")
     
     # 파싱할 파일을 변경하는 함수
     def FileChanged(self):
@@ -62,5 +65,5 @@ class FileUIManager:
                 return self.FileName
 
         except Exception as e:
-            print(f"{self._name} - FileChanged Error:", e)
+            logger.error(f"파일을 변경하는 함수에 문제가 생겼습니다. | Error Code: {e}")
             return None
