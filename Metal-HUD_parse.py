@@ -24,6 +24,7 @@ gpuTimeErrorData = []
 
 secondSum = 0
 frameCount = 0
+overTempFrameTimeSum = 0.0
 
 overlapCheckData = "temp"
 
@@ -61,8 +62,9 @@ HUDFile.close()
 for i in range(len(frameTimeData)):
     secondSum += float(frameTimeData[i])
     frameCount += 1
-    if secondSum >= benchmarkBasedTime:
+    if secondSum >= benchmarkBasedTime - overTempFrameTimeSum:
         FPSData.append(round((frameCount * benchmarkBasedTime / secondSum) * 1000 / benchmarkBasedTime, 2))
+        overTempFrameTimeSum = secondSum - (1000 - overTempFrameTimeSum)
         frameCount = 0
         secondSum = 0
 
