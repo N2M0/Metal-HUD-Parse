@@ -82,15 +82,18 @@ def FPSCalculation(PerformanceCalculationConditions, DecimalPoint = 2):
 # FrameTime > FPS 변환
 # 평균 FPS = 소수점 3번째 자리에서 반올림 처리 (2자리까지만 표시)
 def ConverttoFPS(PerformanceData, PerformanceCalculationConditions, DecimalPoint = 2):
+    # 자투리 시간 오차를 줄이기 위해 추가. 이게 없으면 1초당 약 1/FPS 만큼의 오차가 생김
+    overTempFrameTimeSum = 0.0
     try:
         for i in range(len(PerformanceData[frameTimeData])):
             PerformanceCalculationConditions[secondSum] += float(PerformanceData[frameTimeData][i])
             PerformanceCalculationConditions[frameCount] += 1
             
-            if PerformanceCalculationConditions[secondSum] >= PerformanceCalculationConditions[benchmarkBasedTime]:
+            if PerformanceCalculationConditions[secondSum] >= PerformanceCalculationConditions[benchmarkBasedTime] - overTempFrameTimeSum:
                 PerformanceData[FPSData].append(FPSCalculation(PerformanceCalculationConditions, DecimalPoint))
                 
                 # 반복 할때마다 초기화
+                overTempFrameTimeSum = PerformanceCalculationConditions[secondSum] - (1000 - overTempFrameTimeSum)
                 PerformanceCalculationConditions[frameCount] = 0
                 PerformanceCalculationConditions[secondSum] = 0
                 
