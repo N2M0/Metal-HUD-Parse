@@ -39,7 +39,7 @@ def DataSplit(hudRawData, PerformanceCalculationConditions, PerformanceData, Per
             # 콘솔로 들어온 데이터 중 중복된 값이 있어서 제거 처리
             if PerformanceCalculationConditions[overlapCheckData] != line[0]:
                     PerformanceCalculationConditions[overlapCheckData] = line[0]
-                    PerformanceCalculationConditions[missedFrame] += int(line[1])
+                    PerformanceCalculationConditions[missedFrame] = float(line[1])
                     
                     # 메모리 데이터
                     PerformanceData[memoryData].append(round(float(line[2]), DecimalPointValue))
@@ -133,7 +133,7 @@ def PerformanceCsvSave(ParseDataSavePath, FileName, title, data, Index_number):
 def PerformanceCalculationConditions():
     return {
         benchmarkBasedTime: 1000,
-        missedFrame: 0,  # 누락된 프레임 갯수
+        missedFrame: 0.0,  # 누락된 프레임 갯수
         frametimeError: 0,  # 소수점 자리가 <...>로 입력된 프레임타임
         gpuTimeError: 0,  # 소수점 자리가 <...>로 입력된 GPU타임
         secondSum: 0,
